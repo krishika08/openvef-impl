@@ -1,9 +1,11 @@
 """D-028: evidence entry points check the pinned image ID and never build an image."""
 import re
+import sys
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO / "src"))
 
 
 def conf():

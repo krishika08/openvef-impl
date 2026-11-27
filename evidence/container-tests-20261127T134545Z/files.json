@@ -1,0 +1,530 @@
+{
+  "files": [
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_artifact_isolation.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_artifact_isolation.py",
+      "log": "logs/test_artifact_isolation.log",
+      "ran": 33,
+      "returncode": 0,
+      "seconds": 123.4,
+      "sha256": "5d2ad0dd622482419f2512e42a1153d9f17911cb3d1633dbc0fa11076a60db9a",
+      "started_utc": "2026-11-27T13:45:46+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_ast_signature.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_ast_signature.py",
+      "log": "logs/test_ast_signature.log",
+      "ran": 26,
+      "returncode": 0,
+      "seconds": 0.25,
+      "sha256": "2c80207a204276f20fe03077251748603cb942dea33a585f52df078d590d7b2c",
+      "started_utc": "2026-11-27T13:47:50+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_audit_bundle.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_audit_bundle.py",
+      "log": "logs/test_audit_bundle.log",
+      "ran": 2,
+      "returncode": 0,
+      "seconds": 0.67,
+      "sha256": "f49f03af4ffbbbfa50b517cbe94b6bc1b578c7be4b1174b309a22b622ee35743",
+      "started_utc": "2026-11-27T13:47:50+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_broker.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_broker.py",
+      "log": "logs/test_broker.log",
+      "ran": 10,
+      "returncode": 0,
+      "seconds": 0.37,
+      "sha256": "86da0b64cc115d3ed5c7a4c266834b85692d6b4697be18e06fd9a2dcdafa4a52",
+      "started_utc": "2026-11-27T13:47:50+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_controls_slots.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_controls_slots.py",
+      "log": "logs/test_controls_slots.log",
+      "ran": 9,
+      "returncode": 0,
+      "seconds": 0.36,
+      "sha256": "ba270378c98373e90f1555758c7a7298eb9dbebc8a4f9097801314c62a3fe076",
+      "started_utc": "2026-11-27T13:47:51+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_dispatch_shapes.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_dispatch_shapes.py",
+      "log": "logs/test_dispatch_shapes.log",
+      "ran": 22,
+      "returncode": 0,
+      "seconds": 0.77,
+      "sha256": "fd9ec031470b9121ee853765ed042924abececea3f6a2aeb08bc0b3f1bd1b605",
+      "started_utc": "2026-11-27T13:47:51+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_dispatch_shapes_v137.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_dispatch_shapes_v137.py",
+      "log": "logs/test_dispatch_shapes_v137.log",
+      "ran": 19,
+      "returncode": 0,
+      "seconds": 2.72,
+      "sha256": "bf07c474c04d005397b676a087de161a197d402c42415a7b45605516d530f1b6",
+      "started_utc": "2026-11-27T13:47:52+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_doc_quotes.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_doc_quotes.py",
+      "log": "logs/test_doc_quotes.log",
+      "ran": 1,
+      "returncode": 0,
+      "seconds": 0.34,
+      "sha256": "20871a1d08c5f60c78cd8a990521a17a9c4bf09ff1923921173c48e1c3763f8f",
+      "started_utc": "2026-11-27T13:47:55+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_fifo_mask.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_fifo_mask.py",
+      "log": "logs/test_fifo_mask.log",
+      "ran": 8,
+      "returncode": 0,
+      "seconds": 4.73,
+      "sha256": "0f0799467fb10754ded7911a0a3c7f6a6e86eba2cd84feb63c744d07acdfaebc",
+      "started_utc": "2026-11-27T13:47:55+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_fifo_rtl.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_fifo_rtl.py",
+      "log": "logs/test_fifo_rtl.log",
+      "ran": 7,
+      "returncode": 0,
+      "seconds": 19.92,
+      "sha256": "f62e5662be4841e2a9ab591db9679fa06bdec3b41bc5a4f6541ecf7a28d6781a",
+      "started_utc": "2026-11-27T13:48:00+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_fifo_spec.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_fifo_spec.py",
+      "log": "logs/test_fifo_spec.log",
+      "ran": 10,
+      "returncode": 0,
+      "seconds": 0.24,
+      "sha256": "4b744607147688b56febb43ed33f9215d29be8aea620fe69f37d756132a34d18",
+      "started_utc": "2026-11-27T13:48:20+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_freeze_package.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_freeze_package.py",
+      "log": "logs/test_freeze_package.log",
+      "ran": 13,
+      "returncode": 0,
+      "seconds": 0.47,
+      "sha256": "1d9403e42ef2e4bff348364f4bf23b95b042df12227f40854c7c0f935f762275",
+      "started_utc": "2026-11-27T13:48:20+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_image_guard.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_image_guard.py",
+      "log": "logs/test_image_guard.log",
+      "ran": 3,
+      "returncode": 1,
+      "seconds": 0.23,
+      "sha256": "809597a062bed7eba227953a255b199b30d11eec227b4ed5a2d0572b9a33d633",
+      "started_utc": "2026-11-27T13:48:20+00:00",
+      "successful": false
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_import_policy.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_import_policy.py",
+      "log": "logs/test_import_policy.log",
+      "ran": 71,
+      "returncode": 0,
+      "seconds": 0.29,
+      "sha256": "481443bfe73b87c244e9ba1ebebbf1bd9bc956e7f713247b49f2eb2bb56f53df",
+      "started_utc": "2026-11-27T13:48:21+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_lifecycle.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_lifecycle.py",
+      "log": "logs/test_lifecycle.log",
+      "ran": 5,
+      "returncode": 0,
+      "seconds": 0.27,
+      "sha256": "a182c76e304d25f5cab76a30d63cf1dc626cde1eb71b81e7b207906ee5d6f8ce",
+      "started_utc": "2026-11-27T13:48:21+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_local_rules.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_local_rules.py",
+      "log": "logs/test_local_rules.log",
+      "ran": 26,
+      "returncode": 0,
+      "seconds": 0.26,
+      "sha256": "7aef3d61dfd9c646de1ac4d96be3d9517a19babea231fe61229c56ccc9efc3ba",
+      "started_utc": "2026-11-27T13:48:21+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_miter_alignment.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_miter_alignment.py",
+      "log": "logs/test_miter_alignment.log",
+      "ran": 23,
+      "returncode": 0,
+      "seconds": 14.61,
+      "sha256": "7ad4dc9161f7b4718c3ad5a3527082a34904be7c253c3d63d2097d5a4746e131",
+      "started_utc": "2026-11-27T13:48:21+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_netlist_export.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_netlist_export.py",
+      "log": "logs/test_netlist_export.log",
+      "ran": 4,
+      "returncode": 0,
+      "seconds": 6.49,
+      "sha256": "9139c4ae778c822253c7dfcf4377ba83ee85103c26ba621ddc5a9d3d3a571543",
+      "started_utc": "2026-11-27T13:48:36+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_pack_manifest_v137.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_pack_manifest_v137.py",
+      "log": "logs/test_pack_manifest_v137.log",
+      "ran": 4,
+      "returncode": 0,
+      "seconds": 0.54,
+      "sha256": "d76a313822f92aa5072ecb36b3f76a5c743e4e453f8cfe040d7afb2af51baf11",
+      "started_utc": "2026-11-27T13:48:43+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_pair_runner_panel.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_pair_runner_panel.py",
+      "log": "logs/test_pair_runner_panel.log",
+      "ran": 20,
+      "returncode": 0,
+      "seconds": 0.26,
+      "sha256": "72580750e582042ce763bf5161963cace83dc4eebb5ee4994265be43c261f8f5",
+      "started_utc": "2026-11-27T13:48:43+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_pairs_metrics.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_pairs_metrics.py",
+      "log": "logs/test_pairs_metrics.log",
+      "ran": 16,
+      "returncode": 0,
+      "seconds": 0.38,
+      "sha256": "b9bc968af5366d3abf1c745afd8083dd82d5dcc25a997fc4beb59dc11c5e79b5",
+      "started_utc": "2026-11-27T13:48:43+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_proposal_v137.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_proposal_v137.py",
+      "log": "logs/test_proposal_v137.log",
+      "ran": 3,
+      "returncode": 0,
+      "seconds": 0.24,
+      "sha256": "01e1cefe541f4f8bf2c72206ef9697716d00c97dcb5082c7bddcaf24d72886bf",
+      "started_utc": "2026-11-27T13:48:44+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_sandbox.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_sandbox.py",
+      "log": "logs/test_sandbox.log",
+      "ran": 18,
+      "returncode": 0,
+      "seconds": 29.03,
+      "sha256": "ffa0824a24893e92bc2cbf0d75bd9d256532a575f082d02921a171e72629e344",
+      "started_utc": "2026-11-27T13:48:44+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_schema.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_schema.py",
+      "log": "logs/test_schema.log",
+      "ran": 12,
+      "returncode": 0,
+      "seconds": 0.34,
+      "sha256": "58b0aa493c61bdd79e21cd35df3a77f2123a526b48c324b6bdb3ba44ff494283",
+      "started_utc": "2026-11-27T13:49:13+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_self_reported_label.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_self_reported_label.py",
+      "log": "logs/test_self_reported_label.log",
+      "ran": 3,
+      "returncode": 0,
+      "seconds": 0.42,
+      "sha256": "a2ce7e39f5f38c6e0b6258a6fbd95c079af6063b0e4e962fd15b9db24b352f9c",
+      "started_utc": "2026-11-27T13:49:13+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_simulation.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_simulation.py",
+      "log": "logs/test_simulation.log",
+      "ran": 28,
+      "returncode": 0,
+      "seconds": 72.1,
+      "sha256": "b3aa58be8f31bfff03c395a2b72d2b91918c29bab6cd7a37c917ebdca520b6d4",
+      "started_utc": "2026-11-27T13:49:14+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_source_ast.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_source_ast.py",
+      "log": "logs/test_source_ast.log",
+      "ran": 13,
+      "returncode": 0,
+      "seconds": 0.23,
+      "sha256": "bb86bf5370d4b8302d1b0ffe40447097bf2f62feeb697e9f41900463a25882bb",
+      "started_utc": "2026-11-27T13:50:26+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_trace.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_trace.py",
+      "log": "logs/test_trace.log",
+      "ran": 4,
+      "returncode": 0,
+      "seconds": 0.23,
+      "sha256": "4c7089e082dc50599aa7e23cbcde779ba6f8c5219e4e2fc6491bee4c6440da90",
+      "started_utc": "2026-11-27T13:50:26+00:00",
+      "successful": true
+    },
+    {
+      "argv": [
+        "/usr/local/bin/python",
+        "-I",
+        "/shim/inner.py",
+        "--one",
+        "/workspaces/openvef-impl/tests/test_v137_candidate_pack.py",
+        "/tmp/result.json"
+      ],
+      "file": "test_v137_candidate_pack.py",
+      "log": "logs/test_v137_candidate_pack.log",
+      "ran": 12,
+      "returncode": 0,
+      "seconds": 0.41,
+      "sha256": "fb5a87e5196364130800bb58e11fdf3b9aeae74a0daebf368e3543a6d411c79d",
+      "started_utc": "2026-11-27T13:50:26+00:00",
+      "successful": true
+    }
+  ],
+  "totals": {
+    "ERROR": 1,
+    "pass": 424
+  }
+}

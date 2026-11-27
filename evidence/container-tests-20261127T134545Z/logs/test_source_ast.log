@@ -1,0 +1,18 @@
+test_column_counts_characters_not_utf8_bytes (test_source_ast.ColumnRuleTests.test_column_counts_characters_not_utf8_bytes) ... ok
+test_offset_none_absent_or_below_one_gives_column_1 (test_source_ast.ColumnRuleTests.test_offset_none_absent_or_below_one_gives_column_1) ... ok
+test_positive_offset_used_as_is (test_source_ast.ColumnRuleTests.test_positive_offset_used_as_is) ... ok
+test_both_valid (test_source_ast.FileOrderTests.test_both_valid) ... ok
+test_checker_failure_after_valid_driver (test_source_ast.FileOrderTests.test_checker_failure_after_valid_driver) ... ok
+test_driver_checked_before_checker (test_source_ast.FileOrderTests.test_driver_checked_before_checker) ... ok
+test_wrong_order_is_a_caller_error (test_source_ast.FileOrderTests.test_wrong_order_is_a_caller_error) ... ok
+test_agreed_whitespace_is_empty (test_source_ast.SingleFileTests.test_agreed_whitespace_is_empty) ... ok
+test_claude_decided_cases (test_source_ast.SingleFileTests.test_claude_decided_cases) ... ok
+test_comment_only_is_not_empty (test_source_ast.SingleFileTests.test_comment_only_is_not_empty) ... ok
+test_indentation_error_is_syntax_reject (test_source_ast.SingleFileTests.test_indentation_error_is_syntax_reject) ... ok
+test_non_syntax_error_from_parse_is_line_1_column_1 (test_source_ast.SingleFileTests.test_non_syntax_error_from_parse_is_line_1_column_1) ... ok
+test_valid_source_returns_module (test_source_ast.SingleFileTests.test_valid_source_returns_module) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.003s
+
+OK

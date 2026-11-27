@@ -1,0 +1,16 @@
+test_entry_points_call_the_guard_and_never_build (test_image_guard.ImageGuard.test_entry_points_call_the_guard_and_never_build) ... ok
+test_pin_values_are_well_formed (test_image_guard.ImageGuard.test_pin_values_are_well_formed) ... ok
+test_pinned_tag_is_the_content_tag (test_image_guard.ImageGuard.test_pinned_tag_is_the_content_tag) ... ERROR
+
+======================================================================
+ERROR: test_pinned_tag_is_the_content_tag (test_image_guard.ImageGuard.test_pinned_tag_is_the_content_tag)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspaces/openvef-impl/tests/test_image_guard.py", line 25, in test_pinned_tag_is_the_content_tag
+    from openvef import sandbox
+ModuleNotFoundError: No module named 'openvef'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=1)
