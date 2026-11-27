@@ -2063,3 +2063,26 @@ entry in AUDIT-READINESS.md.
 
 Items, rationale and the sweep list: `proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md` section 12 (correction cycle 3,
 item C18).
+
+## D-030 — Response to document audit #3 (DECIDED)
+
+**Owner decision by Krishika**, on a Claude (claude.ai) triage of document audit #3 (GPT-6, an AI model, operated by
+Krishika; bundle `f82e1334…b26b`; NOT CLEARED on two LIMITATIONs D3-1 and D3-2 only; 0 BLOCKER, 0 MAJOR, 0 MINOR; D2-1
+and D1-9 resolved; `docs/reviews/doc-audit3-gpt6-2026-11-27.md`). Takes effect under D-008; Ayush's ratification stays
+the single entry in AUDIT-READINESS.md.
+
+1. **D3-1:** write `tools/diff_runs.py`, a row-level diff of two `results.jsonl` files that reports, for each fixture,
+   every field that differs, grouped by field path. Run it on `run-v137c-20261127T134318Z` (audit #2's run, results
+   `81c73e32…`) against `run-v137c-20261127T153351Z` (results `4b9714a4…`) and save the output as
+   `evidence/RUN-CONTINUITY-D030.md`, with an explanation of each class of field that differs. If any status, category,
+   actual or expected value differs, stop and report to the owner. Include both runs' `results.jsonl` and the diff in
+   the next bundle. Correct the brief's wording to say exactly what differs.
+2. **D3-2:** restructure the current status lines to explicit labels ("Development-run evidence: …; Formal F18 status:
+   …; Approval: …"). Strengthen the test to require those labels in order, each followed by a non-empty value, and add
+   negative tests that must fail (the auditor's false-positive sentence, the words in quotes, the words out of order).
+   Pack text changes go in as C19, Phase A alone, then the code.
+3. Re-run v1.3.7c, the controls and the container tests in the pinned image (guard on) and confirm the statuses are
+   unchanged. Rebuild the bundle with a brief scoped to D3-1, D3-2 and regression, publish it as release
+   `docaudit4-<first 8 of sha>`, and push.
+
+Rationale and the C19 line list: `proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md` section 13 (correction cycle 4).
