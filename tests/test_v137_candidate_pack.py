@@ -24,6 +24,50 @@ from openvef.stage_map import validate_vector  # noqa: E402
 ADDED = {"CHANGELOG-v1.3.7-candidate.md", "CANDIDATE-LABEL.md", "SHA256SUMS-v1.3.7-candidate.txt"}
 FX = "41_F18_Fixture_Inputs/"
 
+# D-030 (D3-2): the three status parts as explicit labels, in this order (C19).
+STATUS_LABELS = ("Development-run evidence", "Formal F18 status", "Approval")
+QUOTES = "\"'`“”‘’"
+
+
+def labelled_status(line: str) -> list[str]:
+    """Problems with a status line under C19; [] when it is well formed. Each label appears exactly once, as written
+    (case included), directly followed by ": ", not preceded by a quotation mark or a word character, and the labels
+    come in STATUS_LABELS order. Each value runs from its label to the next ";" or "|" (the last label's value; for the
+    first two, it must end with "; " right before the next label) and has a letter or digit. A label inside quotation
+    marks (an odd number of quote characters before it) does not count."""
+    import re
+    problems, at = [], []
+    for label in STATUS_LABELS:
+        hits = []
+        for m in re.finditer(re.escape(label) + ":", line):
+            before = line[:m.start()]
+            if before and (before[-1].isalnum() or before[-1] in QUOTES + "-"):
+                continue
+            if sum(before.count(q) for q in "\"`") % 2 or before.count("“") > before.count("”") or \
+                    before.count("‘") > before.count("’"):
+                continue  # inside quotation marks
+            hits.append(m)
+        if len(hits) != 1:
+            problems.append(f"{label!r}: {len(hits)} unquoted occurrences, need exactly 1")
+        else:
+            at.append(hits[0])
+    if problems:
+        return problems
+    if [m.start() for m in at] != sorted(m.start() for m in at):
+        return ["labels out of order"]
+    for i, m in enumerate(at):
+        end = at[i + 1].start() if i + 1 < len(at) else len(line)
+        value = line[m.end():end]
+        if i + 1 < len(at):
+            if not value.rstrip().endswith(";"):
+                problems.append(f"{STATUS_LABELS[i]!r}: value does not end with ';' before the next label")
+            value = value.rstrip()[:-1]
+        else:
+            value = re.split(r"[;|]", value, maxsplit=1)[0]
+        if not re.search(r"\w", value):
+            problems.append(f"{STATUS_LABELS[i]!r}: empty value")
+    return problems
+
 
 def files(root: Path) -> dict[str, bytes]:
     return {p.relative_to(root).as_posix(): p.read_bytes() for p in root.rglob("*") if p.is_file()}
@@ -47,7 +91,8 @@ class CandidatePackTests(unittest.TestCase):
         src, first, last, copy, shift = mod.MIRROR
         for rel, n in ([(e[3], e[4]) for e in mod.EDITS] + [(s[0], s[1]) for s in mod.STALE]
                        + [(e[3], e[4]) for e in mod.CYCLE2]  # D-027 cycle 2 edits lines in place too
-                       + [(e[3], e[4]) for e in mod.CYCLE3]):  # D-029 cycle 3 (C18) as well
+                       + [(e[3], e[4]) for e in mod.CYCLE3]  # D-029 cycle 3 (C18) as well
+                       + [(e[3], e[4]) for e in mod.CYCLE4]):  # D-030 cycle 4 (C19) as well
             edited.setdefault(rel, set()).add(n)
             if rel == src and first <= n <= last:
                 edited.setdefault(copy, set()).add(n + shift)
@@ -205,11 +250,19 @@ class CandidatePackTests(unittest.TestCase):
         self.assertEqual(c18, list(range(205, 205 + len(self.mod.CYCLE3) + len(self.mod.INDEX_CYCLE3))))
         self.assertNotIn("C18", {c.strip() for _, c in entries[:205]})
 
-    # D-029 item 1 (D2-1): the current documents of the candidate (section 6 of CORRECTIONS-v1.3.7-candidate.md) and the
-    # fixture index. A line in them that states a status and mentions F18 must give all three parts.
+    def test_cycle4_follows_cycle3(self):
+        """D-030: cycle-4 (C19) entries come after E218, so every earlier entry keeps its number and correction."""
+        import re
+        changelog = self.pack["CHANGELOG-v1.3.7-candidate.md"].decode("utf-8")
+        entries = re.findall(r"^\| (E\d+) \| ([^|]+) \|", changelog, re.M)
+        c19 = [i for i, (_, c) in enumerate(entries) if c.strip() == "C19"]
+        self.assertEqual(c19, list(range(218, 218 + len(self.mod.CYCLE4) + len(self.mod.INDEX_CYCLE4))))
+        self.assertNotIn("C19", {c.strip() for _, c in entries[:218]})
+
+    # D-029 item 1 (D2-1), D-030 item 2 (D3-2): the current documents of the candidate (section 6 of
+    # CORRECTIONS-v1.3.7-candidate.md) and the fixture index. A line in them that states a status and mentions F18 must
+    # give the three parts as explicit labels, in order, each with a value (labelled_status below).
     STATUS_TERMS = r"(?i)NOT RUN|NOT PASSED|PASSED|\bstatus\b"
-    THREE_PARTS = {"development-run evidence": r"(?i)development[- ]run", "formal F18 status": r"(?i)\bformal(ly)?\b",
-                   "approval": r"(?i)\bapprov"}
     # Lines a current document keeps on purpose, with the reason (STATUS-SWEEP-D029.md). Matched by text, not number.
     STATUS_EXEMPT = {
         "01_OpenVEF_Project_Charter_v1.3.7-candidate.md": [
@@ -223,11 +276,12 @@ class CandidatePackTests(unittest.TestCase):
     }
 
     def test_current_status_lines_have_three_parts(self):
-        """D-029 (D2-1): every current status line that mentions F18 states development-run evidence, formal F18 status
-        and approval. Fails on a new or reworded line that drops a part, and on a stale exemption."""
+        """D-029 (D2-1), D-030 (D3-2): every current status line that mentions F18 states development-run evidence,
+        formal F18 status and approval as explicit labels, in order, each with a value. Fails on a new or reworded line
+        that drops, reorders, quotes or empties a part, and on a stale exemption."""
         import re
         current = sorted({self.name(r) for r in self.mod.RENAMES} | {"README.md"})
-        used = set()
+        used, checked = set(), 0
         for rel in current:
             for n, line in enumerate(self.pack[rel].decode("utf-8").split("\n"), 1):
                 if "F18" not in line or not re.search(self.STATUS_TERMS, line):
@@ -236,24 +290,55 @@ class CandidatePackTests(unittest.TestCase):
                 if exempt:
                     used.add((rel, exempt[0]))
                     continue
+                checked += 1
                 with self.subTest(file=rel, line=n):
-                    missing = [k for k, rx in self.THREE_PARTS.items() if not re.search(rx, line)]
-                    self.assertEqual(missing, [], line[:160])
+                    self.assertEqual(labelled_status(line), [], line[:160])
         self.assertEqual(used, {(f, p) for f, items in self.STATUS_EXEMPT.items() for p, _ in items})
+        self.assertEqual(checked, 17)  # the 17 lines C19 labelled (CORRECTIONS section 13); a new one must be added there
         index = json.loads(self.pack[FX + "fixture-index.json"])
         for key in ("execution_status", "status"):
             with self.subTest(index_field=key):
-                self.assertEqual([k for k, rx in self.THREE_PARTS.items() if not re.search(rx, index[key])], [])
+                self.assertEqual(labelled_status(index[key]), [])
 
-    def test_status_rule_catches_a_two_part_line(self):
-        """The rule above is not vacuous: the v1.3.6 wording D2-1 named fails it, and the C18 wording passes."""
+    def test_status_rule_rejects_unlabelled_quoted_reordered_and_empty(self):
+        """D-030 (D3-2): the rule is not lexical. The v1.3.6 wording D2-1 named, the C18 wording (right words, no
+        labels), audit #3's false-positive sentence, the labels in quotes, the labels out of order, a repeated label and
+        an empty value all fail it; the C19 wording passes and keeps the A1-A11 and X14 status."""
         import re
-        old = "- Current release status: F18 **NOT RUN / NOT PASSED**; A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**."
-        new = self.pack[self.name(self.mod.P21)].decode("utf-8").split("\n")[69]
-        for line, ok in ((old, False), (new, True)):
-            self.assertTrue(re.search(self.STATUS_TERMS, line) and "F18" in line)
-            self.assertEqual(all(re.search(rx, line) for rx in self.THREE_PARTS.values()), ok, line[:80])
-        self.assertIn("A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.", new)  # D-029: kept
+        c19 = self.pack[self.name(self.mod.P21)].decode("utf-8").split("\n")[69]
+        c18 = ("- Current release status: development-run evidence: fixture runs of a project implementation, recorded "
+               "outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, "
+               "since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved; "
+               "A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.")
+        bad = {
+            "v1.3.6 (D2-1)": "- Current release status: F18 **NOT RUN / NOT PASSED**; A1–A11 **NOT ACCEPTED**; X14 **OWNER "
+                             "CHOICE REQUIRED**.",
+            "C18 words without labels": c18,
+            "audit #3 false positive": "F18 NOT RUN; “development-run” is a glossary term, “formal” describes the "
+                                       "document style, and “approval” is a separate governance section.",
+            "labels in curly quotes": "F18 NOT RUN; see “Development-run evidence: x; Formal F18 status: y; Approval: "
+                                      "z” in the glossary.",
+            "labels in straight quotes": 'F18 status: the phrase "Development-run evidence: x; Formal F18 status: y; '
+                                         'Approval: z" is defined elsewhere.',
+            "label words in quotes, no colon": 'F18 status: "Development-run evidence", "Formal F18 status" and '
+                                               '"Approval" are glossary terms.',
+            "out of order": "F18 status: Formal F18 status: NOT RUN; Development-run evidence: none; Approval: none.",
+            "approval first": "F18 status: Approval: none; Development-run evidence: none; Formal F18 status: NOT RUN.",
+            "repeated label": "F18 status: Development-run evidence: a; Formal F18 status: NOT RUN; Approval: none; "
+                              "Approval: none.",
+            "empty value": "F18 status: Development-run evidence: ; Formal F18 status: NOT RUN; Approval: none.",
+            "punctuation-only value": "F18 status: Development-run evidence: x; Formal F18 status: **; Approval: none.",
+            "missing part": "F18 status: Development-run evidence: x; Formal F18 status: NOT RUN.",
+            "lower-case labels": "F18 status: development-run evidence: x; formal F18 status: NOT RUN; approval: none.",
+        }
+        for name, line in bad.items():
+            with self.subTest(case=name):
+                self.assertTrue("F18" in line and re.search(self.STATUS_TERMS, line), name)  # the test would check it
+                self.assertNotEqual(labelled_status(line), [], name)
+        self.assertEqual(labelled_status(c19), [])
+        self.assertIn("A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.", c19)  # D-029: kept
+        for hdr in (self.mod._HDR4,):  # the File 21 column headers
+            self.assertEqual(labelled_status(hdr), [])
 
     def test_od3_schema_covers_every_change_class_property(self):
         """OD-3 (D-027, D1-1/D1-2): Protocol §20 lists every property of the change-class and domain-validation expected
