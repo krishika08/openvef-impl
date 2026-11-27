@@ -1,6 +1,6 @@
 # OpenVEF Prompt Assembly and Canonicalization Specification v1.3.7-candidate
 
-**Status:** Normative proposed specification for F18. Not frozen until independent review and owner approval. Status, in three separate parts: development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved.
+**Status:** Normative proposed specification for F18. Not frozen until independent review and owner approval. Status, in three separate parts: Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved.
 
 ## 1. Source-template format
 

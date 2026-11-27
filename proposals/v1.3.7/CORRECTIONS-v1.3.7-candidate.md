@@ -1122,3 +1122,51 @@ P11b "provider truncation status") are listed in the test with their reasons.
 
 **Fixtures affected:** none. Wording only, and the fixture-index status fields change no descriptor hash or expected
 object.
+
+## 13. Correction cycle 4 (owner decision D-030, after document audit #3)
+
+Document audit #3 (GPT-6, an AI model, operated by Krishika, bundle `f82e1334…b26b`;
+`docs/reviews/doc-audit3-gpt6-2026-11-27.md`) found C18 SOUND WITH NOTE, D2-1 and D1-9 RESOLVED, and the candidate NOT
+CLEARED on two LIMITATIONs: D3-1 (run-artifact continuity; handled outside the pack, `evidence/RUN-CONTINUITY-D030.md`)
+and D3-2 (the status test is lexical). Krishika decided D-030 on a Claude (claude.ai) triage. Its entries follow E218, so
+no earlier CHANGELOG number moves. Every edit stays inside one line. Expected objects are unchanged.
+
+### C19 — The three status parts as explicit labels (D3-2)
+
+**Finding D3-2 (LIMITATION).** The test that guards C18 looks for three words anywhere on a line, so a sentence such as
+
+> "F18 NOT RUN; “development-run” is a glossary term, “formal” describes the document style, and “approval” is a
+> separate governance section."
+
+passes it without stating the three parts. The audit found no current line with that defect; the weakness is in the
+check, and in a wording that a check can only test by words.
+
+**Owner decision (D-030 item 2).** Restructure the current status lines to explicit labels, "Development-run evidence:
+…; Formal F18 status: …; Approval: …", so that a test can require the labels in order, each with a value. Not an OD rule:
+no behaviour changes.
+
+**Pack text (candidate).** Every current status line that mentions F18 and is not exempt under D-029 (the 17 lines the
+D-029 test checks, and the fixture index's two status fields) now states its three parts as those labels, in that order,
+each followed by its value and separated by semicolons. The values keep C17/C18's meaning; the wording names no run.
+- **Lines that carried C17/C18's shared three-part string** (File 21 L52, L70; Charter L194; File 30 L3; File 31 L3;
+  File 32 L21; File 36 L3; README L35): the lower-case "development-run evidence: …; formal F18 status: …; approval: …"
+  becomes "Development-run evidence: …; Formal F18 status: …; Approval: …", values unchanged. L70 still ends
+  "A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**."
+- **File 21 L7, L40** (column headers): "Status (Development-run evidence: see "F18 result" below; Formal F18 status: NOT
+  RUN, as given in each row; Approval: see "F18 result" below)". The 24 per-row `NOT RUN` cells stay as they are.
+- **File 21 L26; Charter L177; Protocol L559; File 32 L33; File 36 L176; README L16, L46:** each gave the three parts in
+  prose or brackets; each now gives them as the three labels. Charter L177's formal status stays "not run, since no
+  authorized F1–F18 acceptance run exists" under the label "Formal F18 status".
+- **Fixture index L4 and L1931** (`execution_status`, `status`): the same labelled string. Applied in the index step of
+  the build and logged with C19; no descriptor changes.
+
+**Kept.** Charter L9, File 32 L11 and File 36 L48 remain exempt, for the D-029 reasons (history, history, P11b's input
+description). README L19 (the pinned-runtime Unicode test, File 50) is a current run status that does not mention F18; it
+is outside this rule and keeps its C18 wording. History files are unchanged, per section 6. The `derived` CHANGELOG
+entries of `27_SHA256SUMS.txt` (E-numbers unchanged) show the hashes of the final build, as before.
+
+**Check.** `tests/test_v137_candidate_pack.py` requires, on every such line and in both index fields, the three labels
+exactly once each, in order, none inside quotation marks, each followed by a colon and a value with at least one letter or
+digit. Negative tests (the auditor's sentence, the labels quoted, the labels out of order, an empty value) must fail it.
+
+**Fixtures affected:** none. Wording only; the fixture-index status fields change no descriptor hash or expected object.

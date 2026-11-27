@@ -21,6 +21,11 @@ conflicting v1.3.6 text and the alternatives rejected: `proposals/v1.3.7/CORRECT
   cycle-2 entry (E205), so no earlier entry number moves. `C18` = the three-part status wording (development-run
   evidence / formal F18 status / approval) applied to every current status statement that lacked it; the `PD`
   column holds the finding (`D2-1`). `derived` entries show the hashes of the final build, cycle 3 included.
+- **Correction cycle 4 (owner decision D-030), after document audit #3 (NOT CLEARED on two LIMITATIONs, D3-1
+  and D3-2; `docs/reviews/doc-audit3-gpt6-2026-11-27.md` in the implementation repository).** Its entries
+  follow the last cycle-3 entry (E218), so no earlier entry number moves. `C19` = the same three parts as
+  explicit labels, in order (`Development-run evidence: …; Formal F18 status: …; Approval: …`); the `PD`
+  column holds the finding (`D3-2`). `derived` entries show the hashes of the final build, cycle 4 included.
 - **Kept on purpose (not stale):** references that record history — the v1.3.6 change log, build, correction
   and audit records (Files 03, 48, 50, 56, 57, 58, 63 and the audit transcripts), and statements of what
   v1.3.6 did — and the owners' records (Files 16, 23), which describe owner decisions on v1.3.6 and are not
@@ -247,6 +252,25 @@ conflicting v1.3.6 text and the alternatives rejected: `proposals/v1.3.7/CORRECT
 | E216 | C18 | D2-1 | — | `README.md` | 19 |
 | E217 | C18 | D2-1 | all | `41_F18_Fixture_Inputs/fixture-index.json` | 4 |
 | E218 | C18 | D2-1 | all | `41_F18_Fixture_Inputs/fixture-index.json` | 1931 |
+| E219 | C19 | D3-2 | all | `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` | 7 |
+| E220 | C19 | D3-2 | all | `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` | 26 |
+| E221 | C19 | D3-2 | all | `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` | 40 |
+| E222 | C19 | D3-2 | all | `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` | 52 |
+| E223 | C19 | D3-2 | all | `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` | 70 |
+| E224 | C19 | D3-2 | all | `01_OpenVEF_Project_Charter_v1.3.7-candidate.md` (was `01_OpenVEF_Project_Charter_v1.3.6.md` | 177 |
+| E225 | C19 | D3-2 | all | `01_OpenVEF_Project_Charter_v1.3.7-candidate.md` (was `01_OpenVEF_Project_Charter_v1.3.6.md` | 194 |
+| E226 | C19 | D3-2 | all | `02_OpenVEF_Experimental_Protocol_v1.3.7-candidate.md` (was `02_OpenVEF_Experimental_Protocol_v1.3.6.md` | 559 |
+| E227 | C19 | D3-2 | all | `30_Response_Parser_and_Execution_Contract_v1.3.7-candidate.md` (was `30_Response_Parser_and_Execution_Contract_v1.3.6.md` | 3 |
+| E228 | C19 | D3-2 | all | `31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.7-candidate.md` (was `31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.6.md` | 3 |
+| E229 | C19 | D3-2 | all | `32_v1.3.7-candidate_Status_and_Gates.md` (was `32_v1.3.6_Status_and_Gates.md` | 21 |
+| E230 | C19 | D3-2 | all | `32_v1.3.7-candidate_Status_and_Gates.md` (was `32_v1.3.6_Status_and_Gates.md` | 33 |
+| E231 | C19 | D3-2 | all | `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` (was `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.6.md` | 3 |
+| E232 | C19 | D3-2 | all | `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` (was `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.6.md` | 176 |
+| E233 | C19 | D3-2 | all | `README.md` | 16 |
+| E234 | C19 | D3-2 | all | `README.md` | 35 |
+| E235 | C19 | D3-2 | all | `README.md` | 46 |
+| E236 | C19 | D3-2 | all | `41_F18_Fixture_Inputs/fixture-index.json` | 4 |
+| E237 | C19 | D3-2 | all | `41_F18_Fixture_Inputs/fixture-index.json` | 1931 |
 
 ## E01 — C1 · `02_OpenVEF_Experimental_Protocol_v1.3.7-candidate.md` (was `02_OpenVEF_Experimental_Protocol_v1.3.6.md` L175 · PD-02 (2) · fixtures: M48, M50, M53, M54, M58
 
@@ -2275,7 +2299,7 @@ af3bd1c72683c2e9bb56a38a3cc85d228bec53e8fc786f81c4593cdfd3d9412b  01_OpenVEF_Pro
 New:
 
 ```text
-ec6537278d998400a60119e386cecf68a79c6698550d50f37e684421ea85c016  01_OpenVEF_Project_Charter_v1.3.7-candidate.md
+8c5a297be717f5a58703868179fae795f1463063245cdc5a4f92e077d244eb0e  01_OpenVEF_Project_Charter_v1.3.7-candidate.md
 ```
 
 ## E140 — derived · `27_SHA256SUMS.txt` L2 · — · fixtures: —
@@ -2289,7 +2313,7 @@ Old:
 New:
 
 ```text
-55f52d1fa4012a9206bf4b66999766fd0b45b8eb47c110533d49122e500e6049  02_OpenVEF_Experimental_Protocol_v1.3.7-candidate.md
+2cb0f33d6455251d0eb03a7baaccd19aa0ddf489b9f1e0e51e94362e878035b3  02_OpenVEF_Experimental_Protocol_v1.3.7-candidate.md
 ```
 
 ## E141 — derived · `27_SHA256SUMS.txt` L11 · — · fixtures: —
@@ -2331,7 +2355,7 @@ a84a89837e3158c294a351adc1f90c6aa583e462733622027ea1ac9feaeb40b1  21_Prompt_Equi
 New:
 
 ```text
-36b07acb8f16a1f58f3d3630fc44c683e2386481d0c98e97c16dcb073848d649  21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md
+3c11db731cc06991db2450a59ccb5dde31e5bfb0f8e9af6f88aa9e4e74b316b7  21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md
 ```
 
 ## E144 — derived · `27_SHA256SUMS.txt` L21 · — · fixtures: —
@@ -2373,7 +2397,7 @@ b0b43989beb81be986caed48562c6832ca981449f82fd14f6ae8bdceed5b2ba6  30_Response_Pa
 New:
 
 ```text
-bef2e314f5f57fdf7e14ecdd03fdab2d103c6318c5d831526db13fb7a23a8936  30_Response_Parser_and_Execution_Contract_v1.3.7-candidate.md
+6e848a796c05836f6caf41668c13bcab2d53a5fbf255f9c1341ba59f62751926  30_Response_Parser_and_Execution_Contract_v1.3.7-candidate.md
 ```
 
 ## E147 — derived · `27_SHA256SUMS.txt` L29 · — · fixtures: —
@@ -2387,7 +2411,7 @@ aa963c39eedf087c1b7f4b5d4df0545a69451e6d78e94256f45c70bc54f91e72  31_Prompt_Asse
 New:
 
 ```text
-9d29dff10264627e581e93f66244ea32dcdb902232356584509dd31153b86f85  31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.7-candidate.md
+b560f5d6eec9e08effd3d8b26e4d17bc11e9d2954c1a98559a403a46706447d5  31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.7-candidate.md
 ```
 
 ## E148 — derived · `27_SHA256SUMS.txt` L30 · — · fixtures: —
@@ -2401,7 +2425,7 @@ Old:
 New:
 
 ```text
-c6be64aee3962196185e7298d2e02f3740e69a33cc22cb56596dfef3f3120f53  32_v1.3.7-candidate_Status_and_Gates.md
+4e2e3412ab5e17c7537014f30fd8322beeb7a10128799d3b34c18479c69db8ce  32_v1.3.7-candidate_Status_and_Gates.md
 ```
 
 ## E149 — derived · `27_SHA256SUMS.txt` L31 · — · fixtures: —
@@ -2429,7 +2453,7 @@ Old:
 New:
 
 ```text
-6a08b3bc2685258b5671d2a5f176f9ec3f6687f006cb13f8ed2624d86ee4e936  36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md
+6d2ddc81834110de7dc007623320448fee2a471c58250db4d4ad4edd787cfbc4  36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md
 ```
 
 ## E151 — derived · `27_SHA256SUMS.txt` L36 · — · fixtures: —
@@ -2513,7 +2537,7 @@ f37808c7a662b8fdf164e27feaef023aadd6dfefaada35d11c3719185d1bde54  41_F18_Fixture
 New:
 
 ```text
-5aef6de9993d2f7aec544536068ed046e6f001d5e384075f8dbe94877f17d7e0  41_F18_Fixture_Inputs/fixture-index.json
+b43da9263e690951754526d8bd334680df96db5bb20a9c19fd4f01f681d4c65d  41_F18_Fixture_Inputs/fixture-index.json
 ```
 
 ## E157 — derived · `27_SHA256SUMS.txt` L202 · — · fixtures: —
@@ -2527,7 +2551,7 @@ cd222521cb455c1eb12241a05a8f31bda908bd6b5a00efcd22ca4029c9feeca5  README.md
 New:
 
 ```text
-f1dabfafbf5ae5af6a39f38247dc59b3fd26fd64ea8b77863cb290cf3c364ae9  README.md
+8055ab1ed038039b6d8142aedeaba0d69ab85e351f0dc28e1fa523bf22f08377  README.md
 ```
 
 ## E158 — OS-1–OS-3 (OWNER-SPECIFIED, D-026) · `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` (was `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.6.md` L200–207 · PD-07, PD-01, PD-03 · fixtures: M41, M37, P17
@@ -3517,4 +3541,270 @@ New:
 
 ```text
 "status": "formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; approval: no implementation is qualified or approved"
+```
+
+## E219 — C19 · `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` L7 · D3-2 · fixtures: all
+
+Old:
+
+```text
+Status (NOT RUN here is the formal F18 status; for development-run evidence and approval see "F18 result" below)
+```
+
+New:
+
+```text
+Status (Development-run evidence: see "F18 result" below; Formal F18 status: NOT RUN, as given in each row; Approval: see "F18 result" below)
+```
+
+## E220 — C19 · `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` L26 · D3-2 · fixtures: all
+
+Old:
+
+```text
+RECORDED; formal F18 status NOT RUN (development-run evidence is not F18 acceptance; nothing is approved)
+```
+
+New:
+
+```text
+RECORDED. Development-run evidence: development runs are not F18 acceptance; Formal F18 status: NOT RUN; Approval: nothing is approved
+```
+
+## E221 — C19 · `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` L40 · D3-2 · fixtures: all
+
+Old:
+
+```text
+Status (NOT RUN here is the formal F18 status; for development-run evidence and approval see "F18 result" below)
+```
+
+New:
+
+```text
+Status (Development-run evidence: see "F18 result" below; Formal F18 status: NOT RUN, as given in each row; Approval: see "F18 result" below)
+```
+
+## E222 — C19 · `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` L52 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E223 — C19 · `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.7-candidate.md` (was `21_Prompt_Equivalence_and_Mask_Traceability_Checklist_v1.3.6.md` L70 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E224 — C19 · `01_OpenVEF_Project_Charter_v1.3.7-candidate.md` (was `01_OpenVEF_Project_Charter_v1.3.6.md` L177 · D3-2 · fixtures: all
+
+Old:
+
+```text
+formal status not run, since no authorized F1–F18 acceptance run exists (development-run evidence: runs of a project implementation, recorded outside this pack, are development runs, not F1–F18 acceptance; approval: nothing is qualified or approved)
+```
+
+New:
+
+```text
+Development-run evidence: runs of a project implementation, recorded outside this pack, are development runs, not F1–F18 acceptance; Formal F18 status: not run, since no authorized F1–F18 acceptance run exists; Approval: nothing is qualified or approved
+```
+
+## E225 — C19 · `01_OpenVEF_Project_Charter_v1.3.7-candidate.md` (was `01_OpenVEF_Project_Charter_v1.3.6.md` L194 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E226 — C19 · `02_OpenVEF_Experimental_Protocol_v1.3.7-candidate.md` (was `02_OpenVEF_Experimental_Protocol_v1.3.6.md` L559 · D3-2 · fixtures: all
+
+Old:
+
+```text
+All 144 fixture descriptors remain formally NOT RUN / NOT PASSED (development-run evidence of a project implementation is not F18 acceptance, and nothing is approved).
+```
+
+New:
+
+```text
+Status of all 144 fixture descriptors: Development-run evidence: runs of a project implementation are development runs, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED; Approval: nothing is approved.
+```
+
+## E227 — C19 · `30_Response_Parser_and_Execution_Contract_v1.3.7-candidate.md` (was `30_Response_Parser_and_Execution_Contract_v1.3.6.md` L3 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E228 — C19 · `31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.7-candidate.md` (was `31_Prompt_Assembly_and_Canonicalization_Spec_v1.3.6.md` L3 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E229 — C19 · `32_v1.3.7-candidate_Status_and_Gates.md` (was `32_v1.3.6_Status_and_Gates.md` L21 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E230 — C19 · `32_v1.3.7-candidate_Status_and_Gates.md` (was `32_v1.3.6_Status_and_Gates.md` L33 · D3-2 · fixtures: all
+
+Old:
+
+```text
+a project implementation exists outside this pack and has development-run evidence only; formal F18 status NOT RUN / NOT PASSED; the implementation is not qualified or approved.
+```
+
+New:
+
+```text
+a project implementation exists outside this pack. Development-run evidence: development runs only, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED; Approval: the implementation is not qualified or approved.
+```
+
+## E231 — C19 · `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` (was `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.6.md` L3 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E232 — C19 · `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` (was `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.6.md` L176 · D3-2 · fixtures: all
+
+Old:
+
+```text
+Formal F18 status: **NOT RUN / NOT PASSED** (development-run evidence is not F18 acceptance, and nothing is approved; see the status line at the top of this file).
+```
+
+New:
+
+```text
+Development-run evidence: development runs are not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**; Approval: nothing is approved (see the status line at the top of this file).
+```
+
+## E233 — C19 · `README.md` L16 · D3-2 · fixtures: all
+
+Old:
+
+```text
+formal F18 status NOT RUN / NOT PASSED (development runs are not F18 acceptance; nothing is approved).
+```
+
+New:
+
+```text
+Development-run evidence: development runs are not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED; Approval: nothing is approved.
+```
+
+## E234 — C19 · `README.md` L35 · D3-2 · fixtures: all
+
+Old:
+
+```text
+development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved
+```
+
+New:
+
+```text
+Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved
+```
+
+## E235 — C19 · `README.md` L46 · D3-2 · fixtures: all
+
+Old:
+
+```text
+All 144 fixture descriptors remain formally NOT RUN / NOT PASSED: a project implementation (parser, assembler, harness, simulator, F1–F18) exists outside this pack with development-run evidence only, there is no authorized F18 acceptance run, and nothing is qualified or approved.
+```
+
+New:
+
+```text
+A project implementation (parser, assembler, harness, simulator, F1–F18) exists outside this pack. Status of all 144 fixture descriptors: Development-run evidence: development runs only, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED, since there is no authorized F18 acceptance run; Approval: nothing is qualified or approved.
+```
+
+## E236 — C19 · `41_F18_Fixture_Inputs/fixture-index.json` L4 · D3-2 · fixtures: all
+
+Old:
+
+```text
+"execution_status": "formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; approval: no implementation is qualified or approved",
+```
+
+New:
+
+```text
+"execution_status": "Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved",
+```
+
+## E237 — C19 · `41_F18_Fixture_Inputs/fixture-index.json` L1931 · D3-2 · fixtures: all
+
+Old:
+
+```text
+"status": "formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; approval: no implementation is qualified or approved"
+```
+
+New:
+
+```text
+"status": "Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved"
 ```

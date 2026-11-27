@@ -1,6 +1,6 @@
 # OpenVEF Response Parser and Execution Contract v1.3.7-candidate
 
-**Status:** Normative proposed contract for F18. Not frozen, and not executable for F18 acceptance, until owner acceptance, independent re-audit, and runtime pinning. Status, in three separate parts: development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved.
+**Status:** Normative proposed contract for F18. Not frozen, and not executable for F18 acceptance, until owner acceptance, independent re-audit, and runtime pinning. Status, in three separate parts: Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved.
 
 ## 1. Response-envelope parsing
 

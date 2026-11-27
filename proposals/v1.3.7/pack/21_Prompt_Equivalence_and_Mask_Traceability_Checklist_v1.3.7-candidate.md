@@ -4,7 +4,7 @@
 
 ## Prompt-pair and model-visible contract
 
-| Check | Required pass condition | Status (NOT RUN here is the formal F18 status; for development-run evidence and approval see "F18 result" below) |
+| Check | Required pass condition | Status (Development-run evidence: see "F18 result" below; Formal F18 status: NOT RUN, as given in each row; Approval: see "F18 result" below) |
 |---|---|---|
 | Headings and arms | Exact reserved headings only; no standalone B0–B8 token, ORG label or assembler marker in model-visible bytes | NOT RUN |
 | Block inventory/order | Exactly nine blocks and exact sidecar ORG-A/ORG-B orders; only whole-block permutation differs | NOT RUN |
@@ -23,7 +23,7 @@
 | Clause IDs | Manifest regex is frozen; set of regex-matched IDs in seven model-visible design payloads equals manifest clause_ids exactly; B5/B7/B8 fixed text is non-citable | TO FREEZE |
 | Double-brace placeholder syntax | Every placeholder matches `{{UPPER_SNAKE_CASE}}`; unresolved matches of `\{\{[A-Z0-9_]+\}\}` hard-fail | NOT RUN |
 | System and repair extraction | File-25 markers, leading/trailing blank-line handling, serialization and role mapping reproduce static message bytes | NOT RUN |
-| Schema hashes | Schema SHA-256 and byte length match sidecar | RECORDED; formal F18 status NOT RUN (development-run evidence is not F18 acceptance; nothing is approved) |
+| Schema hashes | Schema SHA-256 and byte length match sidecar | RECORDED. Development-run evidence: development runs are not F18 acceptance; Formal F18 status: NOT RUN; Approval: nothing is approved |
 | Prompt template-stage hashes | ORG-A and ORG-B template-stage hashes match sidecar; final hashes remain TO FREEZE until design payloads exist | NOT RUN |
 | Payload/manifest binding | Seven payload hashes, spec_version_sha256 linkage and visible clause IDs are internally consistent | TO FREEZE |
 | Mask traceability | Every mask row maps to author-visible spec clause; independent reviewer signs exact version | TO FREEZE |
@@ -37,7 +37,7 @@
 
 All 144 fixtures below are mandatory: 59 parser/schema/AST/import/vector descriptors (P), 13 repair/failure-precedence descriptors (R), and 72 edge/missing-case descriptors (M). Every descriptor contains literal input data and one expected result, and its hash and byte length are listed in `41_F18_Fixture_Inputs/fixture-index.json`.
 
-| Fixture family | Mandatory IDs | Status (NOT RUN here is the formal F18 status; for development-run evidence and approval see "F18 result" below) |
+| Fixture family | Mandatory IDs | Status (Development-run evidence: see "F18 result" below; Formal F18 status: NOT RUN, as given in each row; Approval: see "F18 result" below) |
 |---|---|---|
 | Parser/schema/AST/import/vector fixtures | P01–P48 (59 descriptors, including lettered subcases and P44–P48 import/ASCII boundary cases) | NOT RUN |
 | Repair/failure-precedence fixtures | R01–R13 (13 descriptors) | NOT RUN |
@@ -49,7 +49,7 @@ F18 must fail if any fixture is missing, not materialized, hash-mismatched, ambi
 
 ## F18 result
 
-F18 status, in three separate parts: development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved. This checklist is a proposed test specification, not evidence that a parser, assembler, sandbox, harness or experiment has been implemented. No owner acceptance of A1–A11 is recorded; no work or LLM call is authorized.
+F18 status, in three separate parts: Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved. This checklist is a proposed test specification, not evidence that a parser, assembler, sandbox, harness or experiment has been implemented. No owner acceptance of A1–A11 is recorded; no work or LLM call is authorized.
 
 
 ## v1.3.5 audit gate additions
@@ -67,7 +67,7 @@ F18 status, in three separate parts: development-run evidence: fixture runs of a
 - Verify mid-run design halt and repeated halt lifecycle fixtures; no slot is final-scored before the design-wide rerun.
 - Verify `clause_id_regex`, `clause_id_search_regex`, `clause_id_near_match_regex`, and exact visible-ID/manifest equality.
 - Sidecar check values remain `REQUIRED` until a formal F18 acceptance run is executed (development runs are not F18 acceptance and do not set them; nothing is approved); no static package audit sets a pass flag.
-- Current release status: development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; approval: no implementation is qualified or approved; A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.
+- Current release status: Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: **NOT RUN / NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved; A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.
 
 - [ ] M14/M17 are treated only as grammar-exempt serializer primitive tests; neither bypasses production feedback grammar validation.
 
