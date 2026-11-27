@@ -1,0 +1,31 @@
+test_clause_ids (test_local_rules.AssemblerTests.test_clause_ids) ... ok
+test_placeholder (test_local_rules.AssemblerTests.test_placeholder) ... ok
+test_reserved_heading (test_local_rules.AssemblerTests.test_reserved_heading) ... ok
+test_adjudication (test_local_rules.CheckerTests.test_adjudication) ... ok
+test_return_classification_order (test_local_rules.CheckerTests.test_return_classification_order) ... ok
+test_run_records (test_local_rules.CheckerTests.test_run_records) ... ok
+test_dispositions (test_local_rules.EventPrecedenceTests.test_dispositions) ... ok
+test_evaluation_step_decides (test_local_rules.EventPrecedenceTests.test_evaluation_step_decides) ... ok
+test_exception_class_fallback (test_local_rules.EventPrecedenceTests.test_exception_class_fallback) ... ok
+test_unknown_or_out_of_domain (test_local_rules.EventPrecedenceTests.test_unknown_or_out_of_domain) ... ok
+test_within_a_cycle_exception_vector_watchdog (test_local_rules.EventPrecedenceTests.test_within_a_cycle_exception_vector_watchdog) ... ok
+test_build_enforces_domains (test_local_rules.LedgerTests.test_build_enforces_domains) ... ok
+test_given_enforces_every_domain (test_local_rules.LedgerTests.test_given_enforces_every_domain) ... ok
+test_operational_recovery (test_local_rules.LedgerTests.test_operational_recovery) ... ok
+test_recurrence (test_local_rules.LedgerTests.test_recurrence) ... ok
+test_rule (test_local_rules.PairedRunTests.test_rule) ... ok
+test_auditor_case_a4_1 (test_local_rules.SerializerTests.test_auditor_case_a4_1) ... ok
+test_emitted_set (test_local_rules.SerializerTests.test_emitted_set) ... ok
+test_every_repair_expectation_is_in_the_stage_map (test_local_rules.SerializerTests.test_every_repair_expectation_is_in_the_stage_map) ... ok
+test_feedback_bytes_rejects_non_normative (test_local_rules.SerializerTests.test_feedback_bytes_rejects_non_normative) ... ok
+test_full_tuple_against_the_stage_map (test_local_rules.SerializerTests.test_full_tuple_against_the_stage_map) ... ok
+test_grammar (test_local_rules.SerializerTests.test_grammar) ... ok
+test_serialize_format (test_local_rules.SerializerTests.test_serialize_format) ... ok
+test_truncation_on_code_point_boundary (test_local_rules.SerializerTests.test_truncation_on_code_point_boundary) ... ok
+test_missing_parameters_are_not_determined (test_local_rules.VectorTests.test_missing_parameters_are_not_determined) ... ok
+test_order (test_local_rules.VectorTests.test_order) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.014s
+
+OK
