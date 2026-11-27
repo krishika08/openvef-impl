@@ -205,6 +205,56 @@ class CandidatePackTests(unittest.TestCase):
         self.assertEqual(c18, list(range(205, 205 + len(self.mod.CYCLE3) + len(self.mod.INDEX_CYCLE3))))
         self.assertNotIn("C18", {c.strip() for _, c in entries[:205]})
 
+    # D-029 item 1 (D2-1): the current documents of the candidate (section 6 of CORRECTIONS-v1.3.7-candidate.md) and the
+    # fixture index. A line in them that states a status and mentions F18 must give all three parts.
+    STATUS_TERMS = r"(?i)NOT RUN|NOT PASSED|PASSED|\bstatus\b"
+    THREE_PARTS = {"development-run evidence": r"(?i)development[- ]run", "formal F18 status": r"(?i)\bformal(ly)?\b",
+                   "approval": r"(?i)\bapprov"}
+    # Lines a current document keeps on purpose, with the reason (STATUS-SWEEP-D029.md). Matched by text, not number.
+    STATUS_EXEMPT = {
+        "01_OpenVEF_Project_Charter_v1.3.7-candidate.md": [
+            ("> **Status note.** The v1.3, v1.3.1, v1.3.2 and v1.3.3 independent document audits",
+             "history: what the v1.3.5 audit result reports (kept under C17)")],
+        "32_v1.3.7-candidate_Status_and_Gates.md": [
+            ("- The v1.3.4 independent document audit returned FAIL on N14;", "history: the v1.3.4 and v1.3.5 audits")],
+        "36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md": [
+            ("| P11b | parser | Syntactically truncated JSON without provider truncation status.",
+             "not a status statement: P11b's input description")],
+    }
+
+    def test_current_status_lines_have_three_parts(self):
+        """D-029 (D2-1): every current status line that mentions F18 states development-run evidence, formal F18 status
+        and approval. Fails on a new or reworded line that drops a part, and on a stale exemption."""
+        import re
+        current = sorted({self.name(r) for r in self.mod.RENAMES} | {"README.md"})
+        used = set()
+        for rel in current:
+            for n, line in enumerate(self.pack[rel].decode("utf-8").split("\n"), 1):
+                if "F18" not in line or not re.search(self.STATUS_TERMS, line):
+                    continue
+                exempt = [p for p, _ in self.STATUS_EXEMPT.get(rel, []) if line.startswith(p)]
+                if exempt:
+                    used.add((rel, exempt[0]))
+                    continue
+                with self.subTest(file=rel, line=n):
+                    missing = [k for k, rx in self.THREE_PARTS.items() if not re.search(rx, line)]
+                    self.assertEqual(missing, [], line[:160])
+        self.assertEqual(used, {(f, p) for f, items in self.STATUS_EXEMPT.items() for p, _ in items})
+        index = json.loads(self.pack[FX + "fixture-index.json"])
+        for key in ("execution_status", "status"):
+            with self.subTest(index_field=key):
+                self.assertEqual([k for k, rx in self.THREE_PARTS.items() if not re.search(rx, index[key])], [])
+
+    def test_status_rule_catches_a_two_part_line(self):
+        """The rule above is not vacuous: the v1.3.6 wording D2-1 named fails it, and the C18 wording passes."""
+        import re
+        old = "- Current release status: F18 **NOT RUN / NOT PASSED**; A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**."
+        new = self.pack[self.name(self.mod.P21)].decode("utf-8").split("\n")[69]
+        for line, ok in ((old, False), (new, True)):
+            self.assertTrue(re.search(self.STATUS_TERMS, line) and "F18" in line)
+            self.assertEqual(all(re.search(rx, line) for rx in self.THREE_PARTS.values()), ok, line[:80])
+        self.assertIn("A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**.", new)  # D-029: kept
+
     def test_od3_schema_covers_every_change_class_property(self):
         """OD-3 (D-027, D1-1/D1-2): Protocol §20 lists every property of the change-class and domain-validation expected
         objects, with the same value, and no property they lack. Values: `x` strings, `true`/`false`, integers,

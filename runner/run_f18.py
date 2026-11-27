@@ -395,11 +395,11 @@ ADAPTERS = (
 # (runner/adapters_v137.py); v1.3.6 uses ADAPTERS unchanged.
 PACKS = {
     "v1.3.6": {"index_sha256": INDEX_SHA256, "adapters": ADAPTERS, "label": None},
-    "v1.3.7-candidate": {"index_sha256": "18c346368a81f8411f54ffab5c09affaa83fe8f185108656bb0c2a8b19d73523",
+    "v1.3.7-candidate": {"index_sha256": "5aef6de9993d2f7aec544536068ed046e6f001d5e384075f8dbe94877f17d7e0",
                          "adapters": tuple((req, opt, adapters_v137.REPLACEMENTS.get(fn.__name__, fn))
                                            for req, opt, fn in ADAPTERS) + adapters_v137.ROWS,
                          "label": "v1.3.7 CANDIDATE, not audited", "manifest": "SHA256SUMS-v1.3.7-candidate.txt",
-                         "manifest_sha256": "e704d194284c51bcac0f6ad20c119645c679bfce10fc71fe493ed0c02c9d7893",
+                         "manifest_sha256": "3294d2a3920e6c06874535fc54dc037e2bc0461473cab33b6558b61f27a84eb1",
                          # D-026: OWNER-SPECIFIED rows and the input shapes the owners left unspecified
                          "owner_specified": adapters_v137.OWNER_SPECIFIED, "open_shapes": adapters_v137.OPEN_SHAPES,
                          # D-027: the OWNER-DECIDED rules (OD-n) each candidate adapter rests on
