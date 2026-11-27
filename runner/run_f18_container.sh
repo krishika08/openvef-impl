@@ -81,7 +81,6 @@ STARTED=$(date -u +%Y%m%dT%H%M%SZ)
 # OPENVEF_EVIDENCE_ROOT is for smoke tests outside the append-only evidence/ tree.
 OUT="${OPENVEF_EVIDENCE_ROOT:-$REPO/evidence}/$OUT_PREFIX-$STARTED"
 mkdir "$OUT"   # fails if it exists: evidence is append-only
-printf '%s\n' "$IMAGE_GUARD" >"$OUT/image-guard.txt"
 
 RNAME="openvef-runner-$(od -An -N6 -tx1 /dev/urandom | tr -d ' \n')"
 mapfile -t RUNNER_FLAGS < <(read_args "$REPO/runner/runner-container.args" \
@@ -158,6 +157,8 @@ set +e
 wait "$RPID"
 status=$?
 set -e
+# D-028 guard status, written after the runner exits (the runner requires an empty directory).
+printf '%s\n' "$IMAGE_GUARD" >"$OUT/image-guard.txt"
 # Evidence must not stay writable by other local users (files here have been created 646).
 chmod -R go-w "$OUT"
 exit "$status"

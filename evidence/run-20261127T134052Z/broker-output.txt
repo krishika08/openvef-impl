@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/opt/openvef-repo/runner/run_f18.py", line 683, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/opt/openvef-repo/runner/run_f18.py", line 549, in main
+    raise IntegrityError("evidence directory is not empty")
+IntegrityError: evidence directory is not empty
