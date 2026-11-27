@@ -1,0 +1,173 @@
+"""Row-level diff of two F18 runner results.jsonl files (owner decision D-030 item 1; document audit #3, D3-1).
+
+Each line of a results.jsonl is one JSON object for one fixture, keyed by `fixture_id`. For every fixture present in
+both files this reports every leaf field whose value differs, grouped by field path (nested objects as `a.b`, list items
+as `a[0]`; a field present on one side only shows `<absent>` on the other). Values are compared as JSON, type included
+(1, 1.0 and true differ). It also reports, at byte level: whether the files are identical, how many lines are
+byte-identical, how many rows are equal as JSON but differ in bytes, and whether the fixture order is the same.
+
+It knows no fixture and no expected outcome (rule 4). The only field names it treats specially are the ones D-030 names:
+a difference at or under `status`, `category`, `actual` or `expected` is a CRITICAL difference, and the tool exits 3.
+Exit codes: 0 = no critical difference (other fields may differ); 3 = critical difference or a fixture in one file only;
+2 = a file that is not a results.jsonl (bad JSON, missing or duplicate `fixture_id`).
+
+Usage:
+    python3 tools/diff_runs.py OLD/results.jsonl NEW/results.jsonl [--out REPORT.md]
+The report is Markdown and deterministic: the same two files give the same bytes.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+CRITICAL = ("status", "category", "actual", "expected")  # D-030 item 1: stop and report if any of these differ
+ABSENT = "<absent>"
+KEY = "fixture_id"
+
+
+class BadResults(Exception):
+    pass
+
+
+def load(path: Path) -> tuple[bytes, list[tuple[str, bytes, dict]]]:
+    data = path.read_bytes()
+    rows, seen = [], set()
+    for n, raw in enumerate(data.split(b"\n"), 1):
+        if not raw.strip():
+            continue
+        try:
+            obj = json.loads(raw)
+        except ValueError as exc:
+            raise BadResults(f"{path}: line {n}: not JSON ({exc})") from None
+        if not isinstance(obj, dict) or not isinstance(obj.get(KEY), str):
+            raise BadResults(f"{path}: line {n}: no string {KEY!r}")
+        if obj[KEY] in seen:
+            raise BadResults(f"{path}: line {n}: duplicate {KEY} {obj[KEY]!r}")
+        seen.add(obj[KEY])
+        rows.append((obj[KEY], raw, obj))
+    return data, rows
+
+
+def leaves(value, path: str = ""):
+    """(path, value) for every leaf; an empty object or list is itself a leaf."""
+    if isinstance(value, dict) and value:
+        for k in value:
+            yield from leaves(value[k], f"{path}.{k}" if path else k)
+    elif isinstance(value, list) and value:
+        for i, v in enumerate(value):
+            yield from leaves(v, f"{path}[{i}]")
+    else:
+        yield path, value
+
+
+def canon(value) -> str:
+    return json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def is_critical(path: str) -> bool:
+    head = path.split(".", 1)[0].split("[", 1)[0]
+    return head in CRITICAL
+
+
+def diff(old_rows, new_rows) -> dict:
+    old = {k: (raw, obj) for k, raw, obj in old_rows}
+    new = {k: (raw, obj) for k, raw, obj in new_rows}
+    common = [k for k, _, _ in old_rows if k in new]
+    by_path: dict[str, list[tuple[str, str, str]]] = {}
+    by_fixture: dict[str, list[str]] = {}
+    byte_same = json_same_bytes_differ = 0
+    for k in common:
+        (raw_a, a), (raw_b, b) = old[k], new[k]
+        if raw_a == raw_b:
+            byte_same += 1
+            continue
+        fa, fb = dict(leaves(a)), dict(leaves(b))
+        paths = [p for p in fa] + [p for p in fb if p not in fa]
+        changed = [p for p in paths if canon(fa.get(p, ABSENT)) != canon(fb.get(p, ABSENT))
+                   or (p in fa) != (p in fb)]
+        if not changed:
+            json_same_bytes_differ += 1
+            continue
+        by_fixture[k] = changed
+        for p in changed:
+            va = canon(fa[p]) if p in fa else ABSENT
+            vb = canon(fb[p]) if p in fb else ABSENT
+            by_path.setdefault(p, []).append((k, va, vb))
+    return {"common": common, "only_old": [k for k, _, _ in old_rows if k not in new],
+            "only_new": [k for k, _, _ in new_rows if k not in old], "by_path": by_path, "by_fixture": by_fixture,
+            "byte_same": byte_same, "json_same_bytes_differ": json_same_bytes_differ,
+            "same_order": [k for k, _, _ in old_rows if k in new] == [k for k, _, _ in new_rows if k in old]}
+
+
+def cell(text: str) -> str:
+    return "`" + text.replace("|", "\\|").replace("`", "'") + "`"
+
+
+def report(old_path: str, new_path: str, old_bytes: bytes, new_bytes: bytes, old_rows, new_rows, d: dict) -> str:
+    sha = lambda b: hashlib.sha256(b).hexdigest()  # noqa: E731
+    critical = sorted(p for p in d["by_path"] if is_critical(p))
+    out = ["# Row-level diff of two results.jsonl files", "",
+           "Generated by `tools/diff_runs.py` (D-030 item 1). Deterministic; no timestamps.", "",
+           "| | Old | New |", "|---|---|---|",
+           f"| File | `{old_path}` | `{new_path}` |",
+           f"| SHA-256 | `{sha(old_bytes)}` | `{sha(new_bytes)}` |",
+           f"| Bytes | {len(old_bytes)} | {len(new_bytes)} |",
+           f"| Rows | {len(old_rows)} | {len(new_rows)} |", "",
+           "## Summary", "",
+           f"- Files byte-identical: **{'yes' if old_bytes == new_bytes else 'no'}**.",
+           f"- Fixtures in both: {len(d['common'])}; only in old: {len(d['only_old'])}"
+           f"{' (' + ', '.join(d['only_old']) + ')' if d['only_old'] else ''}; only in new: {len(d['only_new'])}"
+           f"{' (' + ', '.join(d['only_new']) + ')' if d['only_new'] else ''}.",
+           f"- Same fixture order: **{'yes' if d['same_order'] else 'no'}**.",
+           f"- Rows byte-identical: {d['byte_same']}; equal as JSON but different bytes: {d['json_same_bytes_differ']}; "
+           f"with at least one differing field: {len(d['by_fixture'])}.",
+           f"- Field paths that differ: {len(d['by_path'])}; differing (fixture, path) pairs: "
+           f"{sum(len(v) for v in d['by_path'].values())}.",
+           f"- **Critical fields** ({', '.join('`' + c + '`' for c in CRITICAL)} and anything under them) that differ: "
+           f"**{len(critical)}**{' — ' + ', '.join('`' + p + '`' for p in critical) if critical else ''}.", ""]
+    out += ["## Differing fields, grouped by field path", ""]
+    if not d["by_path"]:
+        out += ["None.", ""]
+    for p in sorted(d["by_path"]):
+        rows = d["by_path"][p]
+        out += [f"### `{p}`{' — CRITICAL' if is_critical(p) else ''}", "",
+                f"{len(rows)} fixture(s).", "", "| Fixture | Old | New |", "|---|---|---|"]
+        out += [f"| {k} | {cell(a)} | {cell(b)} |" for k, a, b in rows]
+        out.append("")
+    out += ["## Differing fields, by fixture", ""]
+    if not d["by_fixture"]:
+        out += ["None.", ""]
+    else:
+        out += ["| Fixture | Paths that differ |", "|---|---|"]
+        out += [f"| {k} | {', '.join('`' + p + '`' for p in ps)} |" for k, ps in d["by_fixture"].items()]
+        out.append("")
+    return "\n".join(out)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("old", type=Path)
+    ap.add_argument("new", type=Path)
+    ap.add_argument("--out", type=Path, help="write the Markdown report here instead of stdout")
+    args = ap.parse_args(argv)
+    try:
+        old_bytes, old_rows = load(args.old)
+        new_bytes, new_rows = load(args.new)
+    except BadResults as exc:
+        print(f"diff_runs: {exc}", file=sys.stderr)
+        return 2
+    d = diff(old_rows, new_rows)
+    text = report(args.old.as_posix(), args.new.as_posix(), old_bytes, new_bytes, old_rows, new_rows, d)
+    if args.out:
+        args.out.write_text(text, "utf-8")
+    else:
+        sys.stdout.write(text)
+    critical = any(is_critical(p) for p in d["by_path"]) or d["only_old"] or d["only_new"]
+    return 3 if critical else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
