@@ -1,0 +1,364 @@
+{
+  "run_started_utc": "20261127T113929Z",
+  "run_class": "development",
+  "interpreter_status": "PINNED (D-002a: runner and artifacts in the pinned image)",
+  "python_version": "3.11.18 (main, Nov  5 2026, 07:57:53) [GCC 14.2.0]",
+  "python_executable": "/usr/local/bin/python",
+  "python_executable_sha256": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79",
+  "platform": "Linux-6.8.0-1070-azure-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "fixture_index_sha256": "f37808c7a662b8fdf164e27feaef023aadd6dfefaada35d11c3719185d1bde54",
+  "response_schema_sha256": "6fb5d282b09540949f21ee134b522841c3345031cb3e118a83bdffc18b4e7c34",
+  "distributions": {
+    "jsonschema": "4.26.0",
+    "attrs": "26.1.0",
+    "jsonschema-specifications": "2025.9.1",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1",
+    "typing_extensions": "4.16.0",
+    "cocotb": "2.1.0",
+    "find-libpython": "0.5.1",
+    "iniconfig": "2.3.1",
+    "packaging": "26.3",
+    "pluggy": "1.7.0",
+    "pygments": "2.21.0",
+    "pytest": "9.2.0"
+  },
+  "git_commit": "9731cad732fbfaa2a1c9c5cbab130e2bf236cb7e",
+  "source_sha256": {
+    "design/fifo/controls/README.md": "2f02b4d5598ccdf4b88a9cf4a73128fce5b87e3d9eccf3a1ea73faa8e180a4c7",
+    "design/fifo/controls/slots.json": "0f4fd3c3765c12990ee2b030b35ee1ca42bbf206e0fb3a3dfd7792966b5b6105",
+    "design/fifo/design-materials-DRAFT.json": "30758c86ad88a5dc34bbe7802c5272935e8cdca810f6eec5f8cd1ff8895ba393",
+    "design/fifo/export_null.ys": "85dfdddda430adc22ea3df9c961397d596264b195e56cba8c49da84b4bc474b1",
+    "design/fifo/freeze/deviation-DEV-001.json": "0ae347160b4dece4ee308c3c326b7922eb0a4bf6c79bf9b6be6bf91984e3b227",
+    "design/fifo/freeze/freeze-record-2026-11-24.json": "000b6b5a55a5c5e892f34476a8bc05175c9ee80888e1ffe7e08f0ab7022fc974",
+    "design/fifo/freeze/readings-approval-D-009.json": "e14fd7fa1c559b3dbf8295b9131c9dd45d77ad0ee5b35d182c1d993a32d6966a",
+    "design/fifo/mask/ovf_fifo-mask-DRAFT.json": "64c7a9e6f25845521b9ad8164c3dff4d371f97fbd7c78c7c43c02e92540bbb59",
+    "design/fifo/mask/ovf_fifo-mask-traceability-DRAFT.csv": "25e15c1e38ab8ff8a4a4a1172c144feabfdad24aa00992ed5d0876a87418dfd8",
+    "design/fifo/rtl/ovf_fifo.v": "ca06abf55e6a82e6617dab9cd5d7e4ef0118d082b7789fce169016307fe2042b",
+    "runner/adapter_contracts.py": "9bd2998f0928e79bb384871e713b9249d0fa0385db611c44575f0d19c94a2d7b",
+    "runner/adapter_contracts_v137.py": "73cb446ce1102caad20dc70ae0289a7186a855856a386a13fe007f025709fea8",
+    "runner/adapters_v137.py": "5c3f86674fe881d92d1c0d714e68be286c8be7d3cd9a3a05010ffc39a0385afa",
+    "runner/probe_file50.py": "a1e9a07da0cbf494aeb15362e98b40b37aac527d864ff83a994ea702d36b1674",
+    "runner/run_controls.py": "2023cc8aa7776bb54218071b0d98a0827d0d7957ac35afbbb3a754a284113f1f",
+    "runner/run_f18.py": "904156b0e2fd958efebf149acdce12f050fe2196fc32f4859cad5d2bb991b93b",
+    "sandbox/Dockerfile": "f40c5f4337d4e3bee5dced3033f79789287aa93ed798ecbc71d6a533482cfe48",
+    "sandbox/artifact_proc.py": "bce82078ff107c583df830f61b687fbfc5617f488def57ba3ba437771c7ada60",
+    "sandbox/artifact_worker.py": "cb6d186195d1d962ae71e2e06739c504a35ae01e61b99d29b6b8b64dc679f12e",
+    "sandbox/harness.py": "6c51d61f0ddc511641b142ed72f920bd70084ad79ca18ccac92e04b17fc04adf",
+    "sandbox/sim.py": "f4f29b8da622f9118b67b595ff0dfc26a7bb496ec112299c9bb525355565f27c",
+    "sandbox/sim_cocotb.py": "17c0e2677d8884137e3f924ebe00b5ddea3fd11fbc4de1b8ceff869eff831e20",
+    "src/openvef/__init__.py": "6071fa9f7b1f81b634bd32bd0c5c6b1aeb1969c747b8b45ebf7b783c6c73567a",
+    "src/openvef/alignment.py": "3788110f6b75d339ea57d7430c574b5f5e5573330209d7ce7d8ac2e27d9bc902",
+    "src/openvef/assembler.py": "45563792cc31475d66a1ebcbc66aaba4fd1e0b24b1747e8818de082fb1eaade2",
+    "src/openvef/ast_signature.py": "b40144339f6b16a8075b0310fa89195d1f3e4d41a34c624928232a9b63f640fa",
+    "src/openvef/design_materials.py": "1919b2390a5fc5ca654744b3072f83eaebdcd04eea9674f3dfb0477084933ce7",
+    "src/openvef/eda.py": "76f7f3d29c2ac229af5161dd83d9a70608055816788f44847b435adcabd01f5c",
+    "src/openvef/envelope.py": "af74dc9c80097d9e6f526a54acabcf26041396bee446438bbf915b1a3dd119df",
+    "src/openvef/f14.py": "14736087e81dd0abb04cbaba007ac56bf885ea03ad1ed86efc6f0190a5c05e3a",
+    "src/openvef/f15.py": "055dc60e3584bbd8ff1a11611c6b3b49b89ce089fcb1eaecaf3015d6404bdff1",
+    "src/openvef/freeze.py": "8e7ed6ad46f638d709a75bfcad484638c6cde7a57f52382b9afbe8ed61d70c1e",
+    "src/openvef/import_policy.py": "4154e0fcf5342a33dc6e4959028b8b1191e4e2fc726cc1bcb709c5ef1f41b883",
+    "src/openvef/ledger.py": "9517362932bf80bffd6f60b317f7da7adcceb1a756da700e5310c1f10fb5c78f",
+    "src/openvef/metrics.py": "620667b22b10939033bb99a2e45d6f1a17b10de9d859623eabce9f58a7ddb949",
+    "src/openvef/miter.py": "3df80238c157f699bedc75e1fbf8f8c594c43465eba50a1a14f3b4aae8ca4a19",
+    "src/openvef/mutants.py": "6bc6c25945ed02b3ca723adb44b4bdd1237f5655a9828b156411486270cc0124",
+    "src/openvef/pair_runner.py": "cae4ae5d01242acef0f164f2cc7af556007ffaf1e6504fd3a96b798244f83175",
+    "src/openvef/pairs.py": "6d4ee1ade1e820e5d6828a02709b79f3db85a3bc6aab653a336f99f4a2d1d904",
+    "src/openvef/panel.py": "b300d66ca505aea5ea6fe046899f7c209c896740b91e38d4e554a344f0f46c4b",
+    "src/openvef/runtime.py": "a007ac34d8e3cf5a4dabadf6bd6cac2d99c82ce409bffd0fca32505c61fdec92",
+    "src/openvef/runtime_basis.py": "ad3eb4a7abe1b8a8f16ad014bbb4904014c9032980a66af2d445777ec0f6fa48",
+    "src/openvef/sandbox.py": "04b98406828ed5a7c60661e175dd42eaee0a7b697cbaa555b3f074bcebfdb27f",
+    "src/openvef/schema.py": "18a9cebaf5c912b5eaa4edff431d9752dae95b2412d387f26b4084392a06807d",
+    "src/openvef/serializer.py": "664b0bb96a5366019f24ae3714b7f8e6ad2918134ca43e4be6a1b036925da1fd",
+    "src/openvef/simulation.py": "452fb36cc92be0d9bff1388efeda160c493fbca69ec28a66ecac133f93108452",
+    "src/openvef/simulator_stages.py": "7777d3f7a0a9b5fceaa0558f9bd7deae2fb0abba961a7e4d2d58631f0898202c",
+    "src/openvef/source_ast.py": "d68e36761cc0a8bcf829e3a381243639a45998e4e3450bd3ed83f109b3eceac8",
+    "src/openvef/stage_map.py": "0d6237cd94265d33098149f6fe6f8d98ffebd082b573e232c617b0f310dc8b7c",
+    "src/openvef/trace.py": "f2363956ac24da4df77dd666083715293c21ecf3b8071781e9602f4ac316a5d1"
+  },
+  "command": [
+    "/usr/local/bin/python",
+    "/opt/openvef-repo/runner/run_f18.py",
+    "/baseline",
+    "/evidence",
+    "development"
+  ],
+  "sandbox": {
+    "mode": "D-002a runner container + host broker",
+    "base_image_digest": "python@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84f7a7b535",
+    "image_tag": "openvef-sandbox:693f422c7a112dcd",
+    "image_id": "sha256:fa254bba381bfe04e1d1c5dc2607511cdb0f982a881c2ecb9a40ed691fe866e0",
+    "docker_server_version": "29.9.2-2",
+    "host_kernel": "Linux 6.8.0-1070-azure",
+    "dockerfile_sha256": "f40c5f4337d4e3bee5dced3033f79789287aa93ed798ecbc71d6a533482cfe48",
+    "requirements_lock_sha256": "e12f3a4c4cddb0694c33fd2ec2dd7b9f84bffc76a16fd8e47f22d7663cf9d7d1",
+    "broker_sha256": "2b9ff892e33e1e848698fce438a19be43e9f4ccdf8f59aaa6b72fe519baec195",
+    "runner_container_flags": [
+      "--rm",
+      "-i",
+      "--network=none",
+      "--read-only",
+      "--cap-drop=ALL",
+      "--security-opt=no-new-privileges",
+      "--user=1000:1000",
+      "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777",
+      "--pids-limit=128",
+      "--memory=1g",
+      "--memory-swap=1g",
+      "--cpus=2",
+      "--ipc=none",
+      "--hostname=runner",
+      "--env=PYTHONHASHSEED=0",
+      "--env=PYTHONDONTWRITEBYTECODE=1",
+      "--env=PYTHONUNBUFFERED=1",
+      "--env=OPENVEF_BROKER=1",
+      "--volume=/workspaces/openvef-impl/baseline/OpenVEF_Planning_v1_3_6:/baseline:ro",
+      "--volume=/workspaces/openvef-impl/src:/opt/openvef-repo/src:ro",
+      "--volume=/workspaces/openvef-impl/runner:/opt/openvef-repo/runner:ro",
+      "--volume=/workspaces/openvef-impl/sandbox:/opt/openvef-repo/sandbox:ro",
+      "--volume=/workspaces/openvef-impl/design:/opt/openvef-repo/design:ro",
+      "--volume=/workspaces/openvef-impl/docs:/opt/openvef-repo/docs:ro",
+      "--volume=/workspaces/openvef-impl/evidence/run-20261127T113929Z:/evidence:rw",
+      "--workdir=/tmp",
+      "--name=openvef-runner-d5f64f77ab08"
+    ],
+    "artifact_container_flags": [
+      "--rm",
+      "-i",
+      "--network=none",
+      "--read-only",
+      "--cap-drop=ALL",
+      "--security-opt=no-new-privileges",
+      "--user=10001:10001",
+      "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777",
+      "--pids-limit=64",
+      "--memory=256m",
+      "--memory-swap=256m",
+      "--cpus=1",
+      "--ulimit=nofile=64:64",
+      "--ipc=none",
+      "--hostname=sandbox",
+      "--env=PYTHONHASHSEED=0",
+      "--env=PYTHONDONTWRITEBYTECODE=1",
+      "--env=PYTHONUNBUFFERED=1",
+      "--volume=/workspaces/openvef-impl/sandbox:/opt/openvef:ro",
+      "--workdir=/tmp",
+      "--name=<name>"
+    ],
+    "artifact_command": [
+      "python",
+      "-I",
+      "/opt/openvef/harness.py"
+    ],
+    "harness_sha256": {
+      "artifact_proc.py": "bce82078ff107c583df830f61b687fbfc5617f488def57ba3ba437771c7ada60",
+      "artifact_worker.py": "cb6d186195d1d962ae71e2e06739c504a35ae01e61b99d29b6b8b64dc679f12e",
+      "harness.py": "6c51d61f0ddc511641b142ed72f920bd70084ad79ca18ccac92e04b17fc04adf",
+      "sim.py": "f4f29b8da622f9118b67b595ff0dfc26a7bb496ec112299c9bb525355565f27c",
+      "sim_cocotb.py": "17c0e2677d8884137e3f924ebe00b5ddea3fd11fbc4de1b8ceff869eff831e20"
+    },
+    "host_invocation": {
+      "argv": [
+        "runner/run_f18_container.sh",
+        "development",
+        "f18",
+        "v1.3.6"
+      ],
+      "cwd": "/workspaces/openvef-impl",
+      "docker_client": "/usr/bin/docker 29.9.2-2",
+      "environment": {
+        "DOCKER_BUILDKIT": "1",
+        "LANG": "C.UTF-8"
+      },
+      "environment_policy": "Only host variables that can change the broker script or the docker CLI are recorded: every OPENVEF_* variable that was set, plus, if set, DOCKER_HOST, DOCKER_CONTEXT, DOCKER_CONFIG, DOCKER_TLS_VERIFY, DOCKER_CERT_PATH, DOCKER_API_VERSION, DOCKER_BUILDKIT, DOCKER_DEFAULT_PLATFORM, LANG, LC_ALL and TZ. Other host variables are not recorded (they can hold credentials) and are not passed to any container. An unset variable is absent from the record."
+    },
+    "toolchain": {
+      "cocotb": "2.1.0",
+      "iverilog_version_line": "Icarus Verilog version 12.0 (stable) ()",
+      "vvp_version_line": "Icarus Verilog runtime version 12.0 (stable) ()",
+      "iverilog_deb_version": "12.0-2+b1",
+      "iverilog_sha256": "99633b21371b5fc6ddc3156c9402c10e2915a94feb99ddc5eb01ba8f02758462",
+      "vvp_sha256": "dc287630d71c187dcf258a9d3c7d4aa77d2c3c2c4c7515debe91d000ea40c1df",
+      "yosys_version_line": "Yosys 0.71+post (git sha1 5628c13240f670b97aaaca3d47940c4afb8ff572, Release, GNU /usr/bin/c++ 14.2.0)",
+      "yosys_sha256": "3d4e300dcea16992b214f53e4b06a4f9d199685b874b035f2c9a390454e9e62f",
+      "yosys_abc_sha256": "e8fc5ad6be3dc54f673c143a0a226c98f2fba488a6f395b7226ee9a7312ecfe2",
+      "mcy_commit": "5a2cad0cbefceb7f23051c08348bd23128fd1046",
+      "mcy_sha256": "e56df004f5960d811cf8f468b21fce77922ce5cb541c4faf400fdab8af944a01",
+      "eda_pins": "yosys 0.71 2ec7c2ee63bb9b4065d6d5fff2786a1455e834f90ede8eb1d47791153ebef2a5\nmcy 5a2cad0cbefceb7f23051c08348bd23128fd1046\ndebian_snapshot 20261104T212339Z"
+    }
+  },
+  "design_materials": {
+    "materials_file": "design/fifo/design-materials-DRAFT.json",
+    "status": "DRAFT under D-005: proposed values for checklist items 3, 4 and 7-12; not approved, not frozen. See docs/fifo-frozen-values-proposal-DRAFT.md.",
+    "file_sha256": {
+      "design/fifo/design-materials-DRAFT.json": "30758c86ad88a5dc34bbe7802c5272935e8cdca810f6eec5f8cd1ff8895ba393",
+      "docs/fifo-spec-v0.2.md": "5e57ce18c8297aaed27e80b1a7a49476f41c70359e331fe8f5c54f96594c24b5",
+      "design/fifo/rtl/ovf_fifo.v": "ca06abf55e6a82e6617dab9cd5d7e4ef0118d082b7789fce169016307fe2042b",
+      "design/fifo/export_null.ys": "85dfdddda430adc22ea3df9c961397d596264b195e56cba8c49da84b4bc474b1",
+      "design/fifo/mask/ovf_fifo-mask-DRAFT.json": "64c7a9e6f25845521b9ad8164c3dff4d371f97fbd7c78c7c43c02e92540bbb59",
+      "design/fifo/mask/ovf_fifo-mask-traceability-DRAFT.csv": "25e15c1e38ab8ff8a4a4a1172c144feabfdad24aa00992ed5d0876a87418dfd8"
+    },
+    "null_netlist_sha256": [
+      "56dabfecc3768078bd96f7a026034ee9e2a795e266db89282b4ad4434ea64747",
+      "56dabfecc3768078bd96f7a026034ee9e2a795e266db89282b4ad4434ea64747"
+    ],
+    "yosys_version": "Yosys 0.71+post (git sha1 5628c13240f670b97aaaca3d47940c4afb8ff572, Release, GNU /usr/bin/c++ 14.2.0)",
+    "checker_metadata": {
+      "design_id": "ovf_fifo",
+      "spec_version_sha256": "5e57ce18c8297aaed27e80b1a7a49476f41c70359e331fe8f5c54f96594c24b5",
+      "trace_schema_version": "openvef-trace-0.1-draft",
+      "cycle_cap": 64,
+      "reset_release_cycle": 1,
+      "trace_integrity_status": "VALID"
+    },
+    "mask_variant": "primary",
+    "provisional": [],
+    "freeze": {
+      "record": "FREEZE-2026-11-24",
+      "basis": "Signed by Krishika (owner), commit a955245, typed statement quoted in the package. Under governance rule D-008 (Krishika, 24 Nov 2026), decisions and approvals signed by Krishika alone take effect; Ayush Kumar Singh's ratification is pending and recorded once, in docs/AUDIT-READINESS.md. This supersedes the package's own step 3 ('A line is frozen only when both owners approve it').",
+      "frozen": [
+        "A1",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "C1",
+        "C2",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "F1"
+      ],
+      "changed": [],
+      "not_frozen": [
+        {
+          "id": "G",
+          "item": "Observation mask, stricter variant and File 24 traceability table",
+          "reason": "needs the independent human mask reviewer's signature (Protocol L271; package section G); no owner signature replaces it",
+          "refs": [
+            {
+              "ref": "design/fifo/mask/ovf_fifo-mask-DRAFT.json",
+              "sha256": "78477cd41df36074c06aca31bfca3aae4de7a085980559480a35e2a08c180b0f"
+            },
+            {
+              "ref": "design/fifo/mask/ovf_fifo-mask-traceability-DRAFT.csv",
+              "sha256": "3e443a68368b693e33608db0daa94ae52e8e61a9a6b7a55b55de834862360f92"
+            }
+          ]
+        },
+        {
+          "id": "F1-note-table",
+          "item": "The overlap disclosure note's own owner-signature table",
+          "reason": "not signed; F1 in the package is approved"
+        },
+        {
+          "id": "L544",
+          "item": "Frozen L544 mutant export script, mutation modes, mutant population, bounded-equivalence assumptions",
+          "reason": "separate owner items; C2 freezes only the null-netlist export script"
+        }
+      ]
+    },
+    "deviation": {
+      "record": "DEV-001",
+      "basis": "Owner decisions by Krishika: DEV-001 (24 Nov 2026), corrected, D-010 and D-011. No independent human mask reviewer is available. The owner accepts the mask and File 24 table with a Claude (claude.ai) review dated 25 Nov 2026, saved at docs/reviews/claude-mask-review-2026-11-25.md. The review had not happened when DEV-001 was first recorded, covered the pre-D-010 bytes, and is NOT independent. The L271 signature does not exist.",
+      "frozen": [
+        "G"
+      ],
+      "changed": [],
+      "not_frozen": [],
+      "label": "cleared under DEV-001 (non-independent review saved)"
+    },
+    "cleared_under_deviation": [
+      {
+        "reason": "observation mask and File 24 table: unsigned; require an independent human reviewer (L271)",
+        "label": "cleared under DEV-001 (non-independent review saved)",
+        "record": "DEV-001"
+      }
+    ],
+    "reading_approvals": {
+      "record": "D-009",
+      "basis": "D-009 (Krishika, 24 Nov 2026): every reading decided under the standing delegation and not yet owner-approved (A-007..A-012, A-013 tie, A-015..A-037, A-039, A-045..A-052, F15 case table) is approved by Krishika as decided, without itemised owner review.",
+      "frozen": [
+        "A-007",
+        "A-008",
+        "A-009",
+        "A-010",
+        "A-011",
+        "A-012",
+        "A-013",
+        "A-015",
+        "A-016",
+        "A-017",
+        "A-018",
+        "A-019",
+        "A-020",
+        "A-021",
+        "A-022",
+        "A-023",
+        "A-024",
+        "A-025",
+        "A-026",
+        "A-027",
+        "A-028",
+        "A-029",
+        "A-030",
+        "A-032",
+        "A-033",
+        "A-034",
+        "A-035",
+        "A-036",
+        "A-037",
+        "A-039",
+        "A-045",
+        "A-046",
+        "A-047",
+        "A-048",
+        "A-049",
+        "A-050",
+        "A-051",
+        "A-052",
+        "F15-case-table"
+      ],
+      "changed": [],
+      "not_frozen": []
+    }
+  },
+  "run_finished_utc": "2026-11-27T11:41:29.693Z",
+  "counts": {
+    "PASS": 127,
+    "FAIL": 0,
+    "NOT_IMPLEMENTED": 17,
+    "ERROR": 0
+  },
+  "total": 144,
+  "provisional_fixtures": [],
+  "deviation_cleared_fixtures": [
+    "M07",
+    "M31",
+    "M32",
+    "M33",
+    "M57",
+    "P01",
+    "P14",
+    "P21",
+    "P42"
+  ],
+  "runtime_checks_self_reported": [
+    "M06:driver.py"
+  ],
+  "self_reported_label": "SELF_REPORTED (D-020): runtime check not statically PROVEN",
+  "deviation_labels": [
+    "cleared under DEV-001 (non-independent review saved)"
+  ],
+  "results_sha256": "26be728263581d5cb81f698fee073c6bc09ef232cb5314fb1da3d4711880b777"
+}

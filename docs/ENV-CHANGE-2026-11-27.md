@@ -59,3 +59,41 @@ two Yosys binaries changed.
 
 The v1.3.6 run on the new image must reproduce every record of `run-20261126T163836Z` except measured timings. If
 anything else differs, work stops and the owner is told. Result: section 4, added after the run.
+
+## 4. Equivalence check result
+
+Run `run-20261127T113929Z` (v1.3.6, `runner/run_f18_container.sh development f18 v1.3.6`, commit `9731cad`, image ID
+`fa254bba…`, interpreter SHA-256 `92d7e40e…`) compared with `run-20261126T163836Z` (image ID `565e5547…`), record by record:
+
+- 144 records in both, in the same fixture order; same fixture set; status counts 127 PASS / 0 FAIL / 17 NOT_IMPLEMENTED
+  in both.
+- Every field of every record is equal except 45 fields, all under `simulator.l334` in the 9 records that measure it
+  (M07, M31, M32, M33, M57, P01, P14, P21, P42): `wall_times_s[0..2]`, `median_s` and `t_timeout_s`. `t_timeout_s` is
+  `max(5 × median_s, floor)` (Protocol L334, `src/openvef/simulation.py` L178-L180), so it is derived from the measured
+  timings, and in both runs it equals 5 × `median_s` for every record. No other field differs.
+- `summary.json` differences, outside the records: `run_started_utc`, `run_finished_utc`, `results_sha256` (follows the
+  timings), `git_commit` (`75c959c` → `9731cad`), `source_sha256` of `runner/run_f18.py`, `src/openvef/ledger.py`,
+  `runner/adapters_v137.py`, `runner/adapter_contracts_v137.py` (D-026/D-027 commits between the two runs),
+  `sandbox.image_id`, `sandbox.toolchain.yosys_sha256` and `yosys_abc_sha256` (section 2), the evidence-volume path and
+  container name in `runner_container_flags`, and `host_invocation.argv` (the pack argument `v1.3.6` is now given
+  explicitly, as in `run-20261127T052242Z`).
+
+**Result: equivalent.** On the rebuilt image, the v1.3.6 run reproduces every record of `run-20261126T163836Z` except
+measured timings.
+
+## 5. Second change after the host restart of 2026-11-27 13:13 UTC (work stopped, owner informed)
+
+- `run-v137c-20261127T114201Z` (v1.3.7 CANDIDATE, image `fa254bba…`) stopped after 86 of 144 records (last log line
+  11:43:33Z, fixture P20), with no `summary.json`. The host was restarted at 13:13:07 UTC (`uptime -s`). It is an
+  incomplete run and is not evidence.
+- After that restart, at 13:3x UTC, `docker image ls` shows the tag `openvef-sandbox:693f422c7a112dcd` at image ID
+  `sha256:565e55470476…` (the **old** image) and no `fa254bba…`. In a container of the tagged image:
+  `/usr/local/bin/python` `92d7e40e…`, `yosys` `0bf88659…`, `yosys-abc` `2bc88ba4…`, all equal to the old image's
+  values in section 2. Six other `openvef-sandbox` images dated 3 days earlier (tags `9a34be550e4cf8db`,
+  `3d78c2ba0cd2e8fc`, `wip`, `43cf0c9e204f2291`, `ceb515ae19833a16`, `dev`) and `python:3.11.18-slim` are present again.
+  Section 1 recorded 0 images after the first failure.
+- So Docker's image store appears to have returned to an earlier state when the host restarted. **Cause: not
+  determined.** Disk is not the cause: `df -h /` 32G size, 19G used, 12G available (63%); `docker system df` 8 images
+  (502.3 MB, 240.8 MB reclaimable), 0 containers, 0 volumes, build cache 387.6 MB. Nothing was pruned.
+- No evidence run was started on the restored image. Work stopped for an owner decision on which image later evidence
+  runs use.
