@@ -1,0 +1,8 @@
+test_no_label_when_every_check_is_proven (test_self_reported_label.SelfReportedLabelTests.test_no_label_when_every_check_is_proven) ... ok
+test_no_label_when_runtime_checks_are_not_reached (test_self_reported_label.SelfReportedLabelTests.test_no_label_when_runtime_checks_are_not_reached) ... ok
+test_note_label_log_and_summary_agree (test_self_reported_label.SelfReportedLabelTests.test_note_label_log_and_summary_agree) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.012s
+
+OK
