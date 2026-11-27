@@ -3,7 +3,7 @@
 **Reading status, 24 Nov 2026:** every Claude-decided reading below is approved by Krishika
 (D-008), including A-057 under D-020: A-055 and A-056 under D-018; A-038 and A-040–A-044 in FREEZE-2026-11-24; A-053 under D-014;
 all others under D-009, as decided, without itemised owner review.
-Evidence runs since then: `run-20261127T052242Z` (v1.3.6), `controls-20261127T052649Z`; candidate pack (D-024 to D-026; not v1.3.6 evidence): `run-v137c-20261127T052443Z`.
+Evidence runs since then: `run-20261127T134112Z` (v1.3.6), `controls-20261127T134510Z`, `container-tests-20261127T135044Z`, all on image `565e5547…` (D-028); candidate pack (D-024 to D-027; not v1.3.6 evidence): `run-v137c-20261127T134318Z`.
 
 | Requirement | Component | Fixtures | Status |
 |---|---|---|---|
@@ -84,10 +84,13 @@ Evidence runs since then: `run-20261127T052242Z` (v1.3.6), `controls-20261127T05
 | D-027 Phase B: OD-n labels and counts; OD-2 per-predicate hash gate; M54 split into the `domain_validation` adapter (§20); A3, A4, OD-1, OD-4 citations | `runner/run_f18.py` `category`, `OWNER_DECIDED_ROWS`, `counts_by_category`, `owner_decided_fixtures`; `runner/adapters_v137.py` `OWNER_DECIDED`, `adapt_domain_validation`, `DOMAIN_VALIDATIONS`, `_predicate`; `runner/adapter_contracts_v137.py`; `src/openvef/ledger.py` `CANDIDATE_TOKENS`; `tests/test_dispatch_shapes_v137.py`, `tests/adapter_vectors_v137.py`, `tests/test_pack_manifest_v137.py` | candidate pack only: fixtures resting on an OD rule count OWNER-DECIDED (M41 also keeps `owner_specified` = `OS-1`, A-059) | Implemented; candidate results are not v1.3.6 F18 evidence and do not count toward F18; A-059 owner review pending; not audited |
 | L555 (5): preparation for an external AI-assisted audit | `docs/AUDIT-BRIEF.md`, `tools/build_audit_bundle.py`, `dist/openvef-audit-bundle.zip` | all 144 (audited run: run-20261124T195537Z; bundle rebuilt with run-20261126T144718Z) | DEV-002 AI audit and re-audit (OpenAI GPT-6) saved (docs/reviews/); re-audit NOT CLEARED (two BLOCKERs, MAJOR A4-1); third audit also NOT CLEARED (A1-1, A9-2); fourth audit NOT CLEARED (MAJORs A1-1, A9-2; bundle `93b249a6…`); fifth audit **CLEARED for D-022** (0 BLOCKER/MAJOR/MINOR, 11 LIMITATIONs; bundle `5bdc25ea…`). Sequence #1–#5 complete, no open BLOCKER or MAJOR (D-023). Not a human independent audit. **Step (5) not marked done**; not claimed to satisfy L555 (5) |
 
-Latest F18 run: `evidence/run-20261127T052242Z` (pack v1.3.6). It was started by `runner/run_f18_container.sh development`
-at commit 000f6a9, on a clean tree, after D-019 to D-026. Every record equals `run-20261126T163836Z` except measured
-wall-clock times (D-024 to D-026 changed no v1.3.6 status, note or label). `run-20261127T052200Z` was aborted before any
-result and is not evidence (its `ABORTED.md`):
+Latest F18 run: `evidence/run-20261127T134112Z` (pack v1.3.6). It was started by `runner/run_f18_container.sh development`
+at commit 9feeac1, on a clean tree, after D-019 to D-028, on the restored original image `565e5547…` (D-028; the guard
+recorded `IMAGE_GUARD OK`). Every record equals `run-20261126T163836Z` except measured wall-clock times (D-024 to D-027
+changed no v1.3.6 status, note or label). Runs that are not evidence: `run-20261127T052200Z` and `run-20261127T134052Z`
+were aborted before any result (their `ABORTED.md`); `run-v137c-20261127T114201Z` was cut off by a host restart;
+`run-20261127T113929Z` ran on the retired image `fa254bba…` and is equivalence evidence only
+([ENV-CHANGE-2026-11-27.md](ENV-CHANGE-2026-11-27.md)):
 - Interpreter status **PINNED** under D-002a: CPython 3.11.18, SHA-256 92d7e40e…6b79; the
   image ID is in `summary.json`.
 - The run re-verified the 20 frozen items, the DEV-001 mask files and the 39 D-009 items.
@@ -108,11 +111,13 @@ result and is not evidence (its `ABORTED.md`):
   M16, M18–M20, M25, M26, M28, M29, M40, R01–R06, R08–R13, M10–M12, P18, P19, P22.
 
 **Candidate pack (D-024; v1.3.7 CANDIDATE, not audited; not v1.3.6 F18 evidence, does not count toward F18):**
-`evidence/run-v137c-20261127T052443Z`, same commit and image, `--pack v1.3.7-candidate`, all 205 pack files verified
-against the pinned manifest (`802e8be7…`) first: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted separately
-(D-026): **PACK-DERIVED** 141 / 0 / 0 / 0 (v1.3.6 text and C1–C16); **OWNER-SPECIFIED** 2 / 0 / 1 / 0: M41 (OS-1) and
-M37 (OS-2) PASS, P17 (OS-3) NOT_IMPLEMENTED because its expected stage `DRIVER_VECTOR` is at runtime. Each of the three
-records carries `category` `OWNER-SPECIFIED` and its OS label. The 127 v1.3.6 passes keep identical records.
+`evidence/run-v137c-20261127T134318Z`, same commit and image, `--pack v1.3.7-candidate`, all 205 pack files verified
+against the pinned manifest first: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted separately (D-026, D-027
+Phase B): **PACK-DERIVED** 131 / 0 / 0 / 0; **OWNER-DECIDED** 11 / 0 / 0 / 0 (M13, M41 OD-4; M15, M42, M47 OD-1; M27
+OD-2; M48, M50, M53, M54, M58 OD-3); **OWNER-SPECIFIED** 1 / 0 / 1 / 0: M37 (OS-2) PASS, P17 (OS-3) NOT_IMPLEMENTED
+because its expected stage `DRIVER_VECTOR` is at runtime. M41 counts OWNER-DECIDED and keeps `owner_specified` = `OS-1`
+(A-059). Every status equals `run-v137c-20261127T052443Z`; only the Phase B category labels and the descriptor hashes
+of M27, M37 and M54 (Phase A amendments) differ.
 Container tests: `evidence/container-tests-20261127T053222Z` (commit 83fe17d, clean, 419 pass); the earlier
 `container-tests-20261127T052653Z` ran on an uncommitted tree and is superseded (its `NOTE.md`).
 

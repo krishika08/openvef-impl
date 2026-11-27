@@ -29,19 +29,22 @@ It is a status document: it claims no gate as passed.
 
 ## 2. Current counts
 
-Latest evidence run: **`evidence/run-20261127T052242Z`** (pack v1.3.6).
-- Run class `development`; commit `000f6a9`, clean tree; after DEV-001
+Latest evidence run: **`evidence/run-20261127T134112Z`** (pack v1.3.6), on the restored original image `565e5547…`
+(D-028; [ENV-CHANGE-2026-11-27.md](ENV-CHANGE-2026-11-27.md); `image-guard.txt` `IMAGE_GUARD OK`).
+- Run class `development`; commit `9feeac1`, clean tree; after DEV-001
   ([DEVIATIONS.md](DEVIATIONS.md)) and D-009 ([READINGS-REVIEW.md](READINGS-REVIEW.md)).
   The run re-verified all 20 frozen items, the DEV-001 mask files and the 39 D-009 items
   against their recorded hashes; none changed.
 - Pinned image per D-002a: CPython 3.11.18, interpreter SHA-256 `92d7e40e…`. The image ID
   and toolchain identity are recorded in its `summary.json`.
-- Every record is identical to the previous run, `run-20261126T163836Z`, except measured
-  wall-clock times; D-024 to D-026 changed no v1.3.6 status, note or label.
+- Every record is identical to `run-20261126T163836Z` except measured wall-clock times (the `simulator.l334` fields);
+  D-024 to D-027 changed no v1.3.6 status, note or label. `run-20261127T113929Z` (retired image `fa254bba…`) is
+  equivalence evidence only (D-028).
 - **Candidate pack (D-024; v1.3.7 CANDIDATE, not audited; not v1.3.6 F18 evidence, does not count toward F18):**
-  `run-v137c-20261127T052443Z`, same commit: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted separately (D-026):
-  **PACK-DERIVED** (v1.3.6 text and corrections C1–C16) 141 PASS / 0 / 0 / 0; **OWNER-SPECIFIED** (OS-1–OS-3) 2 PASS
-  (M41, M37) / 0 FAIL / 1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. The candidate needs an
+  `run-v137c-20261127T134318Z`, commit `9feeac1`, same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
+  separately (D-026, D-027 Phase B): **PACK-DERIVED** 131 / 0 / 0 / 0; **OWNER-DECIDED** (OD-1–OD-4) 11 / 0 / 0 / 0 (M13,
+  M41 OD-4; M15, M42, M47 OD-1; M27 OD-2; M48, M50, M53, M54, M58 OD-3); **OWNER-SPECIFIED** 1 PASS (M37, OS-2) / 0 FAIL /
+  1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059). The candidate needs an
   independent document audit and owner approval before it could replace v1.3.6.
 - D-022 (re-audit #4: `stop` cites File 36 L48; literal `inspect.signature` after
   import) changed no status, note or label. D-019 to D-022 are audited (fourth and fifth audits); A9-2 is closed as a
@@ -106,7 +109,7 @@ Latest control run: **`evidence/controls-20261127T052649Z`**, pinned image, comm
 **Source:** the evidence-bundle list in the Owner Decision Record §5.3, an external
 document not in this repository. The list was supplied by Krishika on 24 Nov 2026.
 
-Status is checked against the latest evidence run, `evidence/run-20261127T052242Z`. **9 of 9 met.**
+Status is checked against the latest evidence run, `evidence/run-20261127T134112Z`. **9 of 9 met.**
 - **Met:** the run records it as stated.
 - **Partly met:** some of it is recorded; the gap is named. (None at present; items 4
   and 6 were partly met up to `run-20261124T112030Z`.)
