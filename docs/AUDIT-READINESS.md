@@ -41,10 +41,10 @@ Latest evidence run: **`evidence/run-20261127T134112Z`** (pack v1.3.6), on the r
   D-024 to D-027 changed no v1.3.6 status, note or label. `run-20261127T113929Z` (retired image `fa254bba…`) is
   equivalence evidence only (D-028).
 - **Candidate pack (D-024; v1.3.7 CANDIDATE, not audited; not v1.3.6 F18 evidence, does not count toward F18):**
-  `run-v137c-20261127T153351Z`, commit `7fe355e` (C18 pack, manifest `3294d2a3`), same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
+  `run-v137c-20261127T163649Z`, commit `3349d9c` (C19 pack, manifest `d64a91a8`), same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
   separately (D-026, D-027 Phase B): **PACK-DERIVED** 131 / 0 / 0 / 0; **OWNER-DECIDED** (OD-1–OD-4) 11 / 0 / 0 / 0 (M13,
   M41 OD-4; M15, M42, M47 OD-1; M27 OD-2; M48, M50, M53, M54, M58 OD-3); **OWNER-SPECIFIED** 1 PASS (M37, OS-2) / 0 FAIL /
-  1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059, approved by Krishika under D-029). Every status and category equals `run-v137c-20261127T134318Z` (C18 changed no expected object). The candidate needs an
+  1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059, approved by Krishika under D-029). Every status and category equals `run-v137c-20261127T134318Z` and `run-v137c-20261127T153351Z` (C18 and C19 changed no expected object); row-level diffs in `evidence/RUN-CONTINUITY-D030.md` and `-regression.md` (only `simulator.l334` timings differ, D-030). The candidate needs an
   independent document audit and owner approval before it could replace v1.3.6.
 - D-022 (re-audit #4: `stop` cites File 36 L48; literal `inspect.signature` after
   import) changed no status, note or label. D-019 to D-022 are audited (fourth and fifth audits); A9-2 is closed as a
