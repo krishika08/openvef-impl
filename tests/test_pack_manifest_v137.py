@@ -3,6 +3,8 @@ manifest verification itself, that the predicate refuses to run before it, and t
 pack stops before any fixture. Not an F18 run and not evidence."""
 from __future__ import annotations
 
+import hashlib
+
 import contextlib
 import io
 import shutil
@@ -21,9 +23,10 @@ import run_f18  # noqa: E402
 
 PACK = REPO / "proposals/v1.3.7/pack"
 INFO = run_f18.PACKS["v1.3.7-candidate"]
+_SRC = "def ok(vector, sampled):\n    return sampled['busy'] == '0'\n"
 TOY = {"driver_return": {"a": "1"}, "input_port_widths": {"a": 1}, "sampled_outputs": {"busy": "1"},
-       "legal_input_predicate": {"language": "python3.11", "function": "ok",
-                                 "source": "def ok(vector, sampled):\n    return sampled['busy'] == '0'\n"}}
+       "legal_input_predicate": {"language": "python3.11", "function": "ok", "source": _SRC,  # OD-2: with its frozen hash
+                                 "source_sha256": hashlib.sha256(_SRC.encode("utf-8")).hexdigest()}}
 
 
 def copy_pack(tmp: str) -> Path:

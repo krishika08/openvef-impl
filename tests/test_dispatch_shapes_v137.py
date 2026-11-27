@@ -115,6 +115,8 @@ class CandidateDispatchTests(unittest.TestCase):
                 self.assertIn((tag, n), lines, (adapter, value))
         self.assertEqual(v136.value_support_problems(CONTRACTS, VALUE_SUPPORT), [])
         self.assertEqual(set(CONTRACTS["adapt_change_class"]["values"]), set(adapters_v137.CHANGE_CLASSES))
+        self.assertEqual(set(CONTRACTS["adapt_domain_validation"]["values"]), set(adapters_v137.DOMAIN_VALIDATIONS))
+        self.assertFalse(set(adapters_v137.CHANGE_CLASSES) & set(adapters_v137.DOMAIN_VALIDATIONS))  # OD-3
         self.assertEqual(set(CONTRACTS["adapt_parser_unit_vector"]["values"]), set(adapters_v137.SOURCE_FILES))
 
     def test_compared_strings_are_cited(self):
@@ -158,9 +160,12 @@ class CandidateDispatchTests(unittest.TestCase):
         self.assertEqual(set(BOUNDARIES), {fn.__name__ for *_, fn in ROWS} | {f.__name__ for f in REPLACED.values()})
 
     def test_edge_exception_holds_only_for_a_fully_used_closed_domain(self):
-        self.assertEqual(EDGE_MAY_BE_A_FIXTURE_INPUT, {("adapt_change_class", "change_class")})
+        self.assertEqual(EDGE_MAY_BE_A_FIXTURE_INPUT, {("adapt_change_class", "change_class"),
+                                                       ("adapt_domain_validation", "domain_validation")})
         used = {d["input"].get("change_class") for d in self.descs.values()}
         self.assertLessEqual(set(adapters_v137.CHANGE_CLASSES), used)
+        used = {d["input"].get("domain_validation") for d in self.descs.values()}
+        self.assertLessEqual(set(adapters_v137.DOMAIN_VALIDATIONS), used)
 
     def test_boundary_pairs_give_the_expected_outcomes(self):
         for adapter, pairs in BOUNDARIES.items():
@@ -224,6 +229,19 @@ class CandidateDispatchTests(unittest.TestCase):
                     self.assertEqual(run_f18.OWNER_SPEC, expected)
             run_f18.OWNER_SPEC = None
 
+    def test_owner_decided_rows(self):
+        """D-027: every OD rule an adapter rests on is labelled in a candidate line that adapter's contract cites."""
+        names = {fn.__name__ for *_, fn in ROWS} | {f.__name__ for f in REPLACED.values()}
+        self.assertLessEqual(set(adapters_v137.OWNER_DECIDED), names)
+        self.assertIs(run_f18.PACKS["v1.3.7-candidate"]["owner_decided"], adapters_v137.OWNER_DECIDED)
+        self.assertNotIn("owner_decided", run_f18.PACKS["v1.3.6"])
+        for name, items in adapters_v137.OWNER_DECIDED.items():
+            c = CONTRACTS[name]
+            cited = "\n".join(line(t, n) for t, n, _ in [*c["inputs"].values(), *c["outcome"]])
+            for item in items:
+                with self.subTest(adapter=name, item=item):
+                    self.assertIn(f"OWNER-DECIDED {item}", cited)
+
     def test_paired_run_outcome_runs_no_artifact_code(self):
         """OS-2 runs steps (1)-(6) only: no sandbox and no factory check is reached (D-015, D-026 option (a))."""
         from adapter_vectors_v137 import paired
@@ -236,10 +254,12 @@ class CandidateDispatchTests(unittest.TestCase):
     # --- the candidate ledger: every produced value is in the candidate line that states it
     def test_candidate_lifecycle_values_are_in_their_candidate_lines(self):
         l175, l176, l185 = line("02", 175), line("02", 176), line("02", 185)
+        self.assertEqual(set(LIFECYCLE_CASES), set(adapters_v137.CHANGE_CLASSES) | set(adapters_v137.DOMAIN_VALIDATIONS))
         for change_class, case in LIFECYCLE_CASES.items():
             record, missing = lifecycle_expectation_candidate(change_class)
             self.assertEqual(missing, {}, change_class)
             self.assertIn(f"`{change_class}`", l176)
+            self.assertIn(f"`{change_class}`", line("02", 571 if change_class in adapters_v137.CHANGE_CLASSES else 572))
             self.assertIn(f"`{record['error_class']}`", l175)
             self.assertIn(f"`{record['diagnostic']}`", l175)
             if "required_action" in record:

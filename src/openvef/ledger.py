@@ -285,19 +285,21 @@ def revision_error_class(diagnostic: str) -> str:
     return code
 
 
-# Candidate L176 (C2) "Closed scope tokens: ..." and L185 (C3) "(rule token ...)": (value, citation).
+# Candidate L176 (C2) "Closed scope tokens (OWNER-DECIDED OD-3: owner vocabulary adopted by owner decision D-027 ...)"
+# and §20.3 (OD-3), and L185 (C3) "(rule token ...)": (value, citation). D-027: the scope tokens are owner
+# vocabulary (OD-3), not pack-derived; the rule tokens label rules L185 states (C3).
 CANDIDATE_TOKENS: dict[str, dict[str, tuple[str, str]]] = {
     "FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED": {
         "rerun_scope_rule": ("shared_evaluator_component_all_designs_and_all_arm_x_design_slots; "
                              "design_specific_component_affected_design_in_both_arms",
-                             "candidate L176 'for an evaluator revision, `rerun_scope_rule` = ...'")},
+                             "candidate L176 'for an evaluator revision, `rerun_scope_rule` = ...' (OD-3); §20.3")},
     "SHARED_AUTHOR_VISIBLE_OR_ESTIMAND_DEFINING_ITEM_CHANGED": {
-        "affected_slots": ("all_designs_x_all_arms", "candidate L176 'For a shared-item revision, `affected_slots` = ...'")},
+        "affected_slots": ("all_designs_x_all_arms", "candidate L176 'For a shared-item revision, `affected_slots` = ...' (OD-3); §20.3")},
     "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED": {
         "affected_scope": ("affected_design_in_both_arms",
-                           "candidate L176 'For a design-specific revision, `affected_scope` = ...'"),
+                           "candidate L176 'For a design-specific revision, `affected_scope` = ...' (OD-3); §20.3"),
         "unaffected_design_scope": ("not_invalidated_when_membership_estimand_and_weights_are_unchanged",
-                                    "candidate L176 '... and `unaffected_design_scope` = ...'")},
+                                    "candidate L176 '... and `unaffected_design_scope` = ...' (OD-3); §20.3")},
     "HALT_SIGNATURE_COMPONENT_ENUMERATION": {
         "stable_error_class_rule": ("simple_exception_class_for_SIMULATOR_ERROR_else_NONE",
                                     "candidate L185 '(rule token `stable_error_class_rule` = ...)'"),
@@ -307,13 +309,15 @@ CANDIDATE_TOKENS: dict[str, dict[str, tuple[str, str]]] = {
 
 
 def lifecycle_expectation_candidate(change_class: str) -> tuple[dict, dict[str, str]]:
-    """As lifecycle_expectation, under the v1.3.7 CANDIDATE Protocol: the error class by the C1 rule
+    """As lifecycle_expectation, under the v1.3.7 CANDIDATE Protocol, for one of the four change classes or the
+    halt-signature domain validation (`HALT_SIGNATURE_COMPONENT_ENUMERATION`, not a change class under OD-3, D-027);
+    the schema of every result is candidate Protocol §20 (OD-3). The error class is by the C1 rule
     (for every case, so v1.3.6's per-fixture L175 sentences are not used), the C2/C3 tokens from
     CANDIDATE_TOKENS, and every other field as in v1.3.6. `required_action` is the candidate L176 literal
     keyed by this change class (C2). A field still unsupported is reported, never filled."""
     case = LIFECYCLE_CASES.get(change_class)
     if case is None:
-        raise ValueError(f"change_class {change_class!r} names no candidate L176 change class")
+        raise ValueError(f"{change_class!r} names no candidate L176 change class or domain validation")
     tokens = CANDIDATE_TOKENS.get(change_class, {})
     record, missing = {}, {}
     for name, entry in case.items():

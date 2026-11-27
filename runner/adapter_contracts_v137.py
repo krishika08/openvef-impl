@@ -7,24 +7,35 @@ checks these against the candidate text with the same functions that check the v
 from __future__ import annotations
 
 from adapter_contracts import LITERAL
-from adapters_v137 import CHANGE_CLASSES
+from adapters_v137 import CHANGE_CLASSES, DOMAIN_VALIDATIONS
 
 _CC_SENTENCE = {
     CHANGE_CLASSES[0]: "is the evaluator revision of §7b path (b)",
     CHANGE_CLASSES[1]: "is a shared-item revision",
     CHANGE_CLASSES[2]: "is a study reset",
     CHANGE_CLASSES[3]: "is a design-specific revision while membership, estimand and weights remain unchanged",
-    CHANGE_CLASSES[4]: "is the halt-signature domain check",
 }
+# D-027 OD-3: the §20 table of the candidate Protocol (appended after v1.3.6's last line, L559).
+_L20_CC, _L20_DV = ("02", 571), ("02", 572)
+_DV = DOMAIN_VALIDATIONS[0]
+_SCHEMA = [("02", 176, "The input contract and the complete result schema of every control vector are the normative "
+                       "tables of §20 (OWNER-DECIDED OD-3)."),
+           ("02", 563, "The owners adopt the tables below as normative."),
+           ("02", 175, "Error classes of change-class control expectations are stated by rule, not by fixture"),
+           ("36", 176, "Any other expected object is a control-vector expectation")]
 
 CONTRACTS = {
     "adapt_change_class": {
-        "inputs": {"change_class": ("02", 176, "The change classes are closed and have these cases:")},
+        "inputs": {"change_class": (*_L20_CC, "| Change-class vector | `change_class` | string | exactly one of")},
         "values": {cc: ("02", 176, f"`{cc}` {words}") for cc, words in _CC_SENTENCE.items()},
-        "outcome": [("02", 175, "Error classes of change-class control expectations are stated by rule, not by fixture"),
-                    ("02", 176, "Closed scope tokens:"),
-                    ("02", 185, "(rule token `stable_error_class_rule` = `simple_exception_class_for_SIMULATOR_ERROR_else_NONE`)"),
-                    ("36", 176, "Any other expected object is a control-vector expectation")]},
+        "outcome": [*_SCHEMA, ("02", 176, "Closed scope tokens (OWNER-DECIDED OD-3")]},
+    "adapt_domain_validation": {
+        "inputs": {"domain_validation": (*_L20_DV, f"| Domain-validation vector | `domain_validation` | string | "
+                                                   f"exactly `{_DV}` |")},
+        "values": {_DV: (*_L20_DV, f"exactly `{_DV}`")},
+        "outcome": [*_SCHEMA,
+                    ("02", 176, f"`{_DV}` is not a change class: it names the halt-signature domain validation"),
+                    ("02", 185, "(rule token `stable_error_class_rule` = `simple_exception_class_for_SIMULATOR_ERROR_else_NONE`)")]},
     "adapt_parser_unit_vector": {
         "inputs": {"source_file": ("36", 27, "`source_file` is `driver.py` or `checker.py`."),
                    "syntax_error": ("36", 27, "`syntax_error` has the key `lineno`, a positive integer, and may have the "
@@ -39,24 +50,32 @@ CONTRACTS = {
                    "input_port_widths": ("30", 83, "`input_port_widths` (each input port name mapped to its width)"),
                    "sampled_outputs": ("30", 83, "`sampled_outputs` (the outputs sampled in the same row)"),
                    "legal_input_predicate": ("30", 83, "`legal_input_predicate` (an object with `language` = `python3.11`, "
-                                                       "`function`, the function's name, and `source`, its Python source)")},
+                                                       "`function`, the function's name, `source`, its Python source, and "
+                                                       "`source_sha256`, the lowercase hexadecimal SHA-256 of `source` in "
+                                                       "UTF-8, which is the frozen hash of OD-2)")},
         "values": {"python3.11": ("30", 83, "an object with `language` = `python3.11`")},
         "outcome": [("30", 83, "Checks (a) to (e) run in that order and the first failure is reported."),
                     ("30", 83, "Any other outcome, including an exception, is an evaluator failure and is never an "
                                "artifact verdict."),
+                    ("30", 83, "the evaluator executes it only after checking that the source has that hash; a mismatch "
+                               "is an evaluator failure."),
                     ("02", 152, "Driver return value/vector is invalid")]},
 }
 
 VALUE_SUPPORT = {
     "adapt_change_class": {cc: (LITERAL, f"`{cc}`") for cc in CHANGE_CLASSES},
+    "adapt_domain_validation": {_DV: (LITERAL, f"`{_DV}`")},
     "adapt_parser_unit_vector": {"driver.py": (LITERAL, "`driver.py`"), "checker.py": (LITERAL, "`checker.py`")},
     "adapt_legal_input": {"python3.11": (LITERAL, "`python3.11`")},
 }
 
 DOMAINS = {
     "adapt_change_class": {"change_class": {
-        "lines": [("02", 176)],
-        "terms": ["The change classes are closed and have these cases", *(f"`{cc}`" for cc in CHANGE_CLASSES)]}},
+        "lines": [("02", 176), _L20_CC],
+        "terms": ["The change classes are closed and have exactly four cases", "exactly one of",
+                  *(f"`{cc}`" for cc in CHANGE_CLASSES)]}},
+    "adapt_domain_validation": {"domain_validation": {
+        "lines": [_L20_DV], "terms": [f"exactly `{_DV}`"]}},
     "adapt_parser_unit_vector": {
         "source_file": {"lines": [("36", 27)], "terms": ["`source_file` is `driver.py` or `checker.py`"]},
         "syntax_error": {"lines": [("36", 27)], "terms": ["`syntax_error` has the key `lineno`, a positive integer",
@@ -69,7 +88,8 @@ DOMAINS = {
         "sampled_outputs": {"lines": [("30", 83)], "terms": ["each mapping a port name to its bit string"]},
         "legal_input_predicate": {"lines": [("30", 83)], "terms": [
             "one Python 3.11 function of two dictionaries", "`language` = `python3.11`",
-            "returns the exact Boolean `True` for a legal vector and `False` otherwise"]}},
+            "returns the exact Boolean `True` for a legal vector and `False` otherwise",
+            "`source_sha256`, the lowercase hexadecimal SHA-256 of `source` in UTF-8"]}},
 }
 
 # --- D-025 Phase B: C11-C16 -----------------------------------------------------------------------------------------
@@ -88,10 +108,12 @@ CONTRACTS.update({
     "adapt_halt_recurrence_v137": {
         "inputs": dict(_V136["adapt_halt_recurrence"]["inputs"]),
         "values": dict(_V136["adapt_halt_recurrence"]["values"]),
-        "outcome": [("02", 185, "Both terminations are recorded at stage `DESIGN_HALT` with error class `DESIGN_HALT_REPEATED`."),
+        "outcome": [("02", 185, "Both terminations are recorded at stage `DESIGN_HALT` with error class `DESIGN_HALT_REPEATED` "
+                                "(OWNER-DECIDED OD-1, §3.4 local-ledger error classes)."),
                     ("02", 185, "mark every scheduled slot in the affected scope `DESIGN_ABORTED_NO_SLOTS_SCORED`"),
                     ("02", 185, "A supplied halt signature with any component outside these domains is an evaluator input "
-                                "error; it is never compared for recurrence.")]},
+                                "error; it is never compared for recurrence."),
+                    ("02", 185, "Such an input is outside the executable fixture contract")]},
     "adapt_serializer_grammar": {
         "inputs": {"diagnostic": _q(_L195, "`diagnostic` (a string)"),
                    "allowed_diagnostics": _q(_L195, "`allowed_diagnostics` (the duplicate-free list of diagnostics the "
@@ -100,7 +122,8 @@ CONTRACTS.update({
         "outcome": [("02", 168, "When the set of diagnostics the stage map emitted is given, a diagnostic that passes the "
                                 "grammar but is not in that set is also rejected at step (1)"),
                     ("02", 174, "is recorded at stage `FEEDBACK_SERIALIZER` with error class `FEEDBACK_SERIALIZER_REJECT` "
-                                "and disposition `CONTROL_EXPECTATION`.")]},
+                                "and disposition `CONTROL_EXPECTATION`."),
+                    ("02", 174, "**OWNER-DECIDED OD-1** (owner decision D-027; v1.3.6 does not state it)")]},
     "adapt_truncation_primitive": {
         "inputs": {"raw_diagnostic": _q(_L196, "`raw_diagnostic` (a string)"),
                    "raw_diagnostic_utf8_bytes": _q(_L196, "`raw_diagnostic_utf8_bytes` (its UTF-8 byte length)"),
@@ -129,13 +152,16 @@ CONTRACTS.update({
                    "event": _q(_L198, "one stage-map event of kind `simulator_error`"),
                    "slots": _q(_L198, "`previously_evaluated` + 1 + `remaining` = `scheduled`"),
                    "evaluator_repair_attempt": _q(_L198, "`evaluator_repair_attempt` = `1`, the ordinal of the recovery "
-                                                         "cycle this halt opens")},
+                                                         "cycle this halt opens (OWNER-DECIDED OD-4, Protocol §7b L185")},
         "values": {"MID_RUN": _q(_L198, "`lifecycle` = `MID_RUN`"),
                    "simulator_error": _q(_L198, "one stage-map event of kind `simulator_error`"),
                    "trace_integrity": _q(_L198, "or `trace_integrity` (`reason`)")},
         "outcome": [_q(_L198, "The result is the event's stage-map row with disposition `DESIGN_HALT_NO_SLOT_SCORED`"),
                     ("02", 154, "| Simulator error on RTL or null run | `DESIGN_HALT` | `EVALUATOR_INFRASTRUCTURE_FAILURE` |"),
-                    ("02", 155, "| Harness trace-integrity fault | `DESIGN_HALT` | `TRACE_INTEGRITY_FAILURE` |")]},
+                    ("02", 155, "| Harness trace-integrity fault | `DESIGN_HALT` | `TRACE_INTEGRITY_FAILURE` |"),
+                    ("02", 185, "the *evaluator repair attempt* of a design halt, `evaluator_repair_attempt`, is the "
+                                "ordinal of the recovery cycle that halt opens"),
+                    ("02", 185, "No ordinal greater than `1` is valid.")]},
     "adapt_design_preflight": {
         "inputs": {"design_preflight": _q(_L199, "`design_preflight`, an object with exactly the Boolean "
                                                  "`rtl_null_masked_divergence`")},
@@ -182,7 +208,8 @@ DOMAINS.update({
         "event": _d(_L198, "one stage-map event of kind `simulator_error`", "or `trace_integrity` (`reason`)"),
         "slots": _d(_L198, "`scheduled` (at least 1)", "`triggering_slot` (1 to `scheduled`)",
                     "`previously_evaluated` + 1 + `remaining` = `scheduled`"),
-        "evaluator_repair_attempt": _d(_L198, "`evaluator_repair_attempt` = `1`")},
+        "evaluator_repair_attempt": {"lines": [_L198, ("02", 185)],
+                                     "terms": ["`evaluator_repair_attempt` = `1`", "No ordinal greater than `1` is valid."]}},
     "adapt_design_preflight": {"design_preflight": _d(_L199, "an object with exactly the Boolean `rtl_null_masked_divergence`")},
 })
 
@@ -198,7 +225,7 @@ CONTRACTS.update({
             "design_id": _q(_L205, "`design_id` (`FIFO` or `UART`, equal to the `design_id` of `halt_signature`)"),
             "halt_signature": _q(_L205, "`halt_signature`, the halt's signature in the Protocol §7b domains"),
             "slots": _q(_L205, "`slots` as in the lifecycle halt-event vector"),
-            "evaluator_repair_attempt": _q(_L205, "`evaluator_repair_attempt` = `1`"),
+            "evaluator_repair_attempt": _q(_L205, "`evaluator_repair_attempt` = `1` (OWNER-DECIDED OD-4, Protocol L185)"),
             "recovery_mode": _q(_L205, f"`recovery_mode` = `{RECOVERY_MODE}`"),
             "frozen_evaluator_hashes_unchanged": _q(_L205, "the Booleans `frozen_evaluator_hashes_unchanged`"),
             "f16_required": _q(_L205, "the Booleans `frozen_evaluator_hashes_unchanged`, `f16_required`"),
@@ -222,6 +249,7 @@ CONTRACTS.update({
                     _q(_L205, "such an input is outside this vector's scope"),
                     ("02", 175, "`RERUN_ALL_SCHEDULED_SLOTS_WITH_SAME_FROZEN_ARTIFACTS` (error class `MID_RUN_REEVALUATION`)"),
                     ("02", 183, "it creates no new hashes, requires no new F16 and changes no artifact"),
+                    ("02", 185, "No ordinal greater than `1` is valid."),
                     ("02", 183, "not the evaluator-revision path"),
                     ("02", 185, "Discard all pre-halt partial scores")]},
     "adapt_paired_run_outcome": {
@@ -231,6 +259,7 @@ CONTRACTS.update({
         "outcome": [_q(_L206, "Protocol §3.4 evaluation steps (1)–(6) run on the response object, and their first "
                               "failure is the result."),
                     _q(_L206, "`runtime_pair` stands in for steps (7)–(8), the paired run, which is not executed"),
+                    _q(_L206, "a paired-outcome control vector, not a test of source-level alias detection"),
                     _q(_L206, "Any other pair does not determine the paired run's outcome"),
                     ("02", 156, "| Before first raw output divergence, paired next-input schedules differ | `TERMINAL` | "
                                 "`DRIVER_NONDETERMINISM` |")]},
@@ -249,7 +278,8 @@ DOMAINS.update({
         "design_id": _d(_L205, "`design_id` (`FIFO` or `UART`", "equal to the `design_id` of `halt_signature`"),
         "halt_signature": _d(_L205, "the halt's signature in the Protocol §7b domains", _OS1_HALTS),
         "slots": _d(_L205, "`slots` as in the lifecycle halt-event vector"),
-        "evaluator_repair_attempt": _d(_L205, "`evaluator_repair_attempt` = `1`"),
+        "evaluator_repair_attempt": {"lines": [_L205, ("02", 185)],
+                                     "terms": ["`evaluator_repair_attempt` = `1`", "No ordinal greater than `1` is valid."]},
         "recovery_mode": _d(_L205, f"`recovery_mode` = `{RECOVERY_MODE}`"),
         # Free Booleans: the boundary is the decision term L205 states (success on one side, no stated outcome on the other).
         "frozen_evaluator_hashes_unchanged": _d(_L205, "the Booleans `frozen_evaluator_hashes_unchanged`",

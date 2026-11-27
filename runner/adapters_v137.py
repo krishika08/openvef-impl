@@ -1,7 +1,7 @@
 """Runner adapters that exist only under `--pack v1.3.7-candidate` (D-024; v1.3.7 CANDIDATE, not audited).
 
-Each input contract is cited to the candidate pack (proposals/v1.3.7/pack, corrections C2, C5, C9-C16), so these rows
-are never in the v1.3.6 table: v1.3.6 has no text for these shapes (PD-02, PD-04, PD-06, PD-07, D-013).
+Each input contract is cited to the candidate pack (proposals/v1.3.7/pack, corrections C2, C5, C9-C16, and the
+OWNER-DECIDED rules OD-1..OD-4 of correction cycle 2, D-027), so these rows are never in the v1.3.6 table: v1.3.6 has no text for these shapes (PD-02, PD-04, PD-06, PD-07, D-013).
 Contracts: runner/adapter_contracts_v137.py. Vectors and boundary pairs: tests/adapter_vectors_v137.py, checked by
 tests/test_dispatch_shapes_v137.py under the same rules as the v1.3.6 adapters (D-013, D-017).
 
@@ -27,17 +27,40 @@ from openvef.stage_map import HALT, TERMINAL, EventError, NotDetermined, first_e
 # pinned SHA256SUMS. Set by runner/run_f18.py main(); nothing else sets it.
 PACK_VERIFIED = False
 
-# Candidate 02 L176 (C2): "The change classes are closed and have these cases: ..."
+# Candidate 02 L176 (C2, OD-3): "The change classes are closed and have exactly four cases (OWNER-DECIDED OD-3)";
+# 02 L571 (§20.1, OD-3): `change_class` is "exactly one of" these four.
 CHANGE_CLASSES = ("FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED",
                   "SHARED_AUTHOR_VISIBLE_OR_ESTIMAND_DEFINING_ITEM_CHANGED",
                   "DESIGN_MEMBERSHIP_OR_ESTIMAND_OR_WEIGHT_CHANGED_AFTER_CONFIRMATORY_START",
-                  "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED",
-                  "HALT_SIGNATURE_COMPONENT_ENUMERATION")
+                  "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED")
+# Candidate 02 L176 (OD-3): "`HALT_SIGNATURE_COMPONENT_ENUMERATION` is not a change class: it names the halt-signature
+# domain validation"; 02 L572 (§20.1): `domain_validation` is "exactly `HALT_SIGNATURE_COMPONENT_ENUMERATION`".
+DOMAIN_VALIDATIONS = ("HALT_SIGNATURE_COMPONENT_ENUMERATION",)
 # Candidate 36 L27 (C9): "`source_file` is `driver.py` or `checker.py`".
 SOURCE_FILES = ("driver.py", "checker.py")
-# Candidate 30 L83 (C5): "`legal_input_predicate` (an object with `language` = `python3.11`, `function`, ..., `source`".
+# Candidate 30 L83 (C5, OD-2): "`legal_input_predicate` (an object with `language` = `python3.11`, `function`, ...,
+# `source`, its Python source, and `source_sha256`, the lowercase hexadecimal SHA-256 of `source` in UTF-8".
 PREDICATE_LANGUAGE = "python3.11"
-PREDICATE_KEYS = {"language", "function", "source"}
+PREDICATE_KEYS = {"language", "function", "source", "source_sha256"}
+
+# D-027: the OWNER-DECIDED rules each adapter's input contract or outcome rests on. A fixture whose adapter is listed
+# here counts OWNER-DECIDED (the runner labels its record). An adapter may add a rule used on one path only (_uses).
+OWNER_DECIDED = {"adapt_serializer_grammar": ("OD-1",), "adapt_halt_recurrence_v137": ("OD-1",),
+                 "adapt_legal_input": ("OD-2",), "adapt_change_class": ("OD-3",), "adapt_domain_validation": ("OD-3",),
+                 "adapt_lifecycle_halt_event": ("OD-4",), "adapt_operational_recovery": ("OD-4",)}
+_OD_USED: list[str] = []
+
+
+def _uses(item: str) -> None:
+    """Record an OWNER-DECIDED rule that only this path of an adapter depends on (D-027)."""
+    _OD_USED.append(item)
+
+
+def take_od_used() -> tuple[str, ...]:
+    """The path-only OD rules recorded since the last call; clears them. Called by the runner around each fixture."""
+    used = tuple(sorted(set(_OD_USED)))
+    _OD_USED.clear()
+    return used
 
 
 def _in_domain(ok: bool, name: str) -> None:
@@ -49,14 +72,25 @@ def _bits(value: Any) -> bool:
     return isinstance(value, str) and value != "" and set(value) <= {"0", "1"}
 
 
-def adapt_change_class(desc: dict, validator) -> dict:
-    """Candidate 02 L175-L176, L181-L185 (C1-C3): the change-class control expectation, whole (C4)."""
-    change_class = desc["input"]["change_class"]
-    _in_domain(isinstance(change_class, str) and change_class in CHANGE_CLASSES, "change_class")
-    record, missing = lifecycle_expectation_candidate(change_class)
+def _expectation(key: str) -> dict:
+    record, missing = lifecycle_expectation_candidate(key)
     if missing:
         raise NotDetermined(f"candidate Protocol does not support: {sorted(missing)}")
     return record
+
+
+def adapt_change_class(desc: dict, validator) -> dict:
+    """Candidate 02 L175-L176, L181-L185 (C1-C3) and §20 (OD-3): the change-class control expectation, whole (C4)."""
+    change_class = desc["input"]["change_class"]
+    _in_domain(isinstance(change_class, str) and change_class in CHANGE_CLASSES, "change_class")
+    return _expectation(change_class)
+
+
+def adapt_domain_validation(desc: dict, validator) -> dict:
+    """Candidate 02 L176, L185 (C3) and §20 (OD-3): the halt-signature domain-validation control expectation, whole."""
+    check = desc["input"]["domain_validation"]
+    _in_domain(isinstance(check, str) and check in DOMAIN_VALIDATIONS, "domain_validation")
+    return _expectation(check)
 
 
 def adapt_parser_unit_vector(desc: dict, validator) -> dict:
@@ -73,11 +107,15 @@ def adapt_parser_unit_vector(desc: dict, validator) -> dict:
 
 
 def _predicate(spec: Mapping[str, str], sampled: Mapping[str, str]) -> Callable[[Mapping[str, str]], bool]:
-    """Candidate 30 L83 (C5): one Python 3.11 function of (vector, sampled) returning exactly True or False; any
-    other outcome is an evaluator failure, never an artifact verdict. The source is pack text, verified by the
-    fixture index's SHA-256 before loading; it is evaluator material, not artifact code (D-015)."""
+    """Candidate 30 L83 (C5, OD-2): one pure Python 3.11 function of (vector, sampled) returning exactly True or
+    False; any other outcome is an evaluator failure, never an artifact verdict. It is evaluator material, not artifact
+    code (D-015), and hash-gated: it runs only after the candidate pack's SHA256SUMS verify (D-025) and its source
+    matches its frozen `source_sha256` (OD-2). Purity is the freezer's condition; it is not certified here."""
     if not PACK_VERIFIED:
         raise NotDetermined("candidate pack SHA256SUMS not verified (D-025); predicate not run")
+    if hashlib.sha256(spec["source"].encode("utf-8")).hexdigest() != spec["source_sha256"]:
+        raise NotDetermined("evaluator failure (candidate 30 L83, OD-2): predicate source does not match its frozen "
+                            "SHA-256; not run")
     namespace: dict = {}
     try:
         exec(compile(spec["source"], "<legal_input_predicate>", "exec", dont_inherit=True), namespace)
@@ -108,7 +146,9 @@ def adapt_legal_input(desc: dict, validator) -> Failure:
                "sampled_outputs")
     _in_domain(isinstance(spec, dict) and set(spec) == PREDICATE_KEYS and spec["language"] == PREDICATE_LANGUAGE
                and isinstance(spec["function"], str) and spec["function"].isidentifier()
-               and isinstance(spec["source"], str), "legal_input_predicate")
+               and isinstance(spec["source"], str) and _utf8(spec["source"])
+               and isinstance(spec["source_sha256"], str) and len(spec["source_sha256"]) == 64
+               and set(spec["source_sha256"]) <= set("0123456789abcdef"), "legal_input_predicate")
     failure = validate_vector(inp["driver_return"], widths, widths, _predicate(spec, sampled))
     if failure is None:
         raise NotDetermined("check passed; nothing further to compare")
@@ -132,8 +172,9 @@ def adapt_halt_recurrence_v137(desc: dict, validator) -> Failure:
     _in_domain(all(isinstance(inp[k], dict) for k in ("first_halt_signature", "second_halt_signature")), "halt signature")
     try:
         first, second = (HaltSignature.given(inp[k]) for k in ("first_halt_signature", "second_halt_signature"))
-    except SignatureDomainError as exc:  # candidate L185: an evaluator input error, never compared
-        raise NotDetermined(f"supplied halt signature outside the Protocol L185 domains: {exc}") from exc
+    except SignatureDomainError as exc:  # candidate L185 (C10, A3): input error, outside the fixture contract, no record
+        raise NotDetermined(f"supplied halt signature outside the Protocol L185 domains (A3: outside the executable "
+                            f"fixture contract, no ledger record): {exc}") from exc
     return halt_after_recovery(first, second, inp["recovery_cycles_used"])
 
 
@@ -264,8 +305,9 @@ def adapt_operational_recovery(desc: dict, validator) -> dict:
     _in_domain(isinstance(inp["halt_signature"], dict), "halt_signature")
     try:
         signature = HaltSignature.given(inp["halt_signature"])
-    except SignatureDomainError as exc:  # candidate L185: an evaluator input error
-        raise NotDetermined(f"supplied halt signature outside the Protocol L185 domains: {exc}") from exc
+    except SignatureDomainError as exc:  # candidate L185 (C10, A3): input error, outside the fixture contract, no record
+        raise NotDetermined(f"supplied halt signature outside the Protocol L185 domains (A3: outside the executable "
+                            f"fixture contract, no ledger record): {exc}") from exc
     _in_domain(signature.halt_code in RECOVERABLE_HALT_CODES, "halt_signature")
     _in_domain(signature.design_id == inp["design_id"], "design_id")
     _in_domain(type(inp["evaluator_repair_attempt"]) is int and inp["evaluator_repair_attempt"] == 1,
@@ -289,11 +331,9 @@ def adapt_operational_recovery(desc: dict, validator) -> dict:
                 "diagnostic": "RERUN_ALL_SCHEDULED_SLOTS_WITH_SAME_FROZEN_ARTIFACTS", "discard_pre_halt_scores": True,
                 "rerun_slots": inp["scheduled_slots"], "reuse_same_artifact_bytes": True,
                 "new_confirmatory_generation_calls": 0}
-    if not hashes_unchanged and f16:  # L183 path (b): an evaluator revision (C1-C4 record)
-        record, missing = lifecycle_expectation_candidate(CHANGE_CLASSES[0])
-        if missing:
-            raise NotDetermined(f"candidate Protocol does not support: {sorted(missing)}")
-        return record
+    if not hashes_unchanged and f16:  # L183 path (b): an evaluator revision (C1-C4 record, §20 schema)
+        _uses("OD-3")
+        return _expectation(CHANGE_CLASSES[0])
     raise _unstated("F16 is required with unchanged frozen evaluator hashes" if f16 else
                     "the frozen evaluator hashes changed without F16")
 
@@ -322,8 +362,9 @@ def _static_stages(desc: dict, obj: Any, validator) -> Failure | None:
 
 
 def adapt_paired_run_outcome(desc: dict, validator) -> Failure:
-    """Candidate 36 L206 (OS-2, OWNER-SPECIFIED, D-026): steps (1)-(6) run; `runtime_pair` stands in for the paired run
-    (steps (7)-(8)), which is not executed. The excerpt documents the access under test and is never read."""
+    """Candidate 36 L206 (OS-2, OWNER-SPECIFIED, D-026; A4: a paired-outcome control vector, not a test of
+    source-level alias detection): steps (1)-(6) run; `runtime_pair` stands in for the paired run (steps (7)-(8)),
+    which is not executed. The excerpt documents the access under test and is never read."""
     inp = desc["input"]
     pair = inp["runtime_pair"]
     _in_domain(isinstance(pair, dict) and set(pair) == PAIR_FIELDS and _utf8(pair["driver_source_excerpt"])
@@ -355,6 +396,7 @@ REPLACEMENTS = {"adapt_halt_recurrence": adapt_halt_recurrence_v137}
 # (required keys, optional keys, adapter): added to the runner's table for the candidate pack only.
 ROWS = (
     ({"change_class"}, set(), adapt_change_class),
+    ({"domain_validation"}, set(), adapt_domain_validation),  # D-027 OD-3
     ({"source_file", "syntax_error"}, set(), adapt_parser_unit_vector),
     ({"driver_return", "input_port_widths", "sampled_outputs", "legal_input_predicate"}, set(), adapt_legal_input),
     ({"diagnostic"}, {"allowed_diagnostics"}, adapt_serializer_grammar),

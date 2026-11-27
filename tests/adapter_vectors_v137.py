@@ -4,6 +4,7 @@ the change-class adapter are computed by the ledger, never copied from a descrip
 """
 from __future__ import annotations
 
+import hashlib
 import sys
 from pathlib import Path
 
@@ -36,7 +37,8 @@ def unit(file="driver.py", **error):
 
 # A toy design (not the FIFO): input ports `a` (1 bit) and `b` (2 bits); `a` = 1 is illegal while `busy` = 1.
 TOY_SOURCE = "def ok(vector, sampled):\n    return not (sampled['busy'] == '1' and vector['a'] == '1')\n"
-TOY = {"language": "python3.11", "function": "ok", "source": TOY_SOURCE}
+TOY = {"language": "python3.11", "function": "ok", "source": TOY_SOURCE,
+       "source_sha256": hashlib.sha256(TOY_SOURCE.encode("utf-8")).hexdigest()}  # OD-2: the frozen hash
 
 
 def vec(driver_return, widths=None, sampled=None, predicate=None):
@@ -44,8 +46,9 @@ def vec(driver_return, widths=None, sampled=None, predicate=None):
             "sampled_outputs": sampled or {"busy": "1"}, "legal_input_predicate": predicate or TOY}
 
 
-def pred(source, function="ok", language="python3.11"):
-    return {"language": language, "function": function, "source": source}
+def pred(source, function="ok", language="python3.11", sha=None):
+    return {"language": language, "function": function, "source": source,
+            "source_sha256": sha or hashlib.sha256(source.encode("utf-8")).hexdigest()}
 
 
 HALT_ENUM = "HALT_SIGNATURE_COMPONENT_ENUMERATION"
@@ -53,8 +56,13 @@ HALT_ENUM = "HALT_SIGNATURE_COMPONENT_ENUMERATION"
 VECTORS = {
     "adapt_change_class": [
         ({"change_class": "OPERATIONAL_RECOVERY"}, OUTSIDE),           # a §7b path, not a change class
-        ({"change_class": HALT_ENUM.lower()}, OUTSIDE),
+        ({"change_class": HALT_ENUM}, OUTSIDE),                        # OD-3: domain validation, not a change class
         ({"change_class": 5}, OUTSIDE),
+    ],
+    "adapt_domain_validation": [                                       # D-027 OD-3
+        ({"domain_validation": "FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED"}, OUTSIDE),  # a change class
+        ({"domain_validation": "HALT_SIGNATURE_COMPONENTS"}, OUTSIDE),
+        ({"domain_validation": ["HALT_SIGNATURE_COMPONENT_ENUMERATION"]}, OUTSIDE),
     ],
     "adapt_parser_unit_vector": [
         (unit("checker.py", lineno=7, offset=3), syntax("checker.py", 7, 3)),
@@ -76,11 +84,13 @@ VECTORS = {
         (vec({"a": "0", "b": "01"}, predicate=pred("def ok(vector, sampled):\n    return sampled['idle'] == '1'\n")),
          EVALUATOR),
         (vec({"a": "0", "b": "01"}, predicate=pred(TOY_SOURCE, function="missing")), EVALUATOR),
+        (vec({"a": "1", "b": "00"}, predicate=pred(TOY_SOURCE, sha="0" * 64)), EVALUATOR),  # OD-2 hash gate: not run
     ],
 }
 
 OUT_OF_DOMAIN = {
     "adapt_change_class": {"change_class": {"change_class": None}},
+    "adapt_domain_validation": {"domain_validation": {"domain_validation": None}},
     "adapt_parser_unit_vector": {"source_file": unit(None, lineno=3),
                                  "syntax_error": unit(lineno=3, column=1)},
     "adapt_legal_input": {"driver_return": vec([]),
@@ -90,15 +100,18 @@ OUT_OF_DOMAIN = {
 }
 JUDGED_BY_RULE = {("adapt_legal_input", "driver_return")}  # a non-dictionary is RETURN_TYPE (30 L83)
 
-# The change-class domain is a closed list of five labels, and every label is a fixture input, so an in-domain edge
-# cannot avoid being one. The test allows exactly this, and checks that each value of the list is in a fixture.
-EDGE_MAY_BE_A_FIXTURE_INPUT = {("adapt_change_class", "change_class")}
+# The change-class domain is a closed list of four labels and the domain-validation domain a list of one (OD-3), and
+# every label is a fixture input, so an in-domain edge cannot avoid being one. The test allows exactly this, and checks
+# that each value of each list is in a fixture.
+EDGE_MAY_BE_A_FIXTURE_INPUT = {("adapt_change_class", "change_class"), ("adapt_domain_validation", "domain_validation")}
 
 BOUNDARIES = {
     "adapt_change_class": [
-        ("`HALT_SIGNATURE_COMPONENT_ENUMERATION`", "change_class", {"change_class": HALT_ENUM},
-         lifecycle_expectation_candidate(HALT_ENUM)[0], {"change_class": HALT_ENUM + "S"}, OUTSIDE),
-        ("The change classes are closed and have these cases", "change_class",
+        ("`FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED`", "change_class",
+         {"change_class": "FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED"},
+         lifecycle_expectation_candidate("FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGED")[0],
+         {"change_class": "FROZEN_EVALUATOR_SOURCE_BINARY_OR_CONFIG_CHANGE"}, OUTSIDE),
+        ("The change classes are closed and have exactly four cases", "change_class",
          {"change_class": "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED"},
          lifecycle_expectation_candidate("DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED")[0],
          {"change_class": "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEMS_CHANGED"}, OUTSIDE),
@@ -120,6 +133,14 @@ BOUNDARIES = {
          PASSED, vec({"a": "1", "b": "11"}, sampled={"busy": "2"}), OUTSIDE),
         ("`language` = `python3.11`", "legal_input_predicate", vec({"a": "0", "b": "10"}, predicate=pred(TOY_SOURCE)),
          PASSED, vec({"a": "0", "b": "10"}, predicate=pred(TOY_SOURCE, language="python3.12")), OUTSIDE),
+        ("`source_sha256`, the lowercase hexadecimal SHA-256 of `source` in UTF-8", "legal_input_predicate",
+         vec({"a": "0", "b": "10"}, predicate=pred(TOY_SOURCE)), PASSED,
+         vec({"a": "0", "b": "10"}, predicate=pred(TOY_SOURCE, sha=pred(TOY_SOURCE)["source_sha256"][:-1] + "g")),
+         OUTSIDE),
+    ],
+    "adapt_domain_validation": [
+        (f"exactly `{HALT_ENUM}`", "domain_validation", {"domain_validation": HALT_ENUM},
+         lifecycle_expectation_candidate(HALT_ENUM)[0], {"domain_validation": HALT_ENUM + "S"}, OUTSIDE),
     ],
 }
 
