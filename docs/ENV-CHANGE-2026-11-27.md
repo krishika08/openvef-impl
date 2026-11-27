@@ -97,3 +97,48 @@ measured timings.
   (502.3 MB, 240.8 MB reclaimable), 0 containers, 0 volumes, build cache 387.6 MB. Nothing was pruned.
 - No evidence run was started on the restored image. Work stopped for an owner decision on which image later evidence
   runs use.
+
+## 6. D-028: evidence runs use the restored original image (Krishika, on Claude (claude.ai) review)
+
+**Decision (a).** Evidence runs use the restored original image `565e5547…`. The `docker builder prune -af` overreach in
+section 1 is accepted as disclosed.
+
+**Image verified (27 Nov 2026, after the 13:13 UTC restart), `docker image inspect openvef-sandbox:693f422c7a112dcd`:**
+
+| Item | Value |
+|---|---|
+| ID | `sha256:565e55470476be93f0b6b6ea6ec88776b0332598c77a9a3fba0aa305c2971c3f` (equal to the old image in section 2) |
+| RepoDigests | `openvef-sandbox@sha256:565e55470476be93f0b6b6ea6ec88776b0332598c77a9a3fba0aa305c2971c3f` (local only; never pushed to a registry) |
+| Created | `2026-11-24T10:30:55.425802315Z` |
+| Size | 387,418,018 bytes |
+| Layers (RootFS, 10) | `dd57f903…3b90`, `cd9a29aa…26fb`, `961adfab…f155`, `688ef205…d5d4`, `9d160f7a…1d50`, `7f765c02…313b`, `af07d485…6c48`, `2a0f90fa…e1de`, `ffd692ac…60da`, `5f70bf18…c6ef` |
+| `sys.version` | `3.11.18 (main, Nov  5 2026, 07:57:53) [GCC 14.2.0]` |
+| `/usr/local/bin/python` SHA-256 | `92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79` |
+| `yosys` SHA-256 | `0bf886591a8e2b0f45fea92b2022f61d5a2213c370904ff87bbdeadbbee4e6af` |
+| `yosys-abc` SHA-256 | `2bc88ba4923042e96ce0da15b993b892a70ed14d9f0c625c394aa6cad48bcf7b` |
+
+Full layer digests are printed by `docker image inspect`. The first layer, `dd57f903…`, is the one whose content was
+missing in section 1.
+
+**`fa254bba…` is retired.** It no longer exists on this host. Its one complete run, `run-20261127T113929Z`, stays only as
+evidence for the equivalence check (section 4), not as an F18 development run. The incomplete
+`run-v137c-20261127T114201Z` (section 5) is not evidence.
+
+**Recurrence guard.**
+- `docker save` of the image to `/workspaces/image-cache/openvef-sandbox-565e5547.tar` (outside the repository):
+  98,156,544 bytes, SHA-256 `3c10efa8fe197a94d483d994cc397cb74be96292e93e3118303c2389645cf813`. Free space when it was
+  saved: 12G on `/workspaces` (63% used), more than twice the tarball's size.
+- Running `docker load` of the tarball over the existing image gave the same ID `565e5547…`.
+- `tools/pinned-image.conf` holds the pinned tag, image ID, tarball path, size and SHA-256. `tools/ensure_pinned_image.sh <tag>`
+  checks that the tag is the pinned tag and resolves to the pinned ID. If the ID differs or the tag is absent, the script
+  checks the tarball's size and SHA-256, runs `docker load` on it and checks the ID again. If anything fails, it stops
+  with exit code 3. It never builds an image.
+- `runner/run_f18_container.sh` (F18 and controls runs) and `tools/run_container_tests.py` call the guard before every
+  run and save its status line as `image-guard.txt` in the run directory. That line is `IMAGE_GUARD OK <id>` or
+  `IMAGE_GUARD RESTORED_FROM_TARBALL <was> -> <id> (<sha256>)`.
+- **Change in behaviour:** `run_f18_container.sh` no longer builds the image when the tag is missing. A rebuild
+  gives a different image ID (section 2), so a missing image now ends in a load from the tarball or a stop.
+- **Guard test:** `tests/test_image_guard.py`. The restore path was also exercised by hand: with the tag moved to
+  `openvef-sandbox:dev` (`c01a7edd…`), the guard loaded the tarball and the tag resolved to `565e5547…` again (exit 0).
+- **Limits:** the guard runs before a run starts. It does not detect the image changing during a run. The tarball lives
+  on the same host disk and is not protected from a reset of the whole Codespace.

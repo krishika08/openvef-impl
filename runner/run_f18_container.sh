@@ -2,7 +2,7 @@
 # F18 evidence run inside the pinned image (owner decisions D-002a, D-002, D-003).
 #
 # All evaluation runs in the container's CPython 3.11.18; no host Python is used. This
-# script only (1) builds/identifies the image, (2) starts the runner container and
+# script only (1) identifies the pinned image (D-028 guard), (2) starts the runner container and
 # (3) acts as a broker: when the runner writes a line
 #     OPENVEF_SANDBOX_REQUEST <timeout_seconds> <base64 request JSON>
 # on its stdout, the broker starts one artifact container (runner/artifact-container.args)
@@ -54,9 +54,10 @@ HARNESS_DIR="$REPO/sandbox"
 # Tag = first 16 hex of SHA-256 over `sha256sum sandbox/Dockerfile requirements.lock`
 # (same rule as openvef.sandbox.image_tag).
 TAG="openvef-sandbox:$(cd "$REPO" && sha256sum sandbox/Dockerfile requirements.lock | sha256sum | cut -c1-16)"
-if ! docker image inspect "$TAG" >/dev/null 2>&1; then
-  docker build -q -t "$TAG" -f "$REPO/sandbox/Dockerfile" "$REPO" >/dev/null
-fi
+# D-028: the tag must resolve to the pinned image ID; if not, the guard loads the saved
+# tarball. No image is built here (a rebuild changes the image ID). Its status line is
+# saved in the run directory as image-guard.txt.
+IMAGE_GUARD=$("$REPO/tools/ensure_pinned_image.sh" "$TAG")
 IMAGE_ID=$(docker image inspect "$TAG" --format '{{.Id}}')
 BASE_DIGEST=$(sed -n 's/^FROM \(python@sha256:[0-9a-f]\{64\}\)$/\1/p' "$REPO/sandbox/Dockerfile")
 [ -n "$BASE_DIGEST" ] || { echo "Dockerfile FROM is not pinned by digest" >&2; exit 2; }
@@ -80,6 +81,7 @@ STARTED=$(date -u +%Y%m%dT%H%M%SZ)
 # OPENVEF_EVIDENCE_ROOT is for smoke tests outside the append-only evidence/ tree.
 OUT="${OPENVEF_EVIDENCE_ROOT:-$REPO/evidence}/$OUT_PREFIX-$STARTED"
 mkdir "$OUT"   # fails if it exists: evidence is append-only
+printf '%s\n' "$IMAGE_GUARD" >"$OUT/image-guard.txt"
 
 RNAME="openvef-runner-$(od -An -N6 -tx1 /dev/urandom | tr -d ' \n')"
 mapfile -t RUNNER_FLAGS < <(read_args "$REPO/runner/runner-container.args" \

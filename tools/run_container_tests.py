@@ -110,13 +110,16 @@ class Broker:
 def main() -> int:
     dirty = out_of("git", "-C", str(REPO), "status", "--porcelain")
     tag = sandbox.image_tag()
-    if subprocess.run(["docker", "image", "inspect", tag], capture_output=True).returncode != 0:
-        sys.exit(f"image {tag} is not built; run runner/run_f18_container.sh first")
+    # D-028: the tag must resolve to the pinned image ID; the guard loads the saved tarball if not.
+    guard = subprocess.run([str(REPO / "tools" / "ensure_pinned_image.sh"), tag], capture_output=True, text=True)
+    if guard.returncode != 0:
+        sys.exit(f"pinned-image guard failed: {guard.stderr.strip()}")
     sandbox.check_harness_permissions()
     image = json.loads(out_of("docker", "image", "inspect", tag))[0]
     started = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out = Path(os.environ.get("OPENVEF_EVIDENCE_ROOT", REPO / "evidence")) / f"container-tests-{started}"
     out.mkdir()
+    (out / "image-guard.txt").write_text(guard.stdout, encoding="utf-8")
     sockdir = tempfile.mkdtemp(prefix="ovf-broker-")
     broker = Broker(f"{sockdir}/sock", tag, out / "docker-commands.jsonl")
     # Not "openvef-*": a test requires that no such container is left running.
