@@ -16,7 +16,7 @@
 - `36_F18_Parser_and_Repair_Fixture_Catalog_v1.3.7-candidate.md` and `41_F18_Fixture_Inputs/` — 144 mandatory fixture descriptors and index; formal F18 status NOT RUN / NOT PASSED (development runs are not F18 acceptance; nothing is approved).
 - `38_Authoring_Packet_Manifest_Template_v1.3.7-candidate.json` — clause-ID manifest template; payloads and hashes remain TO FREEZE.
 - `48_Claude_v1.3.6_Independent_Audit_Prompt.txt` — instructions for independent document-only re-audit.
-- `50_Python311_Unicode_Tokenizer_Check.md` — pinned-runtime Unicode test remains NOT RUN.
+- `50_Python311_Unicode_Tokenizer_Check.md` — pinned-runtime Unicode test: formal status NOT RUN (development runs of a project implementation, recorded outside this pack, are not this check; nothing is approved).
 - `56_v1.3.6_Static_Build_Checks.json`, `57_v1.3.6_Build_Integrity_Record.md`, `58_v1.3.6_Correction_Resolution.md` — package checks and correction provenance.
 - `60_v1.3.2_Audit_Export_Status.md` — exact v1.3.2 audit export size/hash and inclusion status.
 - `61_OpenVEF_v1.3.4_Independent_Audit.md` — v1.3.4 audit, preserved verbatim.

@@ -16,6 +16,8 @@ it needs an independent document audit. v1.3.6 (`baseline/`) is unchanged and re
 - **Correction cycle 2 (owner decision D-027, after document audit #1, NOT CLEARED):** section 11. Its items are
   numbered OD-n (OWNER-DECIDED), A3, A4 and C17. Each is in its own commit, and no earlier section is changed
   except by a note that names the item superseding it.
+- **Correction cycle 3 (owner decision D-029, after document audit #2, NOT CLEARED on one MINOR finding):** section 12,
+  item C18 (D2-1), in its own commit; earlier sections unchanged.
 
 **Conflict to weigh.** The corrections were drafted on 24 Nov 2026 by the implementation author, after the
 v1.3.6 implementation existed, and several make executable fixtures the code does not execute now. Each
@@ -1063,3 +1065,60 @@ item-3 exception for File 32 (section 6 note).
 
 **Fixtures affected:** none (wording only).
 
+## 12. Correction cycle 3 (owner decision D-029, after document audit #2)
+
+Document audit #2 (GPT-6, an AI model, operated by Krishika, bundle `4ee28f46…5cee`;
+`docs/reviews/doc-audit2-gpt6-2026-11-27.md`) found cycle 2 NOT CLEARED on one MINOR finding (D2-1). D1-1 to D1-8 are
+resolved, and D1-9 is partly resolved. Krishika decided D-029 on a Claude (claude.ai) triage. Its entries follow E205,
+so no earlier CHANGELOG number moves. Every edit stays inside one line. Expected objects are unchanged.
+
+### C18 — Three-part status in every current status statement (D2-1; completes C17 / D1-9)
+
+**Finding D2-1 (MINOR).** File 21 is a current document, and two of its status statements still give only the formal
+status:
+
+> [21 L52] "F18 is **NOT RUN / NOT PASSED**."
+
+> [21 L70] "- Current release status: F18 **NOT RUN / NOT PASSED**; A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE REQUIRED**."
+
+**Owner decision (D-029 item 1).** Fix L52 and L70 with the three-part status and keep the A1–A11 and X14 status. Then
+sweep the whole candidate, fix every current status statement that lacks the split, and leave historical records alone.
+Not an OD rule: no behaviour changes.
+
+**Pack text (candidate).** The three parts use C17's wording: development-run evidence (fixture runs of a project
+implementation, recorded outside this pack, are development runs, not F18 acceptance); formal F18 status (NOT RUN / NOT
+PASSED, since no authorized F18 acceptance run exists); and approval (no implementation is qualified or approved). The
+wording names no run.
+- **File 21 L52, L70** (the finding): the full three-part status. L70 keeps "A1–A11 **NOT ACCEPTED**; X14 **OWNER CHOICE
+  REQUIRED**" unchanged.
+- **File 21 L7, L40:** the "Status" column headers now say that `NOT RUN` in the column is the formal F18 status and point
+  to "F18 result" (L52) for the other two parts. This covers the 24 per-row `NOT RUN` cells without rewriting each.
+- **File 21 L26:** "RECORDED; F18 NOT RUN" now carries the three parts in short form.
+- **File 21 L69:** "until F18 is actually executed" is a rule, not a status. It now names a formal F18 acceptance run, so
+  that development runs cannot be read as setting the sidecar check values.
+- **Charter L177** (milestone 5, "F1–F18: not run"): the three parts.
+- **Charter L194** (§18): "No parser, assembler, harness or fixture suite has been executed." is an unqualified present
+  claim. It now says that the v1.0 response executed none, then gives the current three-part status.
+- **File 30 L3:** "Not implemented, frozen or executable until …" now reads "Not frozen, and not executable for F18
+  acceptance, until …" and adds the three parts, as C17 did for File 32 L33.
+- **File 31 L3:** the three parts are added after the specification's own status.
+- **README L19** (File 50): the pinned-runtime Unicode test's formal status, with development runs not counting as that
+  check. It is not an F18 line, but it is a current run status.
+- **Fixture index L4 and L1931** (`execution_status`, `status`): the same three-part string. The build rebuilds the index
+  from v1.3.6, so these two edits are applied in that step. They are logged with C18 and change no descriptor.
+
+**Kept (not current, or not a status).** Charter L9 records what the v1.3.5 audit found (kept under C17). File 32 L11
+records the v1.3.4 and v1.3.5 audits, and README L29 records what v1.3.6 changed. Document, audit, freeze and reviewer
+statuses (TO FREEZE, NOT AUDITED, DESIGN DRAFT, PENDING) make no run, pass or implementation claim. Charter L178 (F16
+pilot "not run") needs LLM calls, and none was made in any run. History files are unchanged, per section 6.
+
+**Full sweep list:** `STATUS-SWEEP-D029.md`. It has 342 lines in 59 files, each with its file, line and class: FIXED 13,
+ALREADY THREE-PART (C17) 8, COVERED BY HEADER 24, CURRENT NOT AN F18 STATUS 36, NOT A STATUS STATEMENT 23, HISTORICAL 238.
+
+**Check.** `tests/test_v137_candidate_pack.py` `test_current_status_lines_have_three_parts` fails if a line in a current
+document has `NOT RUN`, `NOT PASSED`, `PASSED` or `status` (any case), mentions F18, and lacks any of the three parts. It
+also checks the fixture index's two status fields. The three lines it exempts (Charter L9, File 32 L11, File 36 L48, the
+P11b "provider truncation status") are listed in the test with their reasons.
+
+**Fixtures affected:** none. Wording only, and the fixture-index status fields change no descriptor hash or expected
+object.

@@ -741,6 +741,51 @@ CYCLE2 += [
      "implementation is not F18 acceptance, and nothing is approved)."),
 ]
 
+# D-029 correction cycle 3, after document audit #2 (NOT CLEARED; D2-1, MINOR). Logged after the last cycle-2 entry
+# (E205), so no earlier entry number moves. C18 (D2-1, D1-9 remainder): every current status statement that lacked the
+# three-part split now has it; File 21 L52 and L70 first, then the rest of the sweep (CORRECTIONS section 12, which lists
+# every status statement found and why each historical one is kept). The A1-A11 and X14 status is kept.
+_HDR = 'Status (NOT RUN here is the formal F18 status; for development-run evidence and approval see "F18 result" below)'
+CYCLE3 = [
+    ("C18", "D2-1", "all", P21, 7, "| Check | Required pass condition | Status |",
+     f"| Check | Required pass condition | {_HDR} |"),
+    ("C18", "D2-1", "all", P21, 26, "RECORDED; F18 NOT RUN",
+     "RECORDED; formal F18 status NOT RUN (development-run evidence is not F18 acceptance; nothing is approved)"),
+    ("C18", "D2-1", "all", P21, 40, "| Fixture family | Mandatory IDs | Status |", f"| Fixture family | Mandatory IDs | {_HDR} |"),
+    ("C18", "D2-1", "all", P21, 52, "F18 is **NOT RUN / NOT PASSED**.",
+     f"F18 status, in three separate parts: {_DEV}; {_F18}; {_APP}."),
+    ("C18", "D2-1", "all", P21, 69, "until F18 is actually executed;",
+     "until a formal F18 acceptance run is executed (development runs are not F18 acceptance and do not set them; "
+     "nothing is approved);"),
+    ("C18", "D2-1", "all", P21, 70, "- Current release status: F18 **NOT RUN / NOT PASSED**;",
+     f"- Current release status: {_DEV}; {_F18}; {_APP};"),
+    ("C18", "D2-1", "all", P01, 177, "**F1–F18:** not run; all must pass on FIFO.",
+     "**F1–F18:** formal status not run, since no authorized F1–F18 acceptance run exists (development-run evidence: "
+     "runs of a project implementation, recorded outside this pack, are development runs, not F1–F18 acceptance; "
+     "approval: nothing is qualified or approved); all must pass on FIFO."),
+    ("C18", "D2-1", "all", P01, 194, "No parser, assembler, harness or fixture suite has been executed.",
+     f"That response executed no parser, assembler, harness or fixture suite. Current status, in three separate "
+     f"parts: {_DEV}; {_F18}; {_APP}."),
+    ("C18", "D2-1", "all", P30, 3,
+     "Not implemented, frozen or executable until owner acceptance, independent re-audit, and runtime pinning.",
+     "Not frozen, and not executable for F18 acceptance, until owner acceptance, independent re-audit, and runtime "
+     f"pinning. Status, in three separate parts: {_DEV}; {_F18}; {_APP}."),
+    ("C18", "D2-1", "all", P31, 3, "Not frozen until independent review and owner approval.",
+     f"Not frozen until independent review and owner approval. Status, in three separate parts: {_DEV}; {_F18}; "
+     f"{_APP}."),
+    ("C18", "D2-1", "—", P_README, 19, "pinned-runtime Unicode test remains NOT RUN.",
+     "pinned-runtime Unicode test: formal status NOT RUN (development runs of a project implementation, recorded "
+     "outside this pack, are not this check; nothing is approved)."),
+]
+# The fixture index is rebuilt from v1.3.6 in build(); its two status fields are edited there and logged with cycle 3.
+_IDX_STATUS = ("formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run "
+               "evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, "
+               "not F18 acceptance; approval: no implementation is qualified or approved")
+INDEX_CYCLE3 = [
+    (4, '"execution_status": "NOT RUN / NOT PASSED",', f'"execution_status": {json.dumps(_IDX_STATUS)},'),
+    (1931, '"status": "NOT RUN / NOT PASSED"', f'"status": {json.dumps(_IDX_STATUS)}'),
+]
+
 
 def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
@@ -826,11 +871,20 @@ def build(out: Path) -> dict:
                      "new": "\n".join(extra)})
         lines.extend(extra)
 
+    # D-029 cycle 3: after every cycle-2 edit; logged in log3, which follows the last cycle-2 entry (E205).
+    touched2, log3 = set(texts), []
+    for cid, pd, fixtures, rel, n, old, new in CYCLE3:
+        assert not (rel == src and first <= n <= last), (cid, rel, n)  # no cycle-3 edit reaches the File 25 copy
+        lines = line_of(rel)
+        assert lines[n - 1].count(old) == 1, (cid, rel, n, old[:60])
+        lines[n - 1] = lines[n - 1].replace(old, new)
+        log3.append({"correction": cid, "pd": pd, "fixtures": fixtures, "file": rel, "line": n, "old": old, "new": new})
+
     for rel, lines in texts.items():
         body = "\n".join(lines) + "\n"
         if rel.endswith(".md") or rel == P25:  # File 25: after its last line, outside the model-visible bodies
             body += TRAILER
-            (log if rel in touched1 else log2).append({"correction": "label", "pd": "—", "fixtures": "—", "file": rel,
+            (log if rel in touched1 else log2 if rel in touched2 else log3).append({"correction": "label", "pd": "—", "fixtures": "—", "file": rel,
                         "line": len(lines) + 1, "old": "(end of file)", "new": "appended trailer: " + TRAILER.strip()})
         (out / rel).write_text(body, "utf-8")
 
@@ -885,6 +939,11 @@ def build(out: Path) -> dict:
     idx[j] = f'  "fixture_index_version": {json.dumps(VERSION_LABEL)},'
     log.append({"correction": "label", "pd": "—", "fixtures": "—", "file": idx_rel, "line": j + 1,
                 "old": '"fixture_index_version": "1.3.6",', "new": idx[j].strip()})
+    for n, old, new in INDEX_CYCLE3:  # D-029 C18: the index's two status fields
+        assert idx[n - 1].strip() == old, (n, idx[n - 1])
+        idx[n - 1] = idx[n - 1].replace(old, new)
+        log3.append({"correction": "C18", "pd": "D2-1", "fixtures": "all", "file": idx_rel, "line": n, "old": old,
+                     "new": new})
     (out / idx_rel).write_text("\n".join(idx) + "\n", "utf-8")
 
     for old, new in RENAMES.items():  # S: a current document's file name carries the pack version
@@ -896,17 +955,19 @@ def build(out: Path) -> dict:
     sums = lines_of((BASE / sums_rel).read_text("utf-8"))
     changed = sorted({e["file"] for e in log})
     changed2 = sorted({e["file"] for e in log2} - set(changed))
-    for rel in changed + changed2:
+    changed3 = sorted({e["file"] for e in log3} - set(changed) - set(changed2))
+    for rel in changed + changed2 + changed3:
         j = next(i for i, s in enumerate(sums) if s.endswith("  " + rel))
         old, name = sums[j], RENAMES.get(rel, rel)
         sums[j] = f"{sha((out / name).read_bytes())}  {name}"
-        (log if rel in changed else log2).append({"correction": "derived", "pd": "—", "fixtures": "—", "file": sums_rel, "line": j + 1,
+        (log if rel in changed else log2 if rel in changed2 else log3).append({"correction": "derived", "pd": "—", "fixtures": "—", "file": sums_rel, "line": j + 1,
                     "old": old, "new": sums[j]})
     (out / sums_rel).write_text("\n".join(sums) + "\n", "utf-8")
 
     if os_entry is not None:
         log.append(os_entry)
     log.extend(log2)  # D-027: cycle 2 follows E158
+    log.extend(log3)  # D-029: cycle 3 follows E205
     write_changelog(out, log)
     write_label(out, log)
     files = sorted(p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file() and p.name != SUMS)
@@ -940,6 +1001,11 @@ def write_changelog(out: Path, log: list[dict]) -> None:
             "  OWNER-DECIDED: a normative rule the owners add that v1.3.6 does not state, labelled as such in the pack text;",
             "  every fixture that depends on one is counted OWNER-DECIDED. For cycle-2 entries the `PD` column holds the",
             "  audit finding (`D1-n`). `derived` entries show the hashes of the final build, cycle 2 included.",
+            "- **Correction cycle 3 (owner decision D-029), after document audit #2 (NOT CLEARED, one MINOR finding D2-1;",
+            "  `docs/reviews/doc-audit2-gpt6-2026-11-27.md` in the implementation repository).** Its entries follow the last",
+            "  cycle-2 entry (E205), so no earlier entry number moves. `C18` = the three-part status wording (development-run",
+            "  evidence / formal F18 status / approval) applied to every current status statement that lacked it; the `PD`",
+            "  column holds the finding (`D2-1`). `derived` entries show the hashes of the final build, cycle 3 included.",
             "- **Kept on purpose (not stale):** references that record history — the v1.3.6 change log, build, correction",
             "  and audit records (Files 03, 48, 50, 56, 57, 58, 63 and the audit transcripts), and statements of what",
             "  v1.3.6 did — and the owners' records (Files 16, 23), which describe owner decisions on v1.3.6 and are not",
@@ -963,7 +1029,8 @@ def write_label(out: Path, log: list[dict]) -> None:
             "corrections C1–C16 and amendments A1–A2 applied (owner decisions D-024, D-025) and the OWNER-SPECIFIED",
             "items OS-1–OS-3 (owner decision D-026; `" + CHANGELOG + "`), and with correction cycle 2 (owner",
             "decision D-027: OWNER-DECIDED rules OD-n and numbered amendments) after document audit #1 of cycle 1",
-            "(NOT CLEARED). It is not released, not audit-cleared and not approved, and v1.3.6 (`baseline/`) remains",
+            "(NOT CLEARED), and with correction cycle 3 (owner decision D-029: C18, the three-part status wording) after",
+            "document audit #2 (NOT CLEARED). It is not released, not audit-cleared and not approved, and v1.3.6 (`baseline/`) remains",
             "the default pack.", "",
             "- **In-file label:** every file a correction changed carries the label itself (Markdown and File 25: an",
             "  appended trailer, in File 25 after its last line and outside the model-visible bodies; fixture JSON:",

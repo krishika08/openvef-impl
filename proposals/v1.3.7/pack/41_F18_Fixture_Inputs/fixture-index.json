@@ -1,7 +1,7 @@
 {
   "fixture_index_version": "1.3.7-candidate, not audited",
   "mandatory": true,
-  "execution_status": "NOT RUN / NOT PASSED",
+  "execution_status": "formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; approval: no implementation is qualified or approved",
   "fixture_count": 144,
   "fixtures": [
     {
@@ -1928,5 +1928,5 @@
       }
     }
   ],
-  "status": "NOT RUN / NOT PASSED"
+  "status": "formal F18 status NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; approval: no implementation is qualified or approved"
 }

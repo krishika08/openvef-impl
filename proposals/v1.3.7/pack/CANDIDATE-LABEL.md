@@ -4,7 +4,8 @@
 corrections C1–C16 and amendments A1–A2 applied (owner decisions D-024, D-025) and the OWNER-SPECIFIED
 items OS-1–OS-3 (owner decision D-026; `CHANGELOG-v1.3.7-candidate.md`), and with correction cycle 2 (owner
 decision D-027: OWNER-DECIDED rules OD-n and numbered amendments) after document audit #1 of cycle 1
-(NOT CLEARED). It is not released, not audit-cleared and not approved, and v1.3.6 (`baseline/`) remains
+(NOT CLEARED), and with correction cycle 3 (owner decision D-029: C18, the three-part status wording) after
+document audit #2 (NOT CLEARED). It is not released, not audit-cleared and not approved, and v1.3.6 (`baseline/`) remains
 the default pack.
 
 - **In-file label:** every file a correction changed carries the label itself (Markdown and File 25: an

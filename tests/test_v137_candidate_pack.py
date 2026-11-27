@@ -46,7 +46,8 @@ class CandidatePackTests(unittest.TestCase):
         edited: dict[str, set[int]] = {}
         src, first, last, copy, shift = mod.MIRROR
         for rel, n in ([(e[3], e[4]) for e in mod.EDITS] + [(s[0], s[1]) for s in mod.STALE]
-                       + [(e[3], e[4]) for e in mod.CYCLE2]):  # D-027 cycle 2 edits lines in place too
+                       + [(e[3], e[4]) for e in mod.CYCLE2]  # D-027 cycle 2 edits lines in place too
+                       + [(e[3], e[4]) for e in mod.CYCLE3]):  # D-029 cycle 3 (C18) as well
             edited.setdefault(rel, set()).add(n)
             if rel == src and first <= n <= last:
                 edited.setdefault(copy, set()).add(n + shift)
@@ -194,6 +195,15 @@ class CandidatePackTests(unittest.TestCase):
             if item.startswith("OD-"):
                 self.assertTrue(any(f"OWNER-DECIDED {item}" in b.decode("utf-8", "replace") for b in self.pack.values()),
                                 item)
+
+    def test_cycle3_follows_cycle2(self):
+        """D-029: cycle-3 (C18) entries come after E205, so every earlier entry keeps its number and correction."""
+        import re
+        changelog = self.pack["CHANGELOG-v1.3.7-candidate.md"].decode("utf-8")
+        entries = re.findall(r"^\| (E\d+) \| ([^|]+) \|", changelog, re.M)
+        c18 = [i for i, (_, c) in enumerate(entries) if c.strip() == "C18"]
+        self.assertEqual(c18, list(range(205, 205 + len(self.mod.CYCLE3) + len(self.mod.INDEX_CYCLE3))))
+        self.assertNotIn("C18", {c.strip() for _, c in entries[:205]})
 
     def test_od3_schema_covers_every_change_class_property(self):
         """OD-3 (D-027, D1-1/D1-2): Protocol §20 lists every property of the change-class and domain-validation expected
