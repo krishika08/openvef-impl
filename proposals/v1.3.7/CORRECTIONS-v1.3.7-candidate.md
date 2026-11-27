@@ -848,7 +848,7 @@ diagnostic code; SIMULATOR_ERROR is the stated exception." Applied to `DESIGN_HA
 **Pack text (candidate).** L174 states OD-1, labelled, and applies it to `FEEDBACK_SERIALIZER_REJECT`. L185 labels the
 `DESIGN_HALT_REPEATED` sentence `OWNER-DECIDED OD-1`. Both lines lie in L90–L187, so A2 copies them into File 25.
 
-**Two choices made in wording it (decided by Claude under standing delegation, owner review pending; A-059):**
+**Two choices made in wording it (decided by Claude under standing delegation; A-059, approved by Krishika under D-029 item 2):**
 - *"Stage-map row" includes the local-ledger vocabulary rows.* The two codes D-027 names are not rows of the L141–L162
   table. They are listed in the §3.4 local-ledger vocabulary (L173, L175) and in §7b (L185). D-027 applies OD-1 to
   exactly these two, so the rule must reach those rows.

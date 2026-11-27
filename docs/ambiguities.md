@@ -2016,9 +2016,9 @@ Items, rationale and quotes: `proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md` 
 then A3 (D1-7, an amendment to C10), A4 (D1-8, an amendment to OS-2) and C17 (D1-9), each in its own Phase A commit
 (D-024: a candidate correction is changed only by a numbered amendment in its own commit).
 
-## A-059 — How far OD-1 reaches (DECIDED BY CLAUDE — owner review pending)
+## A-059 — How far OD-1 reaches (DECIDED BY CLAUDE — approved under D-029)
 
-Decided by Claude under standing delegation, owner review pending.
+Decided by Claude under standing delegation; approved by Krishika as decided under D-029 item 2.
 
 **Quote (D-027 item 3):** "a stage-map row with a single diagnostic code and no stated error class has error class =
 diagnostic code; SIMULATOR_ERROR is the stated exception; apply to DESIGN_HALT_REPEATED and FEEDBACK_SERIALIZER_REJECT".
@@ -2039,3 +2039,27 @@ says that a fixture depending on any OD rule counts as OWNER-DECIDED, and states
 therefore counted OWNER-DECIDED, and its record keeps both labels (`owner_decided` and `owner_specified` = `OS-1`).
 OWNER-SPECIFIED counts only OS fixtures that depend on no OD rule. If the owners prefer OS to take precedence, only the
 category of M41 moves. No outcome changes.
+
+## D-029 — Response to document audit #2 (DECIDED)
+
+**Owner decision by Krishika**, on a Claude (claude.ai) triage of document audit #2 (GPT-6, an AI model, operated by
+Krishika; bundle `4ee28f46…5cee`; NOT CLEARED: 0 BLOCKER, 0 MAJOR, 1 MINOR (D2-1), 0 PACK; D1-1 to D1-8 resolved, D1-9
+partly; `docs/reviews/doc-audit2-gpt6-2026-11-27.md`). Takes effect under D-008; Ayush's ratification stays the single
+entry in AUDIT-READINESS.md.
+
+1. **D2-1:** fix File 21 L52 and L70 with the three-part status (development-run evidence / formal F18 status /
+   approval), keeping the A1–A11 and X14 status. Then sweep the whole candidate: list every current status statement
+   (grep NOT RUN, NOT PASSED, PASSED, status, F18) and fix any that lacks the three-part split; leave historical v1.3.6
+   records alone. Report the full list (file, line, fixed or historical). Add a test that fails if a current status
+   line mentions F18 without the three parts.
+2. **A-059 approved** by Krishika: any OD dependency makes a fixture OWNER-DECIDED; M41 keeps its OS-1 label. Marked
+   decided.
+3. Phase A (pack text) is committed alone, then any code. Re-run v1.3.7c, the controls and the container tests in the
+   pinned image (guard on) and confirm the statuses are unchanged. Rebuild the document-audit bundle with a brief scoped
+   to D2-1, the sweep and regression, publish it as release `docaudit3-<first 8 of sha>`, and push.
+
+**A-059 approved text:** SHA-256 of the A-059 section before this record changed its status wording:
+`cdd05cdaa289beecbca8a0e6bdfe8e7c1d5179e00d6083a30a002095fa3cc9fa`. Only the heading and the first line changed.
+
+Items, rationale and the sweep list: `proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md` section 12 (correction cycle 3,
+item C18).
