@@ -1,0 +1,63 @@
+{
+  "argv": [
+    "python",
+    "-I",
+    "/shim/inner.py",
+    "/workspaces/openvef-impl",
+    "/evidence"
+  ],
+  "distributions": {
+    "Pygments": "2.21.0",
+    "attrs": "26.1.0",
+    "click": "8.5.1",
+    "cocotb": "2.1.0",
+    "find_libpython": "0.5.1",
+    "iniconfig": "2.3.1",
+    "jsonschema": "4.26.0",
+    "jsonschema-specifications": "2025.9.1",
+    "packaging": "26.3",
+    "pip": "24.0",
+    "pluggy": "1.7.0",
+    "pytest": "9.2.0",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1",
+    "setuptools": "79.0.1",
+    "typing_extensions": "4.16.0",
+    "wheel": "0.46.3"
+  },
+  "environment": {
+    "GPG_KEY": "A035C8C19219BA821ECEA86B64E628F8D684696D",
+    "HOME": "/",
+    "HOSTNAME": "tests",
+    "LANG": "C.UTF-8",
+    "PATH": "/shim:/usr/local/bin:/usr/bin:/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONHASHSEED": "0",
+    "PYTHONUNBUFFERED": "1",
+    "PYTHON_SHA256": "9120e0a653868f6e3698d36cdd99e5a58903ec9469e448f21d98f7b16d8fa290",
+    "PYTHON_VERSION": "3.11.18"
+  },
+  "machine": "x86_64",
+  "platform": "Linux-6.8.0-1070-azure-x86_64-with-glibc2.41",
+  "python_executable": "/usr/local/bin/python3.11",
+  "python_executable_sha256": "92d7e40ec50be176cb1b790c7568b7e08cd862137b5aa69f1413ba1967886b79",
+  "python_version": "3.11.18 (main, Nov  5 2026, 07:57:53) [GCC 14.2.0]",
+  "toolchain": {
+    "cocotb": "2.1.0",
+    "eda_pins": "yosys 0.71 2ec7c2ee63bb9b4065d6d5fff2786a1455e834f90ede8eb1d47791153ebef2a5\nmcy 5a2cad0cbefceb7f23051c08348bd23128fd1046\ndebian_snapshot 20261104T212339Z",
+    "iverilog_deb_version": "12.0-2+b1",
+    "iverilog_sha256": "99633b21371b5fc6ddc3156c9402c10e2915a94feb99ddc5eb01ba8f02758462",
+    "iverilog_version_line": "Icarus Verilog version 12.0 (stable) ()",
+    "mcy_commit": "5a2cad0cbefceb7f23051c08348bd23128fd1046",
+    "mcy_sha256": "e56df004f5960d811cf8f468b21fce77922ce5cb541c4faf400fdab8af944a01",
+    "vvp_sha256": "dc287630d71c187dcf258a9d3c7d4aa77d2c3c2c4c7515debe91d000ea40c1df",
+    "vvp_version_line": "Icarus Verilog runtime version 12.0 (stable) ()",
+    "yosys_abc_sha256": "2bc88ba4923042e96ce0da15b993b892a70ed14d9f0c625c394aa6cad48bcf7b",
+    "yosys_sha256": "0bf886591a8e2b0f45fea92b2022f61d5a2213c370904ff87bbdeadbbee4e6af",
+    "yosys_version_line": "Yosys 0.71+post (git sha1 5628c13240f670b97aaaca3d47940c4afb8ff572, Release, GNU /usr/bin/c++ 14.2.0)"
+  },
+  "uid_gid": [
+    1000,
+    1000
+  ]
+}
