@@ -1,8 +1,10 @@
-"""Build dist/openvef-docaudit-bundle.zip for the document audit of the v1.3.7 CANDIDATE (D-026 item 3;
-docs/DOC-AUDIT-BRIEF.md).
+"""Build dist/openvef-docaudit-bundle.zip for document audit #2 of the v1.3.7 CANDIDATE: correction cycle 2 and
+regression (D-027 item 10; docs/DOC-AUDIT2-BRIEF.md). Audit #1's bundle (D-026 item 3, docs/DOC-AUDIT-BRIEF.md) was
+built by this script at 8d8be84 and is release docaudit1-c4caff40.
 
 Contents: the candidate pack (with its CHANGELOG), the CORRECTIONS rationale, the build script, the PD records, the
-v1.3.6 baseline for diffing, the latest candidate F18 run and the brief. Only git-tracked files are bundled. The build
+v1.3.6 baseline for diffing, the latest candidate F18 run, audit #1's report and note, docs/ambiguities.md (D-027,
+A-059) and the brief. Only git-tracked files are bundled. The build
 refuses a dirty tree (any path) and checks the following. The candidate pack matches its SHA256SUMS, and no file is
 unlisted. Each baseline file matches 27_SHA256SUMS.txt. The run was made in the pinned image on a clean commit, from the
 bundled pack manifest, and its results hash agrees. Entries are sorted, with fixed timestamps and modes, so the same
@@ -24,9 +26,12 @@ CAND = "proposals/v1.3.7/pack"
 CAND_SUMS = f"{CAND}/SHA256SUMS-v1.3.7-candidate.txt"
 RUN = max((p.parent for p in (REPO / "evidence").glob("run-v137c-*/summary.json")),
           default=REPO / "missing").relative_to(REPO).as_posix()
-BRIEF = "docs/DOC-AUDIT-BRIEF.md"
+BRIEF = "docs/DOC-AUDIT2-BRIEF.md"
+REPORT1 = "docs/reviews/doc-audit1-gpt6-2026-11-27.md"
+REPORT1_SHA256 = "ba81408bde5339291d4b2ef25cab70b5eaa3e518412ecd45cdbeb11f54604b95"
 PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "proposals/v1.3.7/build_candidate.py",
-         "docs/pack-defects.md", BRIEF, RUN]
+         "docs/pack-defects.md", BRIEF, RUN, REPORT1,
+         "docs/reviews/doc-audit1-gpt6-2026-11-27-NOTE.md", "docs/ambiguities.md"]
 OUT = REPO / "dist" / "openvef-docaudit-bundle.zip"
 LIMIT = 20_000_000
 
@@ -72,15 +77,24 @@ def main() -> int:
         problems.append("the run used a different candidate manifest")
     if "+" in summary["git_commit"] or not summary["interpreter_status"].startswith("PINNED"):
         problems.append(f"run not from a clean commit in the pinned image: {summary['git_commit']}")
+    if sha(files[REPORT1]) != REPORT1_SHA256:
+        problems.append("audit #1 report is not the saved verbatim copy")
+    if "OWNER-DECIDED" not in (summary.get("counts_by_category") or {}):
+        problems.append("the run predates D-027 Phase B (no OWNER-DECIDED category)")
     if problems:
         sys.exit("; ".join(problems))
 
-    info = {"purpose": "document audit of the v1.3.7 CANDIDATE (D-026 item 3); not an implementation audit, not F18",
+    info = {"purpose": "document audit #2 of the v1.3.7 CANDIDATE: correction cycle 2 and regression (D-027 item 10); "
+                       "not an implementation audit, not F18",
             "brief": BRIEF, "candidate_pack": CAND, "candidate_pack_manifest_sha256": sha(files[CAND_SUMS]),
             "candidate_pack_files": len(cand), "baseline": BASE, "baseline_files": len(base),
             "candidate_run": RUN, "candidate_run_commit": summary["git_commit"],
             "candidate_run_counts": summary["counts"], "candidate_run_counts_by_category": summary.get("counts_by_category"),
             "owner_specified_fixtures": summary.get("owner_specified_fixtures"),
+            "owner_decided_fixtures": summary.get("owner_decided_fixtures"),
+            "previous_audit": {"report": REPORT1, "report_sha256": REPORT1_SHA256,
+                               "bundle_sha256": "c4caff409692797b4292a1c6851c79a722d1c60cbf4371e5611f5ef4f0a4cbd7",
+                               "verdict": "NOT CLEARED"},
             "build_commit": git("rev-parse", "HEAD").strip(), "files": len(files),
             "label": "v1.3.7 CANDIDATE, not audited",
             "disclosure": "The corrections and this brief were written by Claude (Anthropic), the implementation author. "
