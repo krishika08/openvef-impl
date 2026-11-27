@@ -19,7 +19,12 @@ HERE = REPO / "proposals/v1.3.7"
 PACK = HERE / "pack"
 BASE = REPO / "baseline/OpenVEF_Planning_v1_3_6"
 
-from openvef.stage_map import validate_vector  # noqa: E402
+try:  # D-030: only the M27 test needs the implementation; the document-audit bundle has the tests, not src/
+    from openvef.stage_map import validate_vector  # noqa: E402
+except ImportError:  # pragma: no cover - only outside the repository
+    if (REPO / "src/openvef").exists():
+        raise  # in the repository a failed import is an error, never a skip
+    validate_vector = None
 
 ADDED = {"CHANGELOG-v1.3.7-candidate.md", "CANDIDATE-LABEL.md", "SHA256SUMS-v1.3.7-candidate.txt"}
 FX = "41_F18_Fixture_Inputs/"
@@ -375,6 +380,7 @@ class CandidatePackTests(unittest.TestCase):
                 got["required_action"] = action  # §20.2: every result has the L176 literal
                 self.assertEqual(got, expected)
 
+    @unittest.skipIf(validate_vector is None, "openvef not importable (document-audit bundle)")
     def test_corrected_m27_reaches_check_e(self):
         m27 = json.loads(self.pack[FX + "M27.json"])
         inp = m27["input"]

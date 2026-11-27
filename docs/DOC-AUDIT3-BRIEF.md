@@ -106,3 +106,12 @@ RESOLVED** or **NOT RESOLVED**.
 6. Anything you could not check, and why.
 
 The owners will decide on each finding. The author will not mark any finding closed.
+
+## Erratum (D-030, after audit #3; the text above is kept as audited)
+
+§4.2's last sentence, "Only the pinned pack hashes differ.", is **inaccurate** (document audit #3, D3-1). Between audit
+#2's run `run-v137c-20261127T134318Z` and audit #3's run `run-v137c-20261127T153351Z`, `results.jsonl` differs only in
+measured simulator timings: in 9 of 144 rows, `simulator.l334.wall_times_s[0..2]`, `median_s` and the derived
+`t_timeout_s`. No status, category, actual, expected, note, pack label or descriptor hash differs. The pinned pack hashes
+are in `summary.json` (with the runner source hash and run provenance), not in `results.jsonl`. Detail:
+`evidence/RUN-CONTINUITY-D030.md`.
