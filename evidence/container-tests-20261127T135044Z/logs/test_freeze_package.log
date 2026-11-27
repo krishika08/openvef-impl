@@ -1,0 +1,18 @@
+test_every_listed_decision_present (test_freeze_package.FreezePackageTests.test_every_listed_decision_present) ... ok
+test_hashes_match (test_freeze_package.FreezePackageTests.test_hashes_match) ... ok
+test_changed_bytes_unfreeze (test_freeze_package.FreezeRecordTests.test_changed_bytes_unfreeze) ... ok
+test_changed_mask_is_not_cleared (test_freeze_package.FreezeRecordTests.test_changed_mask_is_not_cleared) ... ok
+test_d009_cleanup_was_wording_only (test_freeze_package.FreezeRecordTests.test_d009_cleanup_was_wording_only) ... ok
+test_d009_readings_match (test_freeze_package.FreezeRecordTests.test_d009_readings_match) ... ok
+test_d010_changed_only_placeholders (test_freeze_package.FreezeRecordTests.test_d010_changed_only_placeholders) ... ok
+test_dev001_clears_only_the_mask_reason_with_its_label (test_freeze_package.FreezeRecordTests.test_dev001_clears_only_the_mask_reason_with_its_label) ... ok
+test_dev001_hashes_are_package_section_g (test_freeze_package.FreezeRecordTests.test_dev001_hashes_are_package_section_g) ... ok
+test_items_are_the_signed_lines (test_freeze_package.FreezeRecordTests.test_items_are_the_signed_lines) ... ok
+test_mask_never_settled_by_owner_freeze (test_freeze_package.FreezeRecordTests.test_mask_never_settled_by_owner_freeze) ... ok
+test_record_hashes_are_the_package_hashes (test_freeze_package.FreezeRecordTests.test_record_hashes_are_the_package_hashes) ... ok
+test_verify_all_frozen (test_freeze_package.FreezeRecordTests.test_verify_all_frozen) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.127s
+
+OK
