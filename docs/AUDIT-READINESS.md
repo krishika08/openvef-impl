@@ -12,6 +12,10 @@ It is a status document: it claims no gate as passed.
   feasibility scope of L555 step (4), as the owners' Sign-off Pack opened it (CLAUDE.md).
   The v1.3.6 baseline files still record their own pre-implementation status (Files 16,
   21, 23 and 32); they are read-only and are not updated by this work.
+- **Step (3), v1.3.7 (D-035): recorded as met.** Document audit #7 CLEARED, and the owner record is D-035 ("for v1.3.7,
+  A1–A11 are accepted as written (11/11) and X14 Option A is chosen"). v1.3.7 is adopted ([V137-ADOPTION.md](V137-ADOPTION.md)),
+  pending Ayush's ratification. v1.3.7 fixture runs are authorized development runs, not F18 acceptance. The DEV-003
+  waiver ended at adoption.
 - **Step (3), v1.3.6 (D-034):** "v1.3.6 gate recorded as met, with evidentiary gaps" ([DEV-004](DEVIATIONS.md)).
   The owner records are in [owner-records/](owner-records/NOTE.md): the Sign-off Pack Part 4 signature by Krishika,
   23 Nov 2026 13:54 IST, adopting the Decision Record at revision 25. The record states "PASS, 23 Nov 2026
@@ -46,12 +50,23 @@ Latest evidence run: **`evidence/run-20261127T134112Z`** (pack v1.3.6), on the r
 - Every record is identical to `run-20261126T163836Z` except measured wall-clock times (the `simulator.l334` fields);
   D-024 to D-027 changed no v1.3.6 status, note or label. `run-20261127T113929Z` (retired image `fa254bba…`) is
   equivalence evidence only (D-028).
-- **Candidate pack (D-024; v1.3.7 CANDIDATE, not audited; not v1.3.6 F18 evidence, does not count toward F18):**
+- **Adopted pack v1.3.7 (D-035; default since D-035; authorized development run, not F18 acceptance):**
+  `run-v137-20261128T110824Z`, commit `35621f9`. It is the first run of the adopted pack, on the same image, from
+  `baseline-v1.3.7/OpenVEF_Planning_v1_3_7`: manifest `d64a91a8`, 205 files verified.
+  - Counts: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED (P17), 0 ERROR. By category: PACK-DERIVED 131/0/0/0, OWNER-DECIDED
+    11/0/0/0, OWNER-SPECIFIED 1/0/1/0.
+  - Every status and category equals the last candidate run; only `pack_label` and the `simulator.l334` timings differ
+    (`evidence/RUN-CONTINUITY-D035.md`).
+  - Controls: `controls-20261128T111046Z` (v1.3.6, unchanged). Container tests: `container-tests-20261128T111117Z`
+    (444 pass).
+  - Pack release: `pack-v1.3.7`, ZIP SHA-256 `5a336e0c2f8b37d427e296f4162a68f55a044fea0339b1274a3e91dfdf4e61ba`.
+- **Candidate pack (D-024; v1.3.7 CANDIDATE; adopted as v1.3.7 by D-035; not v1.3.6 F18 evidence, does not count toward F18):**
   `run-v137c-20261128T102409Z`, commit `e993517` (C19 pack, manifest `d64a91a8`, unchanged by D-031 to D-033; development run under DEV-003), same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
   separately (D-026, D-027 Phase B): **PACK-DERIVED** 131 / 0 / 0 / 0; **OWNER-DECIDED** (OD-1–OD-4) 11 / 0 / 0 / 0 (M13,
   M41 OD-4; M15, M42, M47 OD-1; M27 OD-2; M48, M50, M53, M54, M58 OD-3); **OWNER-SPECIFIED** 1 PASS (M37, OS-2) / 0 FAIL /
   1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059, approved by Krishika under D-029). Every status and category equals `run-v137c-20261127T134318Z`, `153351Z`, `163649Z`, `run-v137c-20261128T033242Z` and `042052Z` (C18 and C19 changed no expected object; D-031 to D-033 changed only a test); row-level diffs in `evidence/RUN-CONTINUITY-D030.md`, `-D030-regression.md`, `-D031.md`, `-D032.md` and `-D033.md` (only `simulator.l334` timings differ). The candidate needs an
-  independent document audit and owner approval before it could replace v1.3.6.
+  independent document audit and owner approval before it could replace v1.3.6. *(Met: document audit #7 CLEARED;
+  adopted by D-035, `docs/V137-ADOPTION.md`.)*
 - D-022 (re-audit #4: `stop` cites File 36 L48; literal `inspect.signature` after
   import) changed no status, note or label. D-019 to D-022 are audited (fourth and fifth audits); A9-2 is closed as a
   finding, and its SELF_REPORTED residual stays a disclosed limitation (D-023).
@@ -161,7 +176,7 @@ this run is on the pinned one.
 
 | Item | Owner | Reference |
 |---|---|---|
-| **Ayush ratification pending** (the single entry under D-008): Ayush Kumar Singh's agreement to every decision and approval Krishika signed alone, including the freeze package (`a955245`) and every decision recorded as awaiting his confirmation (D-001–D-023, DEV-001, DEV-002, A-001–A-006, A-013, A-014, A-015 case 2, A-042). Under D-008 these take effect now | Ayush | [ambiguities.md](ambiguities.md) D-008; [FREEZE-RECORD-2026-11-24.md](FREEZE-RECORD-2026-11-24.md) |
+| **Ayush ratification pending** (the single entry under D-008): Ayush Kumar Singh's agreement to every decision and approval Krishika signed alone, including the freeze package (`a955245`) and every decision recorded as awaiting his confirmation (D-001–D-023, D-024–D-035 including the v1.3.7 adoption and its A1–A11/X14 record, DEV-001, DEV-002, A-001–A-006, A-013, A-014, A-015 case 2, A-042). Under D-008 these take effect now | Ayush | [ambiguities.md](ambiguities.md) D-008; [FREEZE-RECORD-2026-11-24.md](FREEZE-RECORD-2026-11-24.md) |
 | Sign the overlap disclosure note's own owner-signature table (F1 in the package is approved) | owners | [fifo-benchmark-overlap-disclosure-DRAFT.md](fifo-benchmark-overlap-disclosure-DRAFT.md) |
 | Itemised review of the readings approved under D-009 (A-007–A-012, A-013 tie, A-015–A-037, A-039, A-045–A-052, F15 case table): approved as decided, **not** reviewed item by item; A-031 withdrawn (D-012). Optional for the owners | an owner | [READINGS-REVIEW.md](READINGS-REVIEW.md); D-009 |
 | Pack defects PD-01…PD-24 (settle, or accept the interim readings) | owners | [pack-defects.md](pack-defects.md) |
