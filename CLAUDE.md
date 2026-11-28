@@ -80,26 +80,22 @@ Owner decision D-037 (Krishika, 28 Nov 2026; docs/ambiguities.md): the miter N (
 (design/fifo/freeze/miter-freeze-D-037.json, hash-checked before every F4/F5 run). Never re-tune them; a change needs a
 new owner amendment.
 
-Still human-written. Do NOT write: F6/F17 control checkers or drivers, the directed
-suite, control mutants. Owners write those by hand; Claude may comment on them in prose
-only. Owner decision D-007 (Krishika, 24 Nov 2026; Ayush's confirmation pending) adds the
-control drivers and checkers for F1–F5 and F7–F13 to this list (independence from the
-harness author). Control mutants are RTL edits of `design/fifo/rtl/ovf_fifo.v` (D-007).
-Owner artifacts go in `design/fifo/controls/` (see its README); Claude builds only the
-harness that runs them and must not place content in their slots.
-Owner rule (Krishika, 28 Nov 2026; applies to every later session): never edit, rewrite or generate any
-owner-written control file (every slot in design/fifo/controls/slots.json, every mutant .v file, every directed
-scenario file). When Krishika says a file is ready, run only the controls that file feeds (slots.json `feeds`), and
-report the results in prose only, quoting pack lines. Never propose code, pseudocode or skeletons for these files
-(Sign-off Pack Part 2 row 5). If a control is still NOT_WIRED, say so; composing its procedure is harness work and
-never touches the owner's files.
-D-038: Claude (claude.ai) may give the pack-fixed interface shell for drivers/reference_driver.py only; Claude Code still writes nothing in owner files.
+Control artifacts: owner decision D-039 (Krishika, 28 Nov 2026; docs/ambiguities.md) supersedes D-038, D-007's
+human-written list and the 28 Nov owner-file rule (Sign-off Pack Part 2 rows 2–5 for the controls). Claude Code may write
+ALL control artifacts in design/fifo/controls/: drivers, checkers, mutants, manifest, directed suite and F2 echo file.
+Control mutants are RTL edits of `design/fifo/rtl/ovf_fifo.v` (D-007 (2)). Deviation DEV-005 "AI-written controls"
+(docs/DEVIATIONS.md): written by the evaluator's own author, the controls are not independent of it; F6, F7, F8, F9,
+F10, F12 and F17 run AI-written checkers on mutant traces in breach of Protocol L439; the directed suite does not meet
+L415's independence. Control results show internal consistency, not independent validation. Every control record
+carries "AI-written (DEV-005)", and every control file is listed with its SHA-256 and commit in
+docs/DEV-005-inventory.json (tests/test_controls_provenance.py). Never claim the controls are human-written or
+independent. reference_driver.py's interface shell was typed by Krishika (commit 1f7d87b); Claude Code wrote its logic.
 Owner decision D-036 (Krishika, 28 Nov 2026; docs/ambiguities.md): every commit Claude creates uses
 `--author="Claude Code (Anthropic) <noreply@anthropic.com>"`, so git's author field separates Claude's commits from
 Krishika's hand-written ones. Commits before D-036 used Krishika's identity with a Co-Authored-By line, and git cannot
-separate those. tests/test_controls_provenance.py fails if any file under design/fifo/controls/ other than README.md
-and slots.json was last changed by a Claude Code-authored commit. tools/check_control_file.py runs only File 30's
-static stages on one owner file and only reads it.
+separate those. Since D-039, tests/test_controls_provenance.py checks the DEV-005 inventory instead of forbidding
+Claude-authored control files. tools/check_control_file.py runs only File 30's static stages on one control file and
+only reads it.
 
 Disclosure (D-005), carried in docs/assistance-log.md: "The FIFO specification, RTL and
 authoring-packet payloads were drafted by Claude (Anthropic) via Claude Code and reviewed

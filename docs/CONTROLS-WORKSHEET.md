@@ -3,6 +3,10 @@
 **For:** Krishika (owner), who writes these files by hand. **Prepared by:** Claude (Claude Opus 5.5, via Claude Code),
 28 Nov 2026, at Krishika's request.
 
+**Superseded for authorship by D-039 (Krishika, 28 Nov 2026).** Claude Code now writes these files under deviation
+DEV-005 "AI-written controls" (`docs/DEVIATIONS.md`). The requirements below still apply; the prose-only paragraph that
+follows describes the earlier rule.
+
 **Prose only.** Sign-off Pack Part 2 row 5 says "Claude may suggest changes in prose only". This worksheet therefore
 gives no code, no pseudocode and no file skeletons. Pack text is quoted as text. Where this worksheet says what a file
 must *do*, the requirement comes from the pack or from the harness slot list. How the file does it is the owner's

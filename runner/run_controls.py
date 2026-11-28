@@ -24,6 +24,10 @@ Composed procedures: F1 (L510) and F3 (L512), on the reference driver and the F6
 checker (D-036 item 4; D-007 (4)); F4 (L513) and F5 (L514), on the M-exposed and M-dontcare
 mutants (D-036 follow-up), with the miter N, solver and timeouts frozen by D-037 (L299); F14 and F15.
 
+Every record carries `authorship`: "AI-written (DEV-005)" (owner decision D-039; docs/DEVIATIONS.md DEV-005). The
+control files are written by Claude Code, the evaluator's own author, so a result shows internal consistency, not
+independent validation.
+
 Each record lists what is still provisional and which approvals it rests on. No wired
 procedure (F14, F15) uses the mask; one that does must carry the DEV-001 label.
 
@@ -68,6 +72,8 @@ SLOTS_FILE = CONTROLS_DIR / "slots.json"
 ORDER = ("F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13", "F14", "F15", "F17")
 # Protocol L531: "F2, F4, F5, F9, F15, F16, F17 and F18 are critical gates."
 CRITICAL = {"F2", "F4", "F5", "F9", "F15", "F17"}
+# D-039, DEV-005: the label every control record carries.
+DEV005_LABEL = "AI-written (DEV-005)"
 
 
 def reading_status(item: str, pending: str) -> tuple[list, list]:
@@ -433,7 +439,7 @@ PROCEDURES = {"F1": run_f1, "F3": run_f3, "F4": run_f4, "F5": run_f5, "F14": lam
 def run_control(control: str, slots: dict, baseline: Path) -> dict:
     files, roles = needs(slots, control)
     record = {"control": control, "critical_gate": control in CRITICAL, "owner_artifacts": files,
-              "mutant_roles": roles}
+              "mutant_roles": roles, "authorship": DEV005_LABEL}
     missing = missing_artifacts(slots, control)
     if missing:
         return {**record, "status": "BLOCKED_OWNER_ARTIFACTS", "missing": missing}

@@ -1,0 +1,12 @@
+{
+  "status": "DEV-005 inventory (owner decision D-039, Krishika, 28 Nov 2026). Every control file under design/fifo/controls/ other than README.md and slots.json, with the SHA-256 of its current bytes and a commit that holds those bytes. The controls are AI-written: not human-written and not independent of the evaluator. Checked by tests/test_controls_provenance.py.",
+  "files": [
+    {
+      "path": "design/fifo/controls/drivers/reference_driver.py",
+      "sha256": "74f61ef62bfd0abb2b59be1322190c50c040a115118ff0481f5904a688558a22",
+      "commit": "1f7d87b",
+      "written_by": "Krishika: the 7-line interface shell (D-038), typed by her, committed under her identity (D-039 item 5)",
+      "label": "AI-written (DEV-005)"
+    }
+  ]
+}

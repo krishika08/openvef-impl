@@ -941,6 +941,9 @@ give the interface shell fixed by the pack, with no logic and no stimulus design
 written by Krishika. Claude Code still writes nothing in the file. Every other owner control file stays under the
 23 Nov row-5 rule unchanged.
 
+**Superseded by D-039** (Krishika, 28 Nov 2026; below): Claude Code now writes all control artifacts, under deviation
+DEV-005 "AI-written controls". D-007's independence aim is not met for the controls.
+
 ## A-036 — Hash randomization inside the sandbox (DECIDED BY CLAUDE — approved under D-009)
 
 File 30 §6 is headed "Import sandbox and deterministic execution". Paired runs compare
@@ -2323,3 +2326,47 @@ single entry in AUDIT-READINESS.md. Recorded by Claude Code at Krishika's instru
    the assistance log. It sits next to D-007's independence aim. The shell carries only what the pack fixes, so it
    contains no design content.
 
+## D-039 — Claude Code writes all control artifacts; DEV-005 (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026. Takes effect under D-008. Ayush's ratification is pending; it stays the
+single entry in AUDIT-READINESS.md. Recorded by Claude Code at Krishika's instruction. Verbatim:
+
+> "D-039 by Krishika (owner decision, supersedes D-038 and the 23 Nov Sign-off Pack Part 2 rows 2–5
+> for the controls): Claude Code may now write ALL control artifacts: drivers, checkers, mutants,
+> manifest, directed suite and F2 echo file. Record honestly:
+> 1. ambiguities.md + assistance log: D-039 text verbatim; rows 2–5 superseded for controls.
+> 2. DEVIATIONS.md: new DEV-005 "AI-written controls". The controls are written by Claude Code,
+>    the evaluator's own author, so they are not independent of it. Quote Protocol L439 ("No
+>    LLM-generated checker is run on any mutant trace before the analysis freeze") and L415, state
+>    that F4/F5/F6/F9–F13/F17 run AI-written checkers on mutant traces in breach of L439, and that
+>    this is an owner-authorized deviation. Consequence: control results show internal consistency,
+>    not independent validation. Every control record carries "AI-written (DEV-005)".
+> 3. CLAUDE.md: replace the 28 Nov owner-file rule with the D-039 rule; keep "never claim the
+>    controls are human-written or independent".
+> 4. Retire tests/test_controls_provenance.py's "no Claude-authored owner file" check, replacing it
+>    with a test that every control file is listed in a DEV-005 inventory with its commit.
+> 5. The shell file Krishika saved at drivers/reference_driver.py: commit it as hers (she typed it),
+>    then you may extend it.
+> Then write Wave 1 (reference_driver.py logic, f6_correct_checker.py) from the spec, following
+> the CONTROLS-WORKSHEET, run the static checker, F1 and F3 in the pinned image, commit, push, and
+> report results in plain language."
+
+1. **What it supersedes.** D-038, and Sign-off Pack Part 2 rows 2–5 as they apply to the controls. For the controls it
+   also supersedes D-007's list of human-written files (control drivers and checkers for F1–F13, F6/F17, the directed
+   suite, control mutants) and the owner rule of 28 Nov 2026 in CLAUDE.md. Claude Code may write every file in
+   `design/fifo/controls/` (`slots.json` slots, mutant `.v` files, the mutant manifest, the directed suite and its
+   scenario files, the F2 echo file).
+2. **Deviation.** The departures from the pack are recorded as DEV-005 "AI-written controls" in `docs/DEVIATIONS.md`.
+   **Correction to the list in item 2 of the quote**, made from `design/fifo/controls/slots.json`: the controls that
+   run an AI-written checker on a mutant trace are F6, F7, F8, F9, F10, F12 and F17. F4 and F5 run no checker (the
+   miter and the simulator compare the traces), and F11 and F13 have no mutant. DEV-005 gives that list. F4, F5, F11
+   and F13 still use AI-written controls (mutants or drivers), so DEV-005 and its label cover every control.
+3. **Provenance.** The D-036 author rule stays. `tests/test_controls_provenance.py` no longer checks that no control
+   file was last changed by Claude Code. It checks that every control file is listed in `docs/DEV-005-inventory.json`
+   with its SHA-256 and the commit that holds those bytes.
+4. **The shell file.** Krishika's 7-line interface shell (D-038) is commit `1f7d87b`, under her identity, created by
+   Claude Code at her instruction (item 5). Claude Code then extended it. The file is now AI-written (DEV-005), with
+   Krishika's shell lines as its interface.
+5. **What is never claimed.** The controls are not human-written and not independent of the evaluator. Their results
+   show internal consistency of the evaluator, spec, RTL and controls, all written with Claude, not independent
+   validation.

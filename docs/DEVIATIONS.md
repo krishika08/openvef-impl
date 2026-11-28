@@ -385,3 +385,39 @@ audit (GPT-6), not a human independent review; D6-3 and the L4 change from docum
 | L4 | DEPARTURE | Protocol L555 (3) gives no express development-only exception, while D-031, D-032 and D-033 directed development re-runs. Those runs are fixture execution under the bar, waived by the owners (DEV-003); the text is unchanged (audit #6, D6-2). | **Closed (D-035, 28 Nov 2026):** the waiver ended when v1.3.7 was adopted. The departure stays recorded for the 34 listed runs. |
 | L5 | LIMITATION | The implementation that measures `simulator.l334` is not bundled, so the source-level cause and method of the timing differences are not established by the document audit. | The implementation re-audit covers `l334_timeout` |
 | L6 | LIMITATION | No implementation approval or owner adoption: a document audit cannot qualify the implementation or record owner acceptance of A1–A11 or X14. | Owner part met by D-035: adoption, plus A1–A11 accepted as written and X14 Option A for v1.3.7 (`docs/V137-ADOPTION.md` section 2). Open for implementation approval, which no owner has recorded; Claude records none |
+
+## DEV-005 — AI-written controls (Protocol L439, L415; D-007)
+
+> [02 L439] "No LLM-generated checker is run on any mutant trace before the analysis freeze."
+
+> [02 L415] "It contains (a) multiple seeds of a reactive random driver that respects the specification's legal-input rules, and (b) a directed corner-case suite written against the specification only, before any LLM generation and independently of generated artifacts."
+
+**Owner decision D-039 (Krishika, 28 Nov 2026; takes effect under D-008; verbatim in `docs/ambiguities.md`):** "Claude
+Code may now write ALL control artifacts: drivers, checkers, mutants, manifest, directed suite and F2 echo file." It
+supersedes D-038 and Sign-off Pack Part 2 rows 2–5 for the controls. **This is an owner-authorized deviation.**
+
+**What departs from the pack:**
+- **Not independent.** The controls (every file in `design/fifo/controls/` other than `README.md` and `slots.json`) are
+  written by Claude Code, the evaluator's own author. The FIFO spec, RTL and mask were also drafted by Claude (D-005).
+  The controls are therefore not independent of the evaluator they test. D-007's independence aim is not met.
+- **L439 is breached.** F6, F7, F8, F9, F10, F12 and F17 run an AI-written checker on a mutant trace before any analysis
+  freeze (their checker slots and mutant roles in `slots.json`). The D-039 instruction listed "F4/F5/F6/F9–F13/F17";
+  that list is corrected here from `slots.json`. F4 and F5 run no checker, and F11 and F13 have no mutant. F4, F5, F11
+  and F13 still use AI-written mutants or drivers, so they too are covered by this deviation.
+- **L415's independence is not met** once the directed suite is written. It will be LLM-written, not written
+  "independently of generated artifacts".
+- **"Hand-built" control mutants** (Charter L74; Protocol L439, "hand-built FIFO control mutants defined in Charter
+  §6.1"): the mutants will be built by hand as RTL edits, not by MCY, but by Claude Code, not by a human.
+
+**Consequence.** Control results show internal consistency between the evaluator, the spec, the RTL and the controls,
+all written with Claude. They are **not independent validation**. If any Claude model is among the models evaluated,
+this adds to the familiarity confound already disclosed under D-005.
+
+**Label on every affected result:** "AI-written (DEV-005)". `runner/run_controls.py` puts it on every control record
+(`authorship`). Every control file is listed with its SHA-256 and commit in
+[DEV-005-inventory.json](DEV-005-inventory.json), checked by `tests/test_controls_provenance.py`.
+
+**Never claimed:** that the controls are human-written, independent, or that L439 or L415 is met.
+
+**Ends when** the owners replace the controls with human-written files whose author did not build the evaluator, and
+re-run every control on them.

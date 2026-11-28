@@ -3,12 +3,13 @@
 **For:** the owners (Krishika, Ayush Kumar Singh). **Written by:** Claude (Claude Opus
 5.5, via Claude Code), 24 Nov 2026, as harness documentation.
 
-**Every file listed below is owner-written.** Sources:
-- CLAUDE.md "Still human-written";
-- owner decision D-007 (Krishika, 24 Nov 2026; Ayush's confirmation pending).
-
-Claude never places content in these slots. The only Claude-written files in this
-directory are this README and `slots.json`, the machine-readable copy of the slot table.
+**Authorship (D-039, Krishika, 28 Nov 2026; supersedes D-007's human-written list for the
+controls).** Claude Code writes the files listed below, under deviation DEV-005 "AI-written
+controls" (`docs/DEVIATIONS.md`). They are **not human-written and not independent of the
+evaluator**. Every control record carries "AI-written (DEV-005)", and every file is listed with
+its SHA-256 and commit in `docs/DEV-005-inventory.json`. The interface shell of
+`drivers/reference_driver.py` was typed by Krishika (commit `1f7d87b`). This README and
+`slots.json`, the machine-readable copy of the slot table, are harness files.
 `tests/test_controls_slots.py` keeps the two in step.
 
 **How the runner uses this directory.** `runner/run_controls.py` runs the feasibility

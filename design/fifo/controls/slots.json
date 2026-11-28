@@ -1,5 +1,5 @@
 {
-  "status": "Slot list written by Claude (harness side) under CLAUDE.md and owner decision D-007. Every file listed under `slots` is OWNER-WRITTEN; Claude never places content in a slot. The runner (runner/run_controls.py) reads this list to report which owner artifacts each control is still waiting for.",
+  "status": "Slot list written by Claude (harness side) under CLAUDE.md and owner decision D-007. Since D-039 (Krishika, 28 Nov 2026) the files listed under `slots` are written by Claude Code under deviation DEV-005 (AI-written controls; not human-written, not independent); see docs/DEV-005-inventory.json. The runner (runner/run_controls.py) reads this list to report which owner artifacts each control is still waiting for.",
   "mutant_roles": {
     "M-exposed": {
       "behaviour": "a masked-observable divergence under legal inputs within the bound N (some always-observed output, or rd_data while the null rd_valid = 1)",
