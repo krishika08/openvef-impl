@@ -32,14 +32,85 @@ FX = "41_F18_Fixture_Inputs/"
 # D-030 (D3-2): the three status parts as explicit labels, in this order (C19).
 STATUS_LABELS = ("Development-run evidence", "Formal F18 status", "Approval")
 QUOTES = "\"'`“”‘’"
+# D-031 (D4-1): every quote kind in QUOTES, as (opening, closing). A straight mark opens and closes itself; a
+# typographic pair opens with the first and closes with the second. The assertion keeps the two from drifting apart.
+QUOTE_PAIRS = (('"', '"'), ("'", "'"), ("`", "`"), ("“", "”"), ("‘", "’"))
+assert set(QUOTES) == {q for pair in QUOTE_PAIRS for q in pair}
+
+# D-031 (D4-1): each clause's closed vocabulary, drawn from the 17 current status lines and the two fixture-index
+# fields (C19; CORRECTIONS section 13), plus the forms D-031 names. A value must equal one of these as a whole (after
+# "**" emphasis is removed); a prefix match is not enough. A new wording needs a new entry here, made on purpose.
+# The only cross-reference: File 21's two table headers (L7, L40) point to the "## F18 result" section below them,
+# whose lines L52 and L70 state the parts; test_current_status_lines_have_three_parts checks that the section exists.
+XREF = 'see "F18 result" below'
+# Development-run evidence: says the runs are not counted (not F18 acceptance), says none, or names runs.
+DEV_EVIDENCE = (
+    "development runs are not F18 acceptance",                                   # File 21 L26, File 36 L176, README L16
+    "development runs only, not F18 acceptance",                                 # File 32 L33, README L46
+    "runs of a project implementation are development runs, not F18 acceptance",  # Protocol L559
+    "runs of a project implementation, recorded outside this pack, are development runs, not F1–F18 acceptance",
+    # ^ Charter L177; v the other nine lines and both fixture-index fields
+    "fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance",
+    "none", "not counted",                                                       # D-031: "say none/not counted"
+    XREF,                                                                        # File 21 L7, L40
+)
+RUN_ID = r"`?run(?:-[a-z0-9]+)?-\d{8}T\d{6}Z`?"
+# D-031: "name a run": one or more run IDs (`run-…-YYYYMMDDTHHMMSSZ`), optionally said not to count.
+DEV_NAMED_RUNS = rf"{RUN_ID}(?:(?:, | and ){RUN_ID})*(?:, not counted|, not F18 acceptance)?"
+# Formal F18 status: the pack's formal-status terms as the 17 lines use them, and an optional closed qualifier.
+FORMAL_TERMS = ("NOT RUN / NOT PASSED", "NOT RUN", "not run")
+FORMAL_QUALIFIERS = ("", ", since no authorized F18 acceptance run exists",
+                     ", since no authorized F1–F18 acceptance run exists", ", since there is no authorized F18 acceptance run",
+                     ", as given in each row")
+# Approval: an approval state. The clause ends at ";", "|", the end of its sentence ("." then a space or the end), or
+# the ")" that closes a table header; File 36 L176 adds one fixed parenthesis.
+APPROVAL_STATES = ("nothing is approved", "nothing is qualified or approved", "no implementation is qualified or approved",
+                   "the implementation is not qualified or approved", XREF)
+APPROVAL_TAIL = r"(?:\s*|\.(?:\s.*)?|\)\s*| \(see the status line at the top of this file\)\.(?:\s.*)?)"
+
+
+def _inside_quotes(before: str) -> bool:
+    """True when the text before a label leaves a quotation open, for every kind in QUOTE_PAIRS. A "'" or "’" between
+    two word characters is an apostrophe ("descriptor's"), not a quotation mark."""
+    import re
+    text = re.sub(r"(?<=\w)['’](?=\w)", "", before)
+    for opening, closing in QUOTE_PAIRS:
+        if opening == closing:
+            if text.count(opening) % 2:
+                return True
+        elif text.count(opening) > text.count(closing):
+            return True
+    return False
+
+
+def _value_problem(i: int, value: str) -> str | None:
+    """Why the value of clause i (0, 1, 2 in STATUS_LABELS order) is outside its closed vocabulary; None when inside."""
+    import re
+    plain = value.replace("**", "").strip()
+    if not plain:
+        return "empty value"
+    if i == 0:
+        if plain in DEV_EVIDENCE or re.fullmatch(DEV_NAMED_RUNS, plain):
+            return None
+        return f"value {plain[:60]!r} neither names a run nor says none/not counted"
+    if i == 1:
+        if any(plain == t + q for t in FORMAL_TERMS for q in FORMAL_QUALIFIERS):
+            return None
+        return f"value {plain[:60]!r} is not one of the formal-status terms {FORMAL_TERMS}"
+    for state in APPROVAL_STATES:
+        if plain.startswith(state) and re.fullmatch(APPROVAL_TAIL, plain[len(state):], re.S):
+            return None
+    return f"value {plain[:60]!r} does not state an approval state"
 
 
 def labelled_status(line: str) -> list[str]:
     """Problems with a status line under C19; [] when it is well formed. Each label appears exactly once, as written
-    (case included), directly followed by ": ", not preceded by a quotation mark or a word character, and the labels
-    come in STATUS_LABELS order. Each value runs from its label to the next ";" or "|" (the last label's value; for the
-    first two, it must end with "; " right before the next label) and has a letter or digit. A label inside quotation
-    marks (an odd number of quote characters before it) does not count."""
+    (case included), not preceded by a quotation mark, a hyphen or a word character, not inside quotation marks of any
+    kind in QUOTES (_inside_quotes), and directly followed by exactly ": " and a non-space character; the labels come in
+    STATUS_LABELS order. Each value runs from its label to the next ";" or "|" (the last label's value; for the first
+    two, it must end with "; " right before the next label) and must be in its clause's closed vocabulary
+    (_value_problem, D-031). This is a lexical check: it rejects placeholders and unknown wordings, it cannot show that
+    a value is true."""
     import re
     problems, at = [], []
     for label in STATUS_LABELS:
@@ -48,9 +119,11 @@ def labelled_status(line: str) -> list[str]:
             before = line[:m.start()]
             if before and (before[-1].isalnum() or before[-1] in QUOTES + "-"):
                 continue
-            if sum(before.count(q) for q in "\"`") % 2 or before.count("“") > before.count("”") or \
-                    before.count("‘") > before.count("’"):
-                continue  # inside quotation marks
+            if _inside_quotes(before):
+                continue
+            if not re.match(r" \S", line[m.end():]):
+                problems.append(f"{label!r}: not followed by exactly ': ' and a value")
+                continue
             hits.append(m)
         if len(hits) != 1:
             problems.append(f"{label!r}: {len(hits)} unquoted occurrences, need exactly 1")
@@ -64,13 +137,14 @@ def labelled_status(line: str) -> list[str]:
         end = at[i + 1].start() if i + 1 < len(at) else len(line)
         value = line[m.end():end]
         if i + 1 < len(at):
-            if not value.rstrip().endswith(";"):
-                problems.append(f"{STATUS_LABELS[i]!r}: value does not end with ';' before the next label")
-            value = value.rstrip()[:-1]
+            if not value.endswith("; "):
+                problems.append(f"{STATUS_LABELS[i]!r}: value does not end with '; ' right before the next label")
+            value = value.rstrip()[:-1] if value.rstrip().endswith(";") else value
         else:
             value = re.split(r"[;|]", value, maxsplit=1)[0]
-        if not re.search(r"\w", value):
-            problems.append(f"{STATUS_LABELS[i]!r}: empty value")
+        why = _value_problem(i, value)
+        if why:
+            problems.append(f"{STATUS_LABELS[i]!r}: {why}")
     return problems
 
 
@@ -83,6 +157,93 @@ def builder():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+class LabelledStatusRuleTests(unittest.TestCase):
+    """D-031 (D4-1): labelled_status on its own, without the pack. Each negative case must fail, and fail for the
+    reason given (a substring of one problem), so that a vocabulary failure cannot hide a broken quote or separator
+    check. The positive cases are lines the rule must keep accepting."""
+
+    GOOD = "F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; Approval: nothing is approved."
+
+    BAD = {
+        # Audit #4, D4-1, verbatim: the three labels inside one straight single-quoted block.
+        "auditor: single-quoted labels": ("F18 NOT RUN; ' Development-run evidence: x; Formal F18 status: y; Approval: z'",
+                                          "0 unquoted occurrences"),
+        # The same, with in-vocabulary values and the quote not next to a label, so only the quote count rejects it.
+        "single-quoted labels, valid values": ("F18 status: 'the line Development-run evidence: none; Formal F18 status: "
+                                               "NOT RUN; Approval: nothing is approved'", "0 unquoted occurrences"),
+        # Audit #4, D4-1, verbatim: placeholder values.
+        "auditor: x/y/z placeholders": ("F18 NOT RUN; Development-run evidence: x; Formal F18 status: y; Approval: z.",
+                                        "neither names a run"),
+        # "label:" without the space, values otherwise valid.
+        "no space after the colon": ("F18 status: Development-run evidence:none; Formal F18 status: NOT RUN; "
+                                     "Approval: nothing is approved.", "not followed by exactly ': '"),
+        # Claude's own (1): two spaces after the colon.
+        "two spaces after the colon": ("F18 status: Development-run evidence: none; Formal F18 status:  NOT RUN; "
+                                       "Approval: nothing is approved.", "not followed by exactly ': '"),
+        # Claude's own (2): placeholder words, not one letter.
+        "TBD/TODO/n/a placeholders": ("F18 status: Development-run evidence: TBD; Formal F18 status: TODO; Approval: n/a.",
+                                      "neither names a run"),
+        # Claude's own (3): a formal-status term with extra letters; a prefix match must not pass.
+        "status term as a prefix": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUNNING; "
+                                    "Approval: nothing is approved.", "is not one of the formal-status terms"),
+        # Claude's own (4): an invented qualifier after a real term.
+        "invented qualifier": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN, y; "
+                               "Approval: nothing is approved.", "is not one of the formal-status terms"),
+        # Claude's own (5): an approval value that is not an approval state.
+        "approval not a state": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; Approval: z.",
+                                 "does not state an approval state"),
+        # Claude's own (6): an approval state followed by words in the same sentence.
+        "approval state plus words": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                      "Approval: nothing is approved by nobody yet.", "does not state an approval state"),
+        # Claude's own (7): a cross-reference to some other section.
+        "other cross-reference": ('F18 status: Development-run evidence: see "Glossary" below; Formal F18 status: NOT RUN; '
+                                  "Approval: nothing is approved.", "neither names a run"),
+        # Claude's own (8), a regression guard (the audited code already rejected it): typographic single quotes.
+        "typographic single quotes": ("F18 status: ‘Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                      "Approval: nothing is approved’", "0 unquoted occurrences"),
+        # Claude's own (9), a regression guard (the audited code already rejected it): a backtick code span.
+        "backtick code span": ("F18 status: `Development-run evidence: none; Formal F18 status: NOT RUN; "
+                               "Approval: nothing is approved`", "0 unquoted occurrences"),
+        # Claude's own (10): no space between the first value's ";" and the next label.
+        "no space after ';'": ("F18 status: Development-run evidence: none;Formal F18 status: NOT RUN; "
+                               "Approval: nothing is approved.", "does not end with '; '"),
+    }
+
+    GOOD_TOO = {
+        "the base form": GOOD,
+        "an apostrophe before the labels": "The runner checks each descriptor's hash; F18 status: " + GOOD[12:],
+        "a typographic apostrophe": "The runner checks each descriptor’s hash; F18 status: " + GOOD[12:],
+        "a named run": ("F18 status: Development-run evidence: `run-v137c-20261127T163649Z`, not counted; "
+                        "Formal F18 status: NOT RUN; Approval: nothing is approved."),
+        "two named runs": ("F18 status: Development-run evidence: run-20261123T174358Z and run-v137c-20261127T163649Z; "
+                           "Formal F18 status: NOT RUN / NOT PASSED; Approval: nothing is approved."),
+        "emphasis and a qualifier": ("F18 status: Development-run evidence: not counted; Formal F18 status: **NOT RUN / "
+                                     "NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no "
+                                     "implementation is qualified or approved. A further sentence."),
+        "quoted text after the labels": GOOD + ' See "F18 result".',
+    }
+
+    def test_d4_1_negative_cases_fail_for_their_reason(self):
+        import re
+        for name, (line, reason) in self.BAD.items():
+            with self.subTest(case=name):
+                self.assertTrue("F18" in line and re.search(CandidatePackTests.STATUS_TERMS, line), name)
+                problems = labelled_status(line)
+                self.assertNotEqual(problems, [], name)
+                self.assertTrue(any(reason in p for p in problems), f"{name}: {problems}")
+
+    def test_well_formed_lines_still_pass(self):
+        for name, line in self.GOOD_TOO.items():
+            with self.subTest(case=name):
+                self.assertEqual(labelled_status(line), [], name)
+
+    def test_every_quote_kind_is_checked(self):
+        """Each kind in QUOTES, opened before the labels and not closed, hides them."""
+        for opening, _ in QUOTE_PAIRS:
+            with self.subTest(quote=opening):
+                self.assertNotEqual(labelled_status(f"F18 status: {opening}" + self.GOOD[12:]), [])
 
 
 @unittest.skipUnless(PACK.exists(), "candidate pack not present (audit bundle)")
@@ -298,6 +459,9 @@ class CandidatePackTests(unittest.TestCase):
                 checked += 1
                 with self.subTest(file=rel, line=n):
                     self.assertEqual(labelled_status(line), [], line[:160])
+                    if XREF in line:  # D-031: the cross-reference must point to a section below it in the same file
+                        below = self.pack[rel].decode("utf-8").split("\n")[n:]
+                        self.assertIn("## F18 result", below, f"{rel} L{n}: {XREF!r} has no section below it")
         self.assertEqual(used, {(f, p) for f, items in self.STATUS_EXEMPT.items() for p, _ in items})
         self.assertEqual(checked, 17)  # the 17 lines C19 labelled (CORRECTIONS section 13); a new one must be added there
         index = json.loads(self.pack[FX + "fixture-index.json"])
@@ -306,7 +470,7 @@ class CandidatePackTests(unittest.TestCase):
                 self.assertEqual(labelled_status(index[key]), [])
 
     def test_status_rule_rejects_unlabelled_quoted_reordered_and_empty(self):
-        """D-030 (D3-2): the rule is not lexical. The v1.3.6 wording D2-1 named, the C18 wording (right words, no
+        """D-030 (D3-2): the rule is lexical, but needs the labels, not the words. The v1.3.6 wording D2-1 named, the C18 wording (right words, no
         labels), audit #3's false-positive sentence, the labels in quotes, the labels out of order, a repeated label and
         an empty value all fail it; the C19 wording passes and keeps the A1-A11 and X14 status."""
         import re
