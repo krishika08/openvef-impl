@@ -1,0 +1,16 @@
+test_every_pack_pair (test_check_control_file.AgreesWithProductionTests.test_every_pack_pair) ... ok
+test_accepted_pair_files_pass_every_static_stage (test_check_control_file.CommandLineTests.test_accepted_pair_files_pass_every_static_stage) ... ok
+test_bom_and_invalid_utf8_are_source_ast_rejections (test_check_control_file.CommandLineTests.test_bom_and_invalid_utf8_are_source_ast_rejections) ... ok
+test_rejection_reports_stage_and_diagnostic_and_leaves_file_unchanged (test_check_control_file.CommandLineTests.test_rejection_reports_stage_and_diagnostic_and_leaves_file_unchanged) ... ok
+test_role_must_be_known (test_check_control_file.CommandLineTests.test_role_must_be_known) ... ok
+test_broken_text_does_not_compile (test_check_control_file.IcarusTaskDockerTests.test_broken_text_does_not_compile) ... ok
+test_identical_copy_is_rejected_before_compiling (test_check_control_file.IcarusTaskDockerTests.test_identical_copy_is_rejected_before_compiling) ... ok
+test_original_rtl_compiles (test_check_control_file.IcarusTaskDockerTests.test_original_rtl_compiles) ... ok
+test_accepts_and_reports_diff_size (test_check_control_file.MutantCheckLogicTests.test_accepts_and_reports_diff_size) ... ok
+test_diff_size_counts_lines (test_check_control_file.MutantCheckLogicTests.test_diff_size_counts_lines) ... ok
+test_rejections_stop_at_the_first_failed_check (test_check_control_file.MutantCheckLogicTests.test_rejections_stop_at_the_first_failed_check) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.205s
+
+OK

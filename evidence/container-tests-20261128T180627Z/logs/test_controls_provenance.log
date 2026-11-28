@@ -1,0 +1,8 @@
+test_reports_each_kind_of_mismatch (test_controls_provenance.DetectorTests.test_reports_each_kind_of_mismatch) ... skipped 'git is not available (e.g. the pinned image)'
+test_every_control_file_listed_with_its_bytes (test_controls_provenance.InventoryTests.test_every_control_file_listed_with_its_bytes) ... ok
+test_every_listed_commit_holds_those_bytes (test_controls_provenance.InventoryTests.test_every_listed_commit_holds_those_bytes) ... skipped 'git or the repository history is not available (e.g. the pinned image)'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.011s
+
+OK (skipped=2)

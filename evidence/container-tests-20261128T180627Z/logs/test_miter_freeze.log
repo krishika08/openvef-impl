@@ -1,0 +1,16 @@
+test_addendum_lists_record_hashes (test_miter_freeze.FrozenValuesTests.test_addendum_lists_record_hashes) ... ok
+test_changed_hash_or_other_cap_stops (test_miter_freeze.FrozenValuesTests.test_changed_hash_or_other_cap_stops) ... ok
+test_frozen_before_any_owner_mutant (test_miter_freeze.FrozenValuesTests.test_frozen_before_any_owner_mutant)
+D-037: recorded before any owner mutant exists, so the values cannot be tuned to results. ... skipped 'no git (pinned image)'
+test_hashes_verify (test_miter_freeze.FrozenValuesTests.test_hashes_verify) ... ok
+test_pack_lines_quoted_verbatim_in_both_packs (test_miter_freeze.FrozenValuesTests.test_pack_lines_quoted_verbatim_in_both_packs) ... ok
+test_runner_uses_the_record (test_miter_freeze.FrozenValuesTests.test_runner_uses_the_record) ... ok
+test_values_are_the_proposal (test_miter_freeze.FrozenValuesTests.test_values_are_the_proposal) ... ok
+test_help (test_miter_freeze.UsageTests.test_help) ... ok
+test_three_arguments (test_miter_freeze.UsageTests.test_three_arguments) ... ok
+test_wrong_arguments (test_miter_freeze.UsageTests.test_wrong_arguments) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.007s
+
+OK (skipped=1)

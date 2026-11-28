@@ -1,0 +1,28 @@
+test_aligned (test_miter_alignment.AlignmentSyntheticTests.test_aligned) ... ok
+test_compare_repeats (test_miter_alignment.AlignmentSyntheticTests.test_compare_repeats) ... ok
+test_consumed_mismatch (test_miter_alignment.AlignmentSyntheticTests.test_consumed_mismatch) ... ok
+test_drive_after_next_edge (test_miter_alignment.AlignmentSyntheticTests.test_drive_after_next_edge) ... ok
+test_echo (test_miter_alignment.AlignmentSyntheticTests.test_echo) ... ok
+test_sample_not_readonly (test_miter_alignment.AlignmentSyntheticTests.test_sample_not_readonly) ... ok
+test_pass_and_fail (test_miter_alignment.F14FakeTests.test_pass_and_fail) ... ok
+test_ordering_and_alignment_on_a_real_run (test_miter_alignment.HarnessProbeDockerTests.test_ordering_and_alignment_on_a_real_run) ... ok
+test_repeat_determinism (test_miter_alignment.HarnessProbeDockerTests.test_repeat_determinism) ... ok
+test_watchdog_keeps_rows (test_miter_alignment.HarnessProbeDockerTests.test_watchdog_keeps_rows) ... ok
+test_bound_over_cap_rejected (test_miter_alignment.MiterDockerTests.test_bound_over_cap_rejected) ... ok
+test_dontcare_bounded_equivalent (test_miter_alignment.MiterDockerTests.test_dontcare_bounded_equivalent) ... ok
+test_identical_proved (test_miter_alignment.MiterDockerTests.test_identical_proved) ... ok
+test_late_shortest_counterexample_and_replay (test_miter_alignment.MiterDockerTests.test_late_shortest_counterexample_and_replay) ... ok
+test_identical_netlist_rejected (test_miter_alignment.MutantManifestTests.test_identical_netlist_rejected) ... ok
+test_load_and_export (test_miter_alignment.MutantManifestTests.test_load_and_export) ... ok
+test_rejections (test_miter_alignment.MutantManifestTests.test_rejections) ... ok
+test_cap (test_miter_alignment.PredicateCompileTests.test_cap) ... ok
+test_constant_predicates (test_miter_alignment.PredicateCompileTests.test_constant_predicates) ... ok
+test_exact_on_whole_domain (test_miter_alignment.PredicateCompileTests.test_exact_on_whole_domain) ... ok
+test_non_bool (test_miter_alignment.PredicateCompileTests.test_non_bool) ... ok
+test_parse_log (test_miter_alignment.PredicateCompileTests.test_parse_log) ... ok
+test_wrapper_text (test_miter_alignment.PredicateCompileTests.test_wrapper_text) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 14.504s
+
+OK

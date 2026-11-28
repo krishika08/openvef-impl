@@ -1,0 +1,14 @@
+test_all_files_present_is_not_wired_not_pass (test_controls_slots.MissingArtifactTests.test_all_files_present_is_not_wired_not_pass) ... ok
+test_broker_runner_allow_list (test_controls_slots.MissingArtifactTests.test_broker_runner_allow_list) ... ok
+test_empty_directory_blocks_every_control_but_f14_f15 (test_controls_slots.MissingArtifactTests.test_empty_directory_blocks_every_control_but_f14_f15) ... ok
+test_roles_checked_against_manifest (test_controls_slots.MissingArtifactTests.test_roles_checked_against_manifest) ... ok
+test_critical_gates_are_l531 (test_controls_slots.SlotListTests.test_critical_gates_are_l531) ... ok
+test_every_control_declared (test_controls_slots.SlotListTests.test_every_control_declared) ... ok
+test_feeds_match_readme_rows (test_controls_slots.SlotListTests.test_feeds_match_readme_rows) ... ok
+test_readme_has_no_unlisted_file (test_controls_slots.SlotListTests.test_readme_has_no_unlisted_file) ... ok
+test_readme_lists_every_slot_and_role (test_controls_slots.SlotListTests.test_readme_lists_every_slot_and_role) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.014s
+
+OK

@@ -1,0 +1,16 @@
+test_blocked_until_both_files_exist (test_controls_f1_f3.BlockedTests.test_blocked_until_both_files_exist) ... ok
+test_f1_f3_need_exactly_the_reference_driver_and_correct_checker (test_controls_f1_f3.BlockedTests.test_f1_f3_need_exactly_the_reference_driver_and_correct_checker) ... ok
+test_f1_fails_on_different_traces (test_controls_f1_f3.ProcedureTests.test_f1_fails_on_different_traces) ... ok
+test_f1_fails_unless_both_verdicts_pass (test_controls_f1_f3.ProcedureTests.test_f1_fails_unless_both_verdicts_pass) ... ok
+test_f1_fails_when_a_null_run_ends_early (test_controls_f1_f3.ProcedureTests.test_f1_fails_when_a_null_run_ends_early) ... ok
+test_f1_pass_needs_identical_traces_and_two_pass_verdicts (test_controls_f1_f3.ProcedureTests.test_f1_pass_needs_identical_traces_and_two_pass_verdicts) ... ok
+test_f3_fails_on_next_input_divergence_before_raw_divergence (test_controls_f1_f3.ProcedureTests.test_f3_fails_on_next_input_divergence_before_raw_divergence) ... ok
+test_f3_pass_when_rtl_and_null_agree (test_controls_f1_f3.ProcedureTests.test_f3_pass_when_rtl_and_null_agree) ... ok
+test_empty_files_are_rejected_by_the_real_static_stages (test_controls_f1_f3.RejectionTests.test_empty_files_are_rejected_by_the_real_static_stages) ... ok
+test_invalid_utf8_is_a_source_ast_rejection (test_controls_f1_f3.RejectionTests.test_invalid_utf8_is_a_source_ast_rejection) ... ok
+test_owner_files_are_not_changed (test_controls_f1_f3.RejectionTests.test_owner_files_are_not_changed) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.021s
+
+OK
