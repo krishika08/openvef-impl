@@ -2370,3 +2370,34 @@ single entry in AUDIT-READINESS.md. Recorded by Claude Code at Krishika's instru
 5. **What is never claimed.** The controls are not human-written and not independent of the evaluator. Their results
    show internal consistency of the evaluator, spec, RTL and controls, all written with Claude, not independent
    validation.
+
+## D-040 — Remaining control artifacts, Waves 2 and 3 (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026. Takes effect under D-008. Ayush's ratification is pending; it stays the
+single entry in AUDIT-READINESS.md. Recorded by Claude Code at Krishika's instruction. Verbatim:
+
+> "Corrected L439 list accepted (F6, F7, F8, F9, F10, F12, F17); keep my original quoted in D-039.
+>
+> D-040 by Krishika: write all remaining control artifacts under D-039/DEV-005, following
+> CONTROLS-WORKSHEET.md and slots.json:
+> - Wave 2 first: M-exposed and M-dontcare mutants (one small RTL edit each, port list identical,
+>   checked with tools/check_control_file.py) and mutants/manifest.json; run F4 and F5. Each mutant's
+>   role must be justified from the spec (M-exposed: a masked-observable bug; M-dontcare: changes only
+>   don't-care outputs), not chosen by trial against the controls. Commit Wave 2 before running it.
+> - Wave 3: M-silent and any other mutants (≤5 total, roles distinct as the worksheet requires), the
+>   remaining drivers and checkers (F7, F8, F9–F13, F17 roles), the directed suite (≥2 scenario
+>   drivers) and f2_echo.json; run all controls.
+> Rules: write each file from the spec and pack, never by tuning against a control's result; if a
+> control fails, report it plainly and diagnose before changing anything, and record every change
+> made after a failure in the assistance log with the reason. F8/F17 nondeterminism: record
+> observed or not observed, never force it. Static checker on every file. Final full controls run,
+> container tests, all in the pinned image. Update the DEV-005 inventory. Commit, push.
+> Report: a table of F1–F17 with status, which files each used, and any failure plus what changed."
+
+1. **L439 list.** The owner accepts the corrected list in DEV-005 (F6, F7, F8, F9, F10, F12, F17). The original list
+   stays quoted in D-039.
+2. **Scope.** The files are written under D-039 and DEV-005 ("AI-written (DEV-005)"). Each mutant's role is argued
+   from the spec clause it breaks or leaves untouched, and is recorded in its manifest description.
+3. **Composition is separate.** Controls whose procedures are not yet composed in `runner/run_controls.py` (F2, F6–F13,
+   F17) report `NOT_WIRED` once their files exist. D-040 asks for the files and the runs, not for composing those
+   procedures, so they are reported as `NOT_WIRED`, never as a pass.

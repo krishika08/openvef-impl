@@ -402,7 +402,7 @@ supersedes D-038 and Sign-off Pack Part 2 rows 2–5 for the controls. **This is
   The controls are therefore not independent of the evaluator they test. D-007's independence aim is not met.
 - **L439 is breached.** F6, F7, F8, F9, F10, F12 and F17 run an AI-written checker on a mutant trace before any analysis
   freeze (their checker slots and mutant roles in `slots.json`). The D-039 instruction listed "F4/F5/F6/F9–F13/F17";
-  that list is corrected here from `slots.json`. F4 and F5 run no checker, and F11 and F13 have no mutant. F4, F5, F11
+  that list is corrected here from `slots.json`. Krishika accepted the corrected list (D-040). F4 and F5 run no checker, and F11 and F13 have no mutant. F4, F5, F11
   and F13 still use AI-written mutants or drivers, so they too are covered by this deviation.
 - **L415's independence is not met** once the directed suite is written. It will be LLM-written, not written
   "independently of generated artifacts".

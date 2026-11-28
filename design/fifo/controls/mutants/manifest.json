@@ -1,0 +1,6 @@
+{"mutants": [
+  {"id": "m_af_threshold", "file": "m_af_threshold.v", "roles": ["M-exposed"],
+   "description": "AI-written (DEV-005). AF_THRESHOLD is 2 instead of 3, so almost_full = 1 at occupancy 2. Breaks FIFO-029 ('almost_full = 1 exactly when c >= 3'). almost_full is always meaningful (FIFO-022), so the change is observed through the mask, and two legal writes after reset reach occupancy 2 (FIFO-024), well within the bound N."},
+  {"id": "m_rddata_idle", "file": "m_rddata_idle.v", "roles": ["M-dontcare"],
+   "description": "AI-written (DEV-005). After a non-reset active edge at which no read occurs, rd_data is set to A5 instead of holding its value. rd_valid is unchanged and is 0 exactly after those edges (FIFO-021), where rd_data is don't-care (FIFO-022); reset edges, rd_valid, full, almost_full and empty are unchanged. So every change is in a don't-care output."}
+]}
