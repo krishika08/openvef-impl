@@ -579,7 +579,7 @@ The owner-written files are listed in
 | H5/H6 miter and replay | Built; on TEST-ONLY toy designs it finds the shortest counterexample, the replay agrees in the simulator, and a don't-care variant is `BOUNDED_EQUIVALENT_N` (A-045) |
 | H7 panel | Built; synthetic tests (A-049, A-050) |
 | H9/H10 ordering probe, alignment, determinism | Built; checked on real toy-design runs in the sandbox (A-051) |
-| Step 8 — compose and run F1–F13, F17 | F1 and F3 composed (D-036, 28 Nov 2026); they run when the reference driver and the F6 correct checker exist. The rest: not started, needs the owner files. The runner reports these controls `BLOCKED_OWNER_ARTIFACTS`; once a control's files exist and its procedure is not yet composed, it reports `NOT_WIRED`, never a pass |
+| Step 8 — compose and run F1–F13, F17 | F1 and F3 composed (D-036, 28 Nov 2026); they run when the reference driver and the F6 correct checker exist. F4 and F5 composed (D-036 follow-up); they run when the manifest names M-exposed (F4), or M-dontcare and the reference driver exists (F5). N = cycle cap, solver Yosys `sat`, timeouts: DRAFT proposals ([fifo-miter-proposal-DRAFT.md](fifo-miter-proposal-DRAFT.md)). The rest: not started, needs the owner files. The runner reports these controls `BLOCKED_OWNER_ARTIFACTS`; once a control's files exist and its procedure is not yet composed, it reports `NOT_WIRED`, never a pass |
 
 **§6 questions:**
 - Q1: settled by D-007.

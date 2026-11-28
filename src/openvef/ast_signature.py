@@ -277,13 +277,20 @@ def check_compile(sources: dict[str, str]) -> Optional[Failure]:
     is also a compile error at line 1.
     """
     for file in FILE_ORDER:
-        try:
-            compile(sources[file], file, "exec", dont_inherit=True)
-        except SyntaxError as exc:
-            line = exc.lineno if isinstance(exc.lineno, int) and exc.lineno >= 1 else 1
-        except Exception:
-            line = 1
-        else:
-            continue
-        return Failure(COMPILE_STAGES[file], "COMPILE_ERROR", f"COMPILE_ERROR|file={file}|line={line}")
+        failure = check_compile_file(file, sources[file])
+        if failure:
+            return failure
     return None
+
+
+def check_compile_file(file: str, source: str) -> Optional[Failure]:
+    """`compile()` one file (COMPILE_DRIVER or COMPILE_CHECKER), with the A-024 line fallback."""
+    try:
+        compile(source, file, "exec", dont_inherit=True)
+    except SyntaxError as exc:
+        line = exc.lineno if isinstance(exc.lineno, int) and exc.lineno >= 1 else 1
+    except Exception:
+        line = 1
+    else:
+        return None
+    return Failure(COMPILE_STAGES[file], "COMPILE_ERROR", f"COMPILE_ERROR|file={file}|line={line}")

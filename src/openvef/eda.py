@@ -18,6 +18,14 @@ def interface(verilog: str, top: str) -> dict:
     return r.result
 
 
+def icarus_compile(verilog: str, top: str) -> dict:
+    """Compile with the pinned Icarus, `iverilog -g2012` (harness task `icarus`); the program is not run."""
+    r = run_harness({"task": "icarus", "verilog": verilog, "top": top}, INTERFACE_TIMEOUT_S)
+    if r.timed_out or r.result is None or "error" in r.result:
+        raise SimulationError(f"icarus task failed: {r.result!r} {r.stderr_tail[-300:]}")
+    return r.result
+
+
 def run_yosys(files: dict, scripts: list, timeout_s: float) -> dict:
     """Run Yosys scripts on evaluator files (harness task `yosys`); `timeout_s` per script."""
     r = run_harness({"task": "yosys", "files": files, "scripts": scripts, "timeout_s": timeout_s},

@@ -250,6 +250,11 @@ only). Each request runs one task:
   signatures;
 - `checker`: one null invocation of `check_trace`.
 
+Evaluator-only tasks (no artifact code): `simulate`, `export`, `interface`, `yosys`, and
+`icarus` (D-036 follow-up). `icarus` compiles one Verilog text with `iverilog -g2012 -s <top>`
+and reports the exit code and messages. The compiled program is not run. It serves the mutant
+check of `tools/check_control_file.py`.
+
 It writes one framed result line to stdout. The artifact process has no access to that stdout
 (`test_artifact_output_cannot_forge_result`). The harness directory is bind-mounted
 read-only. Before every run the launcher refuses to start if any file in it is group- or

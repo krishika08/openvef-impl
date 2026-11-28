@@ -192,8 +192,23 @@ def task_yosys(request: dict) -> dict:
     return {"runs": runs, "yosys_version": version}
 
 
+def task_icarus(request: dict) -> dict:
+    """Compile one Verilog text with the pinned Icarus (`iverilog -g2012 -s <top>`) and report the result (D-036 follow-up; the
+    mutant check of tools/check_control_file.py). Evaluator material only: no artifact code is involved, and the
+    compiled program is not run. Returns the exit code, the compiler's messages and the Icarus version line."""
+    import subprocess
+    os.makedirs("/tmp/ic", exist_ok=True)
+    with open("/tmp/ic/in.v", "w", encoding="utf-8") as f:
+        f.write(request["verilog"])
+    p = subprocess.run(["iverilog", "-g2012", "-s", request["top"], "-o", "/tmp/ic/out.vvp", "/tmp/ic/in.v"],
+                       capture_output=True, text=True)
+    version = subprocess.run(["iverilog", "-V"], capture_output=True, text=True).stdout.splitlines()
+    return {"returncode": p.returncode, "messages": ((p.stderr or "") + (p.stdout or ""))[-4000:],
+            "iverilog_version_line": version[0] if version else None}
+
+
 TASKS = {"factory": task_factory, "checker": task_checker, "simulate": task_simulate, "export": task_export,
-         "interface": task_interface, "yosys": task_yosys}
+         "interface": task_interface, "yosys": task_yosys, "icarus": task_icarus}
 
 
 def main() -> None:

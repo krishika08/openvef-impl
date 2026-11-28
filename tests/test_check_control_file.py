@@ -169,3 +169,67 @@ class CommandLineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+ORIGINAL = (REPO / "design" / "fifo" / "rtl" / "ovf_fifo.v").read_text(encoding="utf-8")
+PORTS = [["clk", "input", 1], ["q", "output", 2]]
+
+
+class MutantCheckLogicTests(unittest.TestCase):
+    """D-036 follow-up: the mutant checks' decisions, with the harness tasks replaced by recorded results. No text here is an
+    edit of the original RTL: the 'changed' text is the original with a marker appended, never parsed as Verilog."""
+
+    def run_checks(self, text, compiled=0, ports_mine=PORTS, ports_orig=PORTS):
+        iface = {text: ports_mine, ORIGINAL: ports_orig}
+        return tool.mutant_checks(text, ORIGINAL, "ovf_fifo",
+                                  compile_verilog=lambda v, t: {"returncode": compiled, "messages": "msg",
+                                                                "iverilog_version_line": "Icarus Verilog version 12.0"},
+                                  interface=lambda v, t: {"ports": iface[v]})
+
+    def test_accepts_and_reports_diff_size(self):
+        r = self.run_checks(ORIGINAL + "MARKER\n")
+        self.assertEqual([c for c, reason, _ in r if reason is None], list(tool.MUTANT_CHECKS))
+        self.assertIn("0 line(s) removed, 1 added, in 1 hunk(s)", dict((c, d) for c, _, d in r)["DIFFERS"])
+
+    def test_rejections_stop_at_the_first_failed_check(self):
+        cases = {"MODULE": (ORIGINAL.replace("module ovf_fifo", "module other"), {}),
+                 "DIFFERS": (ORIGINAL, {}),
+                 "ICARUS_COMPILE": (ORIGINAL + "MARKER\n", {"compiled": 1}),
+                 "PORTS": (ORIGINAL + "MARKER\n", {"ports_mine": PORTS[:1]})}
+        for check, (text, kw) in cases.items():
+            with self.subTest(check=check):
+                r = self.run_checks(text, **kw)
+                self.assertEqual(r[-1][0], check)
+                self.assertIsNotNone(r[-1][1])
+                self.assertTrue(all(reason is None for _, reason, _ in r[:-1]))
+
+    def test_diff_size_counts_lines(self):
+        self.assertEqual(tool.diff_size("a\nb\nc\n", "a\nB\nc\nd\n"), {"removed": 1, "added": 2, "hunks": 2})
+
+
+DOCKER = __import__("shutil").which("docker") is not None  # in the container tests: the broker shim
+
+
+@unittest.skipUnless(DOCKER, "docker not available")
+class IcarusTaskDockerTests(unittest.TestCase):
+    """The `icarus` harness task in the pinned image, on the unedited original RTL and on broken text only."""
+
+    def test_original_rtl_compiles(self):
+        from openvef import eda
+        r = eda.icarus_compile(ORIGINAL, "ovf_fifo")
+        self.assertEqual(r["returncode"], 0, r)
+        self.assertIn("Icarus Verilog", r["iverilog_version_line"] or "")
+
+    def test_broken_text_does_not_compile(self):
+        from openvef import eda
+        r = eda.icarus_compile("module ovf_fifo(\n", "ovf_fifo")
+        self.assertNotEqual(r["returncode"], 0)
+        self.assertTrue(r["messages"])
+
+    def test_identical_copy_is_rejected_before_compiling(self):
+        with tempfile.TemporaryDirectory() as t:
+            path = Path(t) / "same.v"
+            path.write_bytes(ORIGINAL.encode("utf-8"))
+            r = subprocess.run([sys.executable, "-I", str(TOOL), str(path)], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1, r.stdout + r.stderr)
+        self.assertIn("DIFFERS: REJECTED -- identical to the original RTL", r.stdout)

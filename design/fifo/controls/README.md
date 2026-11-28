@@ -18,7 +18,9 @@ controls in the pinned image. For each control it reports:
 - `NOT_WIRED`, once the files exist but the control's procedure has not been composed from
   the harness components yet (plan step 8, [F1-F17-plan.md](../../../docs/F1-F17-plan.md)).
   F1 and F3 are composed (D-036), so they run as soon as `drivers/reference_driver.py` and
-  `checkers/f6_correct_checker.py` both exist;
+  `checkers/f6_correct_checker.py` both exist. F4 and F5 are composed (D-036 follow-up), so they
+  run as soon as `mutants/manifest.json` names an M-exposed mutant (F4), or an M-dontcare mutant
+  and the reference driver exists (F5);
 - `ARTIFACT_REJECTED`, with the production stage diagnostic, when the production static or
   runtime stages reject the owner files. That is never a pass.
 
@@ -26,6 +28,9 @@ controls in the pinned image. For each control it reports:
 runs only File 30's static stages (SOURCE_AST, IMPORT_POLICY, AST_SIGNATURE) on one file, judged
 as `driver.py` or `checker.py` by its directory. It prints which stage accepted or rejected it,
 with the diagnostic. It only reads the file. COMPILE and the runtime stages run in the control run.
+For a mutant (`mutants/<id>.v`), the same command checks, in the pinned image, that it defines
+module `ovf_fifo`, differs from `design/fifo/rtl/ovf_fifo.v` (the size of the difference is
+reported), compiles with the pinned Icarus (`iverilog -g2012`), and keeps the original's port list.
 
 F14 and F15 need no owner artifact.
 

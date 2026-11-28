@@ -16,11 +16,13 @@ Statuses:
   NOT_WIRED — the owner files exist, but the control's procedure has not yet been
       composed from the harness components (plan step 8). Never reported as a pass.
   ARTIFACT_REJECTED — the owner files exist, but the production static or runtime stages
-      reject them (README §2), so they cannot exercise the control. Never a pass; the
-      stage diagnostic is recorded.
+      reject them (README §2), or the mutant set does not have the stated form
+      (src/openvef/mutants.py: manifest, module, distinct netlists, ports), so they cannot
+      exercise the control. Never a pass; the diagnostic is recorded.
 
-Composed procedures (D-036 item 4): F1 (L510) and F3 (L512), on the reference driver and
-the F6 correct checker (D-007 (4)); F14 and F15.
+Composed procedures: F1 (L510) and F3 (L512), on the reference driver and the F6 correct
+checker (D-036 item 4; D-007 (4)); F4 (L513) and F5 (L514), on the M-exposed and M-dontcare
+mutants (D-036 follow-up); F14 and F15.
 
 Each record lists what is still provisional and which approvals it rests on. No wired
 procedure (F14, F15) uses the mask; one that does must carry the DEV-001 label.
@@ -46,7 +48,10 @@ sys.path.insert(0, str(REPO / "runner"))
 
 import run_f18 as F18  # noqa: E402  (identity helpers and pinned-interpreter constants)
 from openvef import eda, f14, f15, freeze, simulator_stages  # noqa: E402
+from openvef import miter, mutants, static_file  # noqa: E402
+from openvef import pairs as P  # noqa: E402
 from openvef import trace as trace_mod  # noqa: E402
+from openvef.pair_runner import run_pair  # noqa: E402
 from openvef.alignment import compare_repeats, null_checker_repeat  # noqa: E402
 from openvef.ast_signature import check_ast_signature, check_compile  # noqa: E402
 from openvef.envelope import Failure  # noqa: E402
@@ -251,7 +256,157 @@ def run_f3(baseline: Path) -> dict:
                         "comparison_failure": None if failure is None else _failure_dict(failure)}}
 
 
-PROCEDURES = {"F1": run_f1, "F3": run_f3, "F14": lambda baseline: run_f14(), "F15": run_f15}
+# --- F4 and F5 (D-036 follow-up): the M-exposed and M-dontcare control mutants ------------------------------------------
+
+MANIFEST_REL = "mutants/manifest.json"
+F5_DRIVER = "drivers/reference_driver.py"
+# Protocol L299: "N, solver and timeout are **TO FREEZE**." DRAFT proposed values under D-005, not frozen:
+#   N = the design cycle cap, the largest bound L293 allows ("Use bound `N` no greater than the design cycle cap");
+#   solver = Yosys built-in `sat` (D-007 (3)); per-script solver and wall-clock limits are build defaults.
+MITER_DRAFT = {"N": "design cycle_cap (L293 maximum)", "solver": "yosys sat (minisat), D-007 (3)",
+               "solver_timeout_s": 300, "wall_timeout_s": 900,
+               "status": "DRAFT proposed values (D-005); Protocol L299 TO FREEZE"}
+
+
+def mutant_set() -> dict:
+    """The owners' manifest, loaded and every mutant exported twice and checked (H1; Protocol L233). Raises
+    mutants.MutantError when the set does not have the stated form. Prepared once per control run."""
+    if "mutants" in _CACHE:
+        return _CACHE["mutants"]
+    ctx = sim_context()
+    m = json.loads((REPO / MATERIALS).read_text(encoding="utf-8"))
+    top = m["toplevel"]
+    original = (REPO / m["rtl"]).read_text(encoding="utf-8")
+    script = (REPO / m["export_script"]).read_text(encoding="utf-8")
+    null_netlist = ctx["null"]["verilog_sources"][f"{top}_null.v"]
+    null_ports = eda.interface(null_netlist, top)["ports"]
+    entries = mutants.load_manifest(CONTROLS_DIR / MANIFEST_REL, top, original)
+    exported = mutants.export_all(entries, script, ctx["record"]["null_netlist_sha256"][0], null_ports,
+                                  simulator_stages.export_null, eda.interface, top, ctx["null"])
+    design = dict(ctx["null"], output_widths={p: w for p, d, w in null_ports if d == "output"})
+    _CACHE["mutants"] = {"exported": exported, "null_netlist": null_netlist, "design": design}
+    return _CACHE["mutants"]
+
+
+def legal_expression(design: dict) -> dict:
+    """The miter's legal-input assumption, generated from the specification's own executable predicate (FIFO-042;
+    FIFO-043; A-045) by exhaustive enumeration. The predicate is evaluator material from the spec, not artifact code."""
+    if "legal" not in _CACHE:
+        pred = design["legal_input_predicate"]
+        namespace: dict = {"__builtins__": {"dict": dict, "str": str, "bool": bool}}
+        exec(compile(pred["source"], "legal_input_predicate", "exec", dont_inherit=True), namespace)
+        _CACHE["legal"] = miter.compile_predicate(namespace[pred["function"]], design["input_ports"],
+                                                  design["output_widths"])
+    return _CACHE["legal"]
+
+
+def bounded(mutant_id: str) -> dict:
+    ms = mutant_set()
+    design, mask = ms["design"], sim_context()["mask"]
+    r = miter.bounded_check(ms["null_netlist"], ms["exported"][mutant_id]["netlist"], design, mask,
+                            legal_expression(design)["expression"], design["cycle_cap"], run_yosys=eda.run_yosys,
+                            solver_timeout_s=MITER_DRAFT["solver_timeout_s"],
+                            wall_timeout_s=MITER_DRAFT["wall_timeout_s"])
+    miter_text = r.pop("miter_verilog", "")
+    return {**r, "miter_verilog_sha256": hashlib.sha256(miter_text.encode("utf-8")).hexdigest()}
+
+
+def _mutant_summary(exported: dict) -> dict:
+    keep = ("roles", "description", "file", "source_sha256", "diff_sha256", "netlist_sha256")
+    return {mid: {k: rec[k] for k in keep} for mid, rec in exported.items()}
+
+
+def _mutant_base() -> tuple[dict, dict | None]:
+    """(base record, mutant set or None after a rejection)."""
+    ctx = sim_context()
+    base: dict = {"seed": SEED, "miter": MITER_DRAFT, "provisional": list(ctx["provisional"]),
+                  "cleared": list(ctx["cleared"]), "design_materials": ctx["record"]["file_sha256"],
+                  "manifest_sha256": hashlib.sha256((CONTROLS_DIR / MANIFEST_REL).read_bytes()).hexdigest()}
+    try:
+        ms = mutant_set()
+    except mutants.MutantError as exc:
+        return {**base, "rejection": {"reason": f"mutant set: {exc}"}}, None
+    return {**base, "mutants": _mutant_summary(ms["exported"])}, ms
+
+
+def _verdict(rows: list) -> str:
+    if any(r["outcome"] == "ERROR" for r in rows):
+        return "ERROR"
+    return "PASS" if rows and all(r["outcome"] == "PASS" for r in rows) else "FAIL"
+
+
+def run_f4(baseline: Path) -> dict:
+    """Protocol L513: "Replay mask-aware miter counterexample in simulator" -- expected "Masked divergence appears at
+    predicted cycle". For every M-exposed mutant: the bounded check (H5; L291, L293-L296) must find a counterexample
+    (NON_EQUIVALENT_WITHIN_N), and its replay through the production harness (H6) must show the first masked
+    divergence at the predicted row."""
+    base, ms = _mutant_base()
+    if ms is None:
+        return {"status": "ARTIFACT_REJECTED", **base}
+    rows = []
+    for mid in mutants.by_role(ms["exported"], "M-exposed"):
+        check = bounded(mid)
+        row: dict = {"mutant": mid, "miter": check}
+        if check["label"] == miter.UNDECIDED:  # L296: a solver/resource limit; no classification
+            row["outcome"] = "ERROR"
+        elif check["label"] != miter.NON_EQUIVALENT:
+            row.update(outcome="FAIL", reason="no masked counterexample within N: the mutant does not show the "
+                                              "M-exposed behaviour, so there is nothing to replay")
+        else:
+            cex = check["counterexample"]
+            replay = miter.replay_driver(cex, ms["design"])
+            key = "replay:" + hashlib.sha256(replay.encode("utf-8")).hexdigest()
+            if key not in _CACHE:
+                _CACHE[key] = l334_timeout(replay, sim_context()["null"], SEED)
+            pair = run_pair(replay, sim_context()["null"], ms["exported"][mid]["design"], mid, SEED,
+                            sim_context()["mask"], timeout_s=_CACHE[key]["t_timeout_s"], run=driver_run)
+            agree = miter.replay_agrees(cex, pair["comparison"])
+            row.update(replay=agree, replay_comparison=pair["comparison"],
+                       outcome="PASS" if agree["agrees"] else "FAIL")
+        rows.append(row)
+    return {"status": _verdict(rows), **base, "details": rows}
+
+
+def run_f5(baseline: Path) -> dict:
+    """Protocol L514: "Mutant changes FIFO data only while valid is low, where spec says data is don't-care" --
+    expected "Raw divergence but no masked divergence; miter agrees through fixed N". For every M-dontcare mutant:
+    the reference driver's null/mutant pair (H2) shows a raw divergence and no masked divergence, and the bounded
+    check through N gives BOUNDED_EQUIVALENT_N."""
+    data = (CONTROLS_DIR / F5_DRIVER).read_bytes()
+    driver_hash = {F5_DRIVER: hashlib.sha256(data).hexdigest()}
+    rejected = static_file.first_failure("driver.py", data, compile_stage=True)
+    if rejected is None:
+        rejected = factory_checks(data.decode("utf-8"), seed=SEED)
+    if rejected is not None:
+        return {"status": "ARTIFACT_REJECTED", "artifact_sha256": driver_hash, "rejection": _failure_dict(rejected)}
+    source = data.decode("utf-8")
+    base, ms = _mutant_base()
+    base["artifact_sha256"] = driver_hash
+    if ms is None:
+        return {"status": "ARTIFACT_REJECTED", **base}
+    key = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    if key not in _CACHE:  # Protocol L334, from three null runs of this artifact
+        _CACHE[key] = l334_timeout(source, sim_context()["null"], SEED)
+    base["l334"] = _CACHE[key]
+    rows = []
+    for mid in mutants.by_role(ms["exported"], "M-dontcare"):
+        pair = run_pair(source, sim_context()["null"], ms["exported"][mid]["design"], mid, SEED,
+                        sim_context()["mask"], timeout_s=_CACHE[key]["t_timeout_s"], run=driver_run)["comparison"]
+        check = bounded(mid)
+        sim_ok = (pair["termination"] == P.COMPLETE and not pair["integrity_failure"]
+                  and not pair["next_input_before_raw"] and pair["raw_divergence"] and not pair["masked_divergence"])
+        row: dict = {"mutant": mid, "comparison": pair, "miter": check,
+                     "raw_divergence": pair["raw_divergence"], "masked_divergence": pair["masked_divergence"]}
+        if check["label"] == miter.UNDECIDED:
+            row["outcome"] = "ERROR"
+        else:
+            row["outcome"] = "PASS" if sim_ok and check["label"] == miter.BOUNDED_EQUIVALENT else "FAIL"
+        rows.append(row)
+    return {"status": _verdict(rows), **base, "details": rows}
+
+
+PROCEDURES = {"F1": run_f1, "F3": run_f3, "F4": run_f4, "F5": run_f5, "F14": lambda baseline: run_f14(),
+              "F15": run_f15}
 
 
 def run_control(control: str, slots: dict, baseline: Path) -> dict:
