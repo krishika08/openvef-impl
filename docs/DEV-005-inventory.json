@@ -2,10 +2,17 @@
   "status": "DEV-005 inventory (owner decision D-039, Krishika, 28 Nov 2026). Every control file under design/fifo/controls/ other than README.md and slots.json, with the SHA-256 of its current bytes and a commit that holds those bytes. The controls are AI-written: not human-written and not independent of the evaluator. Checked by tests/test_controls_provenance.py.",
   "files": [
     {
+      "path": "design/fifo/controls/checkers/f6_correct_checker.py",
+      "sha256": "8e51da0d17916c9896494c06c81c3c94880cd6eff625ae5343720c002317155a",
+      "commit": "ddaa507",
+      "written_by": "Claude Code (Claude Opus 5.5), D-039 Wave 1",
+      "label": "AI-written (DEV-005)"
+    },
+    {
       "path": "design/fifo/controls/drivers/reference_driver.py",
-      "sha256": "74f61ef62bfd0abb2b59be1322190c50c040a115118ff0481f5904a688558a22",
-      "commit": "1f7d87b",
-      "written_by": "Krishika: the 7-line interface shell (D-038), typed by her, committed under her identity (D-039 item 5)",
+      "sha256": "a562bf806cf2e02ebfbb2a98e0ba6690b012edc0864c275ef8f6432dadd69525",
+      "commit": "ddaa507",
+      "written_by": "Claude Code (Claude Opus 5.5), D-039 Wave 1: stimulus logic and docstring, added to Krishika's 7-line interface shell (typed by her, commit 1f7d87b, SHA-256 74f61ef62bfd0abb2b59be1322190c50c040a115118ff0481f5904a688558a22)",
       "label": "AI-written (DEV-005)"
     }
   ]

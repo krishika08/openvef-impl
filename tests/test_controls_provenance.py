@@ -33,7 +33,8 @@ def git(repo: Path, *args: str) -> bytes:
 
 def control_files(repo: Path) -> set[str]:
     root = repo / CONTROLS
-    found = {p.relative_to(repo).as_posix() for p in root.rglob("*") if p.is_file()} if root.is_dir() else set()
+    found = ({p.relative_to(repo).as_posix() for p in root.rglob("*")
+              if p.is_file() and "__pycache__" not in p.parts} if root.is_dir() else set())  # bytecode caches are not controls
     return found - HARNESS_OWNED
 
 
