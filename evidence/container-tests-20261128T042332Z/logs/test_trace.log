@@ -1,0 +1,9 @@
+test_canonical_bytes_and_hash (test_trace.TraceTests.test_canonical_bytes_and_hash) ... ok
+test_each_invocation_gets_an_independent_value (test_trace.TraceTests.test_each_invocation_gets_an_independent_value) ... ok
+test_non_json_values_rejected (test_trace.TraceTests.test_non_json_values_rejected) ... ok
+test_rows_outside_schema_rejected (test_trace.TraceTests.test_rows_outside_schema_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

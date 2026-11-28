@@ -1,0 +1,8 @@
+test_entry_points_call_the_guard_and_never_build (test_image_guard.ImageGuard.test_entry_points_call_the_guard_and_never_build) ... ok
+test_pin_values_are_well_formed (test_image_guard.ImageGuard.test_pin_values_are_well_formed) ... ok
+test_pinned_tag_is_the_content_tag (test_image_guard.ImageGuard.test_pinned_tag_is_the_content_tag) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.008s
+
+OK
