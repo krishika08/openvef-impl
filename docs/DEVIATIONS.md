@@ -246,42 +246,65 @@ while the waiver lasts are listed here in the commit that adds their evidence.
 
 **Ends when** v1.3.7 is adopted or rejected (the owners' act). L4 below stays open until then.
 
-## DEV-004 — v1.3.6 implementation and fixture execution without a recorded v1.3.6 L555 (3) gate (OPEN: owner decision required)
+## DEV-004 — v1.3.6 gate recorded as met, with evidentiary gaps (Protocol L555 (3))
 
 > [02 L555] "(2) Obtain an independent document-only v1.3.6 re-audit of the actual pack, including the operative F18 checklist, every fixture expectation and all cross-document rules; a pass authorizes nothing by itself. (3) Only after that document re-audit passes, the owner must explicitly record acceptance or rejection of A1–A11 and choose the X14 strict-AST branch. Until both the document audit and owner record are complete, no implementation or fixture execution is authorized."
 
-Recorded at Krishika's instruction (D-033 follow-up, 28 Nov 2026): "do not exclude them on assumption … show, with file
-and commit, whether its conditions … were satisfied before our first v1.3.6 fixture run". This is **not a waiver**:
-no owner has waived v1.3.6's gate, and Claude does not write one. It records what the repository shows.
+**Owner decision D-034 (Krishika, 28 Nov 2026, on a Claude (claude.ai) review of the owner records; takes effect under
+D-008):** the v1.3.6 gate is recorded as met, with evidentiary gaps. Each gap below stays open until its "Ends when" is
+met. This is **not a waiver**, and the gaps are not closed by this entry. The owner records are in
+`docs/owner-records/`: `owner-signoff-pack-rev95.md` (SHA-256 `13b805cb…a83d`) and `owner-decision-record-rev25.md`
+(SHA-256 `64b83614…594b`). Both are claude.ai Docs Markdown exports made on 28 Nov 2026; see
+[owner-records/NOTE.md](owner-records/NOTE.md).
 
-**What the pack says** (`baseline/OpenVEF_Planning_v1_3_6/`, read-only, verified against `27_SHA256SUMS.txt`):
-- File 23 L4: "**Status:** OWNER ACCEPTANCE NOT RECORDED; v1.3.5 document audit PASS reported; v1.3.6 corrective
-  document re-audit pending".
-- File 23 L97: "No fixture execution, implementation, provider probe or LLM call is authorized by this release. A1–A11
-  remain **NOT ACCEPTED**; X14 remains **OWNER CHOICE REQUIRED**; …".
-- File 32 L40–L41 ("A1–A11: PROPOSED / NOT ACCEPTED; owner acceptance PENDING." / "X14: OWNER CHOICE REQUIRED.") and
-  L49 ("2. Owner records A1–A11 and the X14 choice."); File 16 L93 and L108 say the same.
-The pack's own records therefore show the gate **not met** at release. They cannot show anything later.
+**What the owner records show** (file and line, quoted exactly):
+- **Owner record (A1–A11, X14).**
+  - Sign-off Pack Part 4, L129: "By signing here, both owners adopt the Owner Decision Record ([link](https://claude.ai/artifact/88YV4kTXQxcDYP7jx351Sm)) exactly as marked at its revision 25 on 23 Nov 2026: A1–A11 accepted as written (11/11), X14 Option A, CPython 3.11.18, F18 scope confirmed, freeze valid. This substitutes for its §6.3 signature block. Identities in its §4 other than the owners remain TO CONFIRM."
+  - Sign-off Pack Part 4, L133, Owner 1: "Krishika", "Signed by written statement in chat, transcribed by Claude: “I, Krishika, co-owner of OpenVEF, sign the Owner Decision Record as marked at revision 25 on 23 Nov 2026.”", "23 Nov 2026, 13:54 IST".
+  - 13:54 IST is 08:24 UTC. `run-20261123T082747Z` started at 08:27:47 UTC, about 3 minutes later (the signature is
+    recorded to the minute).
+  - Decision Record (rev 25): L38–L48 have every A1–A11 row "☒" under "Accept as written". L50 reads "Number accepted
+    as written: 11 / 11. Number rejected or modified: 0." L58 has Option A "☒". L140 has "Freeze valid" "☒".
+- **F18 scope.** Decision Record §5.2, L104, quotes the scope Register 16 L47 opens: "hand-built FIFO
+  specification/mask, harness, F1–F15, parser/assembler hand-tests, and F17 using hand-built FIFO control mutants only."
+  L108 reads: "Running them is treated as part of the “parser/assembler hand-tests”: ☒ Confirmed".
+- **Document audit.** Decision Record L14: "| Document audit | PASS, 23 Nov 2026 (independent, documents only) |".
+- **Order in the repository's own records.** `docs/assistance-log.md` L28 dates the first implementation session
+  (Session 1) "23 Nov 2026, from 13:55 IST", one minute after the signature. The earlier claude.ai session (L22,
+  "23 Nov 2026, 11:00–13:45 IST") drafted the Sign-off Pack and marked the Decision Record boxes. The log does not
+  record it as writing implementation code.
 
-**What the repository shows after release:**
-- First implementation: Session 1 workspace commit `8bca94d…` (`8bca94d6235cacc4400430fc174a39505804d140`, not in this
-  repository's history; imported by `af4340d`, 23 Nov 2026). First v1.3.6 fixture run: `run-20261123T082747Z`
-  (started 23 Nov 2026 08:27:47 UTC at that commit; 8 PASS / 136 NOT_IMPLEMENTED).
-- The scope opening rests on the Owner Sign-off Pack and the Owner Decision Record (CLAUDE.md L5–L9 as first committed
-  in `af4340d`: "Only the limited hand-built FIFO scope of Protocol §18(4) is open"; `docs/AUDIT-READINESS.md` L12).
-  Neither document is in this repository (`docs/ambiguities.md`, D-005: "The Sign-off Pack is not in this
-  repository").
-- No passed independent document re-audit of v1.3.6 is in the repository. `docs/assistance-log.md` L21 names a "v1.3.6
-  audit doc" from separate Claude sessions before 23 Nov 2026; it is not in the repository and its outcome is not
-  recorded. If it is the re-audit relied on, it was an audit by Claude, not an audit independent of the AI that later
-  built the implementation.
-- No owner record accepting or rejecting A1–A11, and no X14 choice, is in the repository. The implementation follows
-  the strict-AST policy (Option A) as the pack specifies; that is not an owner record.
+**Gaps** (D-034; each stays open until its "Ends when" is met):
 
-**Finding:** from the repository it **cannot be shown** that v1.3.6's L555 (3) conditions (a passed document re-audit
-and the owner record) were met before `run-20261123T082747Z`. They may be met in the Owner Sign-off Pack or Owner
-Decision Record; if so, adding those records (or their exact quoted passages with dates) closes this entry as
-"satisfied". If not, every execution below happened under the bar, and only the owners can waive it.
+| # | Gap | Ends when |
+|---|---|---|
+| 1 | **The 23 Nov document-audit report is not in the repository.** The Decision Record states the result (L14), but the report itself is not here. `docs/assistance-log.md` L21 names a "v1.3.6 audit doc" from separate Claude sessions before 23 Nov 2026, and its outcome is not recorded there. If that is the audit relied on, "independent" in L14 means independent of the pack author. It was not independent of the AI that later built the implementation. | The report is found and committed, or the owners record a waiver for it |
+| 2 | **Ayush's signature is unverified.** Sign-off Pack L134: "Written statement posted in the chat from Krishika's session, transcribed by Claude: “I, Ayush Kumar Singh, co-owner of OpenVEF, sign the Owner Decision Record as marked at revision 25 on 23 Nov 2026.” Claude cannot verify who typed it; Ayush should confirm it from his own account or by a message the owners keep with this record." L121 likewise records Ayush's acceptance as "Relayed by Krishika". The exports do not record who typed the "Ayush" entries in the Part 1 and Part 2 signature tables (L42, L74). | Ayush confirms from his own account, or by a message the owners keep with this record (the single "Ayush ratification pending" entry in `docs/AUDIT-READINESS.md`, D-008) |
+| 3 | **The Part 3 checklist and the Decision Record disagree.** Part 3 ticks these items (L82, L85, L86, L88), but in the Decision Record they are blank or unmarked:<br>• L82 "[x] §1 “Owner has reviewed the baseline pack” marked": Decision Record L16 is "☐ Yes ☐ No".<br>• L85 "[x] §4 Owners' full legal names … implementation auditor": Decision Record L76–L81 are empty in every column.<br>• L86 "[x] §5.1 Exact CPython version, interpreter/container hash, OS and architecture": the version is given (L91), but the hash (L92) and the OS and architecture (L93) are empty.<br>• L88 "[x] §5.4 Auditor independence confirmed": Decision Record L130 (auditor) is empty, and L131–L132 are "☐ Confirmed" and "☐ Agreed".<br>The checklist was ticked for items the record does not contain. The Sign-off Pack's own L125 says these were "Not marked, because the recommended set did not cover them". | The owners complete those items in the Decision Record, or record that the Part 3 ticks were wrong |
+| 4 | **The Decision Record boxes were marked by Claude.** Decision Record L5: "Boxes marked ☒ were marked by Claude on the co-owners' written instruction of 23 Nov 2026 (see the OpenVEF Owner Sign-off Pack, Owner instruction log)." Sign-off Pack L125 lists them: "§2 A1–A11 accepted as written (11/11), §3 X14 Option A, §5.1 version 3.11.18, §5.2 F18 scope confirmed, §6.1 freeze valid". The owners' instruction is L120–L121. The owners' own act is the Part 4 signature that adopts the marked record. | The owners record that the marks are theirs (re-marking the Decision Record themselves, or a signed statement kept with it) |
+
+**Read with care** (Claude's observations, not D-034 gaps; see [owner-records/NOTE.md](owner-records/NOTE.md)):
+- **The exports are 28 Nov 2026 copies.** The Sign-off Pack export is revision 95 and contains a 24 Nov amendment.
+  Neither file shows what the documents read at 23 Nov 2026 08:24 UTC.
+- **Both records say "BLANK" in their titles.** The Decision Record's L5 reads "PARTLY COMPLETED, UNSIGNED", and its §6.3
+  (L149–L155) is empty. Its L157–L163 still lists the state "Until this section is signed and dated" ("A1–A11: NOT
+  ACCEPTED." … "Authorization: NONE."). The Sign-off Pack's L5 reads "Nothing in this pack is selected or signed." The
+  owner record therefore rests on Part 4's statement that it "substitutes for its §6.3 signature block" (L129).
+
+**Before D-034** this entry was titled "v1.3.6 implementation and fixture execution without a recorded v1.3.6 L555 (3)
+gate (OPEN: owner decision required)". Its finding was that the gate "**cannot be shown**" met from the repository,
+because the owner records were not in it. Its covered runs carried the label "v1.3.6 gate not shown met (DEV-004)". That
+label is replaced below.
+
+**What the pack says** (`baseline/OpenVEF_Planning_v1_3_6/`, read-only): File 23 L4 and L97, File 32 L40–L41 and L49,
+and File 16 L93 and L108 show the gate **not met at release** (A1–A11 "NOT ACCEPTED", X14 "OWNER CHOICE REQUIRED").
+They cannot show anything later. The owner records above are the later record.
+
+**First implementation and run:**
+- First implementation: Session 1 workspace commit `8bca94d…` (`8bca94d6235cacc4400430fc174a39505804d140`). It is not in
+  this repository's history; `af4340d` imported it on 23 Nov 2026.
+- First v1.3.6 fixture run: `run-20261123T082747Z`, started 23 Nov 2026 08:27:47 UTC at that commit (8 PASS /
+  136 NOT_IMPLEMENTED).
 
 **Executions covered** (the implementation work from `8bca94d` on, and):
 - v1.3.6 fixture runs (39): `run-20261123T082747Z`, `run-20261123T152509Z`, `run-20261123T153734Z`, `run-20261123T155910Z`, `run-20261123T160656Z`, `run-20261123T162630Z`, `run-20261123T173644Z`, `run-20261123T173956Z`, `run-20261123T174358Z`, `run-20261123T182731Z`, `run-20261123T183649Z`, `run-20261123T195911Z`, `run-20261123T195936Z`, `run-20261124T111335Z`, `run-20261124T112030Z`, `run-20261124T144337Z`, `run-20261124T151744Z`, `run-20261124T163535Z`, `run-20261124T193435Z`, `run-20261124T194216Z`, `run-20261124T195043Z`, `run-20261124T195537Z`, `run-20261124T202333Z`, `run-20261124T203551Z`, `run-20261124T211459Z`, `run-20261125T040905Z`, `run-20261125T075113Z`, `run-20261125T081829Z`, `run-20261125T173501Z`, `run-20261125T183002Z`, `run-20261126T144718Z`, `run-20261126T155713Z`, `run-20261126T155730Z`, `run-20261126T163836Z`, `run-20261127T052200Z`, `run-20261127T052242Z`, `run-20261127T113929Z`, `run-20261127T134052Z`, `run-20261127T134112Z`.
@@ -291,11 +314,10 @@ Decision Record; if so, adding those records (or their exact quoted passages wit
 - Not covered: `probe-file50-20261124T112645Z`, the U+2118 tokenizer probe, which v1.3.6 L555 (4) allows "earlier on
   the exact pinned Python 3.11 interpreter".
 
-**Label on every covered run until this closes:** "v1.3.6 gate not shown met (DEV-004)". None of these runs is F18
+**Label on every covered run (D-034):** "v1.3.6 gate recorded as met; gaps DEV-004". None of these runs is F18
 evidence (CLAUDE.md rule 8; every one is `run_class` development).
 
-**Ends when** the owners either (a) put the re-audit pass and the A1–A11/X14 owner record (or exact quotes with dates)
-in the repository, showing the gate was met before 23 Nov 2026 08:27 UTC, or (b) record an explicit waiver.
+**Ends when:** the entry as a whole ends when every gap above has ended. Until then the label stays.
 
 ## Owner interpretation (D-032) — development-only regression runs (Protocol L555 (3)) — SUPERSEDED by DEV-003
 

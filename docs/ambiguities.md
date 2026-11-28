@@ -2173,8 +2173,38 @@ with "#5" read as "#7". Adoption stays the owners' act; Claude adopts nothing.
    Cyrillic look-alike letter inside a label, and a tab. All 17 lines and both fixture-index fields must still pass.
    **v1.3.6 runs** (Krishika, same day): not excluded on assumption. Whether v1.3.6's own L555 (3) gate was met
    before the first v1.3.6 fixture run is recorded in DEV-004 (OPEN: the repository cannot show it; owner decision
-   required).
+   required). **Updated by D-034** (below): DEV-004 now reads "v1.3.6 gate recorded as met, with evidentiary gaps".
 3. **D6-3** (context/negation blindness) is added to the D5-2 disclosure in `docs/DEVIATIONS.md`.
 4. Re-run v1.3.7c, the controls and the container tests (guard on, no leftover containers), statuses unchanged. Rebuild
    the bundle (brief #7: D6-1, D6-2, regression and the unchanged stopping rule), publish it as release
    `docaudit7-<first 8 of sha>`, and push.
+
+## D-034 — v1.3.6 L555 (3) gate: owner records and DEV-004 (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026, on a Claude (claude.ai) review of the owner records. Takes effect under
+D-008. Ayush's ratification stays the single entry in AUDIT-READINESS.md.
+
+1. The audit #6 report is saved verbatim with its NOTE, committed alone first (`docs/reviews/doc-audit6-gpt6-2026-11-28.md`,
+   SHA-256 `809b2d86…78c7`, 17,645 bytes).
+2. The Owner Decision Record (revision 25) and the Owner Sign-off Pack (revision 95) are saved unchanged in
+   `docs/owner-records/`, with a NOTE giving their SHA-256s. Both are claude.ai Docs Markdown exports made by Claude
+   (claude.ai) on 28 Nov 2026 at Krishika's request.
+3. DEV-004 is rewritten as "v1.3.6 gate recorded as met, with evidentiary gaps", citing exact lines from the exports:
+   - the Part 4 signature by Krishika, 23 Nov 2026 13:54 IST (08:24 UTC), adopting the Decision Record at revision 25
+     (A1–A11 11/11, X14 Option A, freeze valid), 3 minutes before `run-20261123T082747Z` (08:27 UTC);
+   - §5.2, which confirms F18 as part of the parser/assembler hand-tests;
+   - the record's "PASS, 23 Nov 2026 (independent, documents only)" for the document audit.
+
+   The gaps, each with an "Ends when":
+   - (1) the 23 Nov document-audit report is not in the repository;
+   - (2) Ayush's signature was posted from Krishika's session and is unverified;
+   - (3) the Part 3 checklist ticks §4 identities, the §5.1 interpreter hash and the §5.4 auditor, which are blank in
+     the Decision Record;
+   - (4) the Decision Record boxes were marked by Claude on the owners' written instruction.
+4. The label "v1.3.6 gate not shown met (DEV-004)" is replaced on the covered runs by "v1.3.6 gate recorded as met; gaps
+   DEV-004".
+
+Claude added to gap (3) a fourth mismatch that is the same kind: the §1 "baseline reviewed" item. It also added two
+"read with care" observations to DEV-004 that are not gaps decided by D-034: the exports are 28 Nov copies, and both
+records' own status lines read BLANK or UNSIGNED. The owners may move either observation into the gap table or drop it.
+None of this closes a gap, makes any run F18 evidence, or bears on v1.3.7 adoption.

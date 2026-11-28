@@ -62,8 +62,11 @@ v1.3.6 F18 evidence.
 
 Deviation DEV-003 (Krishika, D-033; docs/DEVIATIONS.md): the owners waived Protocol L555 (3) for development-only
 regression runs from the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected. These runs are fixture execution; never call them outside the gate,
-F18 acceptance or F18 evidence. List each new one in DEV-003. DEV-004 (OPEN): the repository cannot show
-that v1.3.6's own L555 (3) gate was met before the first v1.3.6 run; never claim it was.
+F18 acceptance or F18 evidence. List each new one in DEV-003. DEV-004 (D-034, Krishika): "v1.3.6 gate recorded as
+met, with evidentiary gaps": the owner records in docs/owner-records/ (claude.ai exports, 28 Nov 2026) show the Part 4
+signature 3 minutes before the first v1.3.6 run, but four gaps stay open (document-audit report absent; Ayush's
+signature unverified; Part 3 ticks vs blank Decision Record items; boxes marked by Claude). Label those runs "v1.3.6
+gate recorded as met; gaps DEV-004"; never call the gate fully evidenced or a gap closed until its "Ends when" is met.
 
 Still human-written. Do NOT write: F6/F17 control checkers or drivers, the directed
 suite, control mutants. Owners write those by hand; Claude may comment on them in prose
