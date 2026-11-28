@@ -14,6 +14,27 @@
       "commit": "ddaa507",
       "written_by": "Claude Code (Claude Opus 5.5), D-039 Wave 1: stimulus logic and docstring, added to Krishika's 7-line interface shell (typed by her, commit 1f7d87b, SHA-256 74f61ef62bfd0abb2b59be1322190c50c040a115118ff0481f5904a688558a22)",
       "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/mutants/m_af_threshold.v",
+      "sha256": "97248d71bae818a7266ff3eef4c8a96c3975e19254754ad864afc992c6118e04",
+      "commit": "3a5dea2",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 2",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/mutants/m_rddata_idle.v",
+      "sha256": "98c0b327d50f87174b3868a80c8d16290cd5a25a3fbc1cd0667ab796f3b3530a",
+      "commit": "3a5dea2",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 2",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/mutants/manifest.json",
+      "sha256": "d1520726903ce3b8e742f08c7b1190d386cf54c49dfa1c95e0fe35fb39e89d57",
+      "commit": "3a5dea2",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 2",
+      "label": "AI-written (DEV-005)"
     }
   ]
 }
