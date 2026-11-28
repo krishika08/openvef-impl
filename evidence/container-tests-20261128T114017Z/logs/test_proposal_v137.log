@@ -1,0 +1,8 @@
+test_marked_draft (test_proposal_v137.ProposalTests.test_marked_draft) ... ok
+test_proposed_m27 (test_proposal_v137.ProposalTests.test_proposed_m27) ... ok
+test_tokens_equal_the_descriptor_strings (test_proposal_v137.ProposalTests.test_tokens_equal_the_descriptor_strings) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK

@@ -1,0 +1,23 @@
+test_artifact_cannot_import_cocotb (test_sandbox.RuntimeStageTests.test_artifact_cannot_import_cocotb) ... ok
+test_artifact_output_cannot_forge_result (test_sandbox.RuntimeStageTests.test_artifact_output_cannot_forge_result) ... ok
+test_checker_outcomes (test_sandbox.RuntimeStageTests.test_checker_outcomes) ... ok
+test_checker_runtime_signature (test_sandbox.RuntimeStageTests.test_checker_runtime_signature) ... ok
+test_factory_exception_and_exit (test_sandbox.RuntimeStageTests.test_factory_exception_and_exit) ... ok
+test_factory_timeout_is_not_a_verdict (test_sandbox.RuntimeStageTests.test_factory_timeout_is_not_a_verdict) ... ok
+test_return_type (test_sandbox.RuntimeStageTests.test_return_type) ... ok
+test_runtime_import_allow_list (test_sandbox.RuntimeStageTests.test_runtime_import_allow_list) ... ok
+test_runtime_signature (test_sandbox.RuntimeStageTests.test_runtime_signature) ... ok
+test_valid_driver (test_sandbox.RuntimeStageTests.test_valid_driver) ... ok
+test_environment_is_minimal (test_sandbox.SandboxIsolationTests.test_environment_is_minimal) ... ok
+test_image_is_pinned_python_3_11_18 (test_sandbox.SandboxIsolationTests.test_image_is_pinned_python_3_11_18) ... ok
+test_no_network (test_sandbox.SandboxIsolationTests.test_no_network) ... ok
+test_non_root_no_capabilities_no_new_privileges (test_sandbox.SandboxIsolationTests.test_non_root_no_capabilities_no_new_privileges) ... ok
+test_pids_limit (test_sandbox.SandboxIsolationTests.test_pids_limit) ... ok
+test_read_only_root_and_writable_tmp (test_sandbox.SandboxIsolationTests.test_read_only_root_and_writable_tmp) ... ok
+test_seeded_local_random_works (test_sandbox.SandboxIsolationTests.test_seeded_local_random_works) ... ok
+test_timeout_kills_and_removes_container (test_sandbox.SandboxIsolationTests.test_timeout_kills_and_removes_container) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 29.858s
+
+OK
