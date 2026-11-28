@@ -69,11 +69,21 @@ APPROVAL_STATES = ("nothing is approved", "nothing is qualified or approved", "n
 APPROVAL_TAIL = r"(?:\s*|\.(?:\s.*)?|\)\s*| \(see the status line at the top of this file\)\.(?:\s.*)?)"
 
 
+# D-032 (D5-1): the one definition of a word character in labelled_status, Python's `\w` for str (letters, digits and
+# "_"). Used for the label boundary (labelled_status) and for apostrophes (_inside_quotes); nothing else tests for one.
+WORD_CHAR = r"\w"
+
+
+def _is_word_char(ch: str) -> bool:
+    import re
+    return re.fullmatch(WORD_CHAR, ch) is not None
+
+
 def _inside_quotes(before: str) -> bool:
     """True when the text before a label leaves a quotation open, for every kind in QUOTE_PAIRS. A "'" or "’" between
     two word characters is an apostrophe ("descriptor's"), not a quotation mark."""
     import re
-    text = re.sub(r"(?<=\w)['’](?=\w)", "", before)
+    text = re.sub(rf"(?<={WORD_CHAR})['’](?={WORD_CHAR})", "", before)
     for opening, closing in QUOTE_PAIRS:
         if opening == closing:
             if text.count(opening) % 2:
@@ -105,7 +115,7 @@ def _value_problem(i: int, value: str) -> str | None:
 
 def labelled_status(line: str) -> list[str]:
     """Problems with a status line under C19; [] when it is well formed. Each label appears exactly once, as written
-    (case included), not preceded by a quotation mark, a hyphen or a word character, not inside quotation marks of any
+    (case included), not preceded by a quotation mark, a hyphen or a word character (WORD_CHAR, "_" included), not inside quotation marks of any
     kind in QUOTES (_inside_quotes), and directly followed by exactly ": " and a non-space character; the labels come in
     STATUS_LABELS order. Each value runs from its label to the next ";" or "|" (the last label's value; for the first
     two, it must end with "; " right before the next label) and must be in its clause's closed vocabulary
@@ -117,7 +127,7 @@ def labelled_status(line: str) -> list[str]:
         hits = []
         for m in re.finditer(re.escape(label) + ":", line):
             before = line[:m.start()]
-            if before and (before[-1].isalnum() or before[-1] in QUOTES + "-"):
+            if before and (_is_word_char(before[-1]) or before[-1] in QUOTES + "-"):
                 continue
             if _inside_quotes(before):
                 continue
@@ -206,6 +216,19 @@ class LabelledStatusRuleTests(unittest.TestCase):
         # Claude's own (9), a regression guard (the audited code already rejected it): a backtick code span.
         "backtick code span": ("F18 status: `Development-run evidence: none; Formal F18 status: NOT RUN; "
                                "Approval: nothing is approved`", "0 unquoted occurrences"),
+        # D-032 (D5-1): a label joined to an identifier-like token by "_" (audit #5's line is the second).
+        "_ before Development-run evidence": ("F18 status: _Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                             "Approval: nothing is approved.", "0 unquoted occurrences"),
+        "x_ before Development-run evidence": ("F18 status: x_Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                              "Approval: nothing is approved.", "0 unquoted occurrences"),
+        "_ before Formal F18 status": ("F18 status: Development-run evidence: none; _Formal F18 status: NOT RUN; "
+                                       "Approval: nothing is approved.", "0 unquoted occurrences"),
+        "x_ before Formal F18 status": ("F18 status: Development-run evidence: none; x_Formal F18 status: NOT RUN; "
+                                        "Approval: nothing is approved.", "0 unquoted occurrences"),
+        "_ before Approval": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; "
+                              "_Approval: nothing is approved.", "0 unquoted occurrences"),
+        "x_ before Approval": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; "
+                               "x_Approval: nothing is approved.", "0 unquoted occurrences"),
         # Claude's own (10): no space between the first value's ";" and the next label.
         "no space after ';'": ("F18 status: Development-run evidence: none;Formal F18 status: NOT RUN; "
                                "Approval: nothing is approved.", "does not end with '; '"),
