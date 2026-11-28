@@ -1,0 +1,15 @@
+test_defined_ids_unique_and_match_regex (test_fifo_spec.ClauseIdTests.test_defined_ids_unique_and_match_regex) ... ok
+test_every_reference_is_defined (test_fifo_spec.ClauseIdTests.test_every_reference_is_defined) ... ok
+test_extraction_equals_defined_set (test_fifo_spec.ClauseIdTests.test_extraction_equals_defined_set) ... ok
+test_no_near_match_errors (test_fifo_spec.ClauseIdTests.test_no_near_match_errors) ... ok
+test_payload_blocks_present_in_order (test_fifo_spec.ClauseIdTests.test_payload_blocks_present_in_order) ... ok
+test_status_is_draft (test_fifo_spec.ClauseIdTests.test_status_is_draft) ... ok
+test_all_zero_vector_is_legal_in_every_state (test_fifo_spec.PredicateTests.test_all_zero_vector_is_legal_in_every_state) ... ok
+test_driver_vector_keys (test_fifo_spec.PredicateTests.test_driver_vector_keys) ... ok
+test_matches_fifo_041 (test_fifo_spec.PredicateTests.test_matches_fifo_041) ... ok
+test_example_follows_clauses (test_fifo_spec.WorkedExampleTests.test_example_follows_clauses) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.003s
+
+OK

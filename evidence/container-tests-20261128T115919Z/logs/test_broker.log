@@ -1,0 +1,16 @@
+test_done_reply_parses_only_framed_result (test_broker.BrokerProtocolTests.test_done_reply_parses_only_framed_result) ... ok
+test_done_reply_with_empty_output (test_broker.BrokerProtocolTests.test_done_reply_with_empty_output) ... ok
+test_flags_have_one_source (test_broker.BrokerProtocolTests.test_flags_have_one_source) ... ok
+test_malformed_reply_is_unavailable_not_a_verdict (test_broker.BrokerProtocolTests.test_malformed_reply_is_unavailable_not_a_verdict) ... ok
+test_no_arbitrary_commands_in_broker_mode (test_broker.BrokerProtocolTests.test_no_arbitrary_commands_in_broker_mode) ... ok
+test_request_framing (test_broker.BrokerProtocolTests.test_request_framing) ... ok
+test_timeout_reply (test_broker.BrokerProtocolTests.test_timeout_reply) ... ok
+test_empty_environment (test_broker.HostInvocationTests.test_empty_environment) ... ok
+test_policy_matches_broker_allow_list (test_broker.HostInvocationTests.test_policy_matches_broker_allow_list)
+The recorded policy names exactly the broker's allow-list; DOCKER_* is never wholesale. ... ok
+test_round_trip (test_broker.HostInvocationTests.test_round_trip) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.003s
+
+OK

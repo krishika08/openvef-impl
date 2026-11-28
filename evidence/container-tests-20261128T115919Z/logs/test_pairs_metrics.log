@@ -1,0 +1,21 @@
+test_complete_valid_needs_checker (test_pairs_metrics.ClassifierTests.test_complete_valid_needs_checker) ... ok
+test_driver_error_before_timeout_rules (test_pairs_metrics.ClassifierTests.test_driver_error_before_timeout_rules) ... ok
+test_every_case (test_pairs_metrics.ClassifierTests.test_every_case) ... ok
+test_inclusion_check_detects_a_wrong_cell (test_pairs_metrics.ClassifierTests.test_inclusion_check_detects_a_wrong_cell) ... ok
+test_inclusion_table_is_the_packs (test_pairs_metrics.ClassifierTests.test_inclusion_table_is_the_packs) ... ok
+test_masked_implies_raw (test_pairs_metrics.ClassifierTests.test_masked_implies_raw) ... ok
+test_precedence_invalid_over_everything (test_pairs_metrics.ClassifierTests.test_precedence_invalid_over_everything) ... ok
+test_f15_passes (test_pairs_metrics.F15Tests.test_f15_passes) ... ok
+test_zero_valid_slot_rhs_not_evaluated (test_pairs_metrics.F15Tests.test_zero_valid_slot_rhs_not_evaluated) ... ok
+test_clean (test_pairs_metrics.IdentitiesDetectErrors.test_clean) ... ok
+test_dropped_row (test_pairs_metrics.IdentitiesDetectErrors.test_dropped_row) ... ok
+test_duplicated_row (test_pairs_metrics.IdentitiesDetectErrors.test_duplicated_row) ... ok
+test_invalid_slot_with_pair_rows (test_pairs_metrics.IdentitiesDetectErrors.test_invalid_slot_with_pair_rows) ... ok
+test_ledger_rejects_missing_observation (test_pairs_metrics.IdentitiesDetectErrors.test_ledger_rejects_missing_observation) ... ok
+test_wrong_inclusion_flag (test_pairs_metrics.IdentitiesDetectErrors.test_wrong_inclusion_flag) ... ok
+test_wrong_x_definition (test_pairs_metrics.IdentitiesDetectErrors.test_wrong_x_definition) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.031s
+
+OK

@@ -1,0 +1,26 @@
+test_boundary_pairs_give_the_expected_outcomes (test_dispatch_shapes_v137.CandidateDispatchTests.test_boundary_pairs_give_the_expected_outcomes) ... ok
+test_candidate_lifecycle_values_are_in_their_candidate_lines (test_dispatch_shapes_v137.CandidateDispatchTests.test_candidate_lifecycle_values_are_in_their_candidate_lines) ... ok
+test_cited_text_covers_every_property_domain (test_dispatch_shapes_v137.CandidateDispatchTests.test_cited_text_covers_every_property_domain) ... ok
+test_compared_strings_are_cited (test_dispatch_shapes_v137.CandidateDispatchTests.test_compared_strings_are_cited) ... ok
+test_edge_exception_holds_only_for_a_fully_used_closed_domain (test_dispatch_shapes_v137.CandidateDispatchTests.test_edge_exception_holds_only_for_a_fully_used_closed_domain) ... ok
+test_every_candidate_adapter_has_a_cited_contract (test_dispatch_shapes_v137.CandidateDispatchTests.test_every_candidate_adapter_has_a_cited_contract) ... ok
+test_every_candidate_adapter_has_synthetic_vectors (test_dispatch_shapes_v137.CandidateDispatchTests.test_every_candidate_adapter_has_synthetic_vectors) ... ok
+test_every_property_has_boundary_pairs (test_dispatch_shapes_v137.CandidateDispatchTests.test_every_property_has_boundary_pairs) ... ok
+test_every_property_is_checked_against_its_domain (test_dispatch_shapes_v137.CandidateDispatchTests.test_every_property_is_checked_against_its_domain) ... ok
+test_no_ambiguous_shape_and_shapes_left_out (test_dispatch_shapes_v137.CandidateDispatchTests.test_no_ambiguous_shape_and_shapes_left_out) ... ok
+test_no_shape_branch_and_no_fixture_id (test_dispatch_shapes_v137.CandidateDispatchTests.test_no_shape_branch_and_no_fixture_id) ... ok
+test_owner_decided_rows (test_dispatch_shapes_v137.CandidateDispatchTests.test_owner_decided_rows)
+D-027: every OD rule an adapter rests on is labelled in a candidate line that adapter's contract cites. ... ok
+test_owner_specified_labels_reach_the_record_reason (test_dispatch_shapes_v137.CandidateDispatchTests.test_owner_specified_labels_reach_the_record_reason) ... ok
+test_owner_specified_rows_and_open_shapes (test_dispatch_shapes_v137.CandidateDispatchTests.test_owner_specified_rows_and_open_shapes) ... ok
+test_paired_run_outcome_runs_no_artifact_code (test_dispatch_shapes_v137.CandidateDispatchTests.test_paired_run_outcome_runs_no_artifact_code)
+OS-2 runs steps (1)-(6) only: no sandbox and no factory check is reached (D-015, D-026 option (a)). ... ok
+test_selecting_values_cited_within_a_domain_and_supported (test_dispatch_shapes_v137.CandidateDispatchTests.test_selecting_values_cited_within_a_domain_and_supported) ... ok
+test_v136_contracts_still_verbatim_in_the_candidate (test_dispatch_shapes_v137.CandidateDispatchTests.test_v136_contracts_still_verbatim_in_the_candidate) ... ok
+test_v136_table_is_unchanged_and_candidate_extends_it (test_dispatch_shapes_v137.CandidateDispatchTests.test_v136_table_is_unchanged_and_candidate_extends_it) ... ok
+test_vectors_give_the_expected_outcome (test_dispatch_shapes_v137.CandidateDispatchTests.test_vectors_give_the_expected_outcome) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 2.842s
+
+OK
