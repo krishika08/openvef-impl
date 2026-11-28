@@ -1,9 +1,12 @@
-"""Build dist/openvef-docaudit-bundle.zip for document audit #6 of the v1.3.7 CANDIDATE: D5-1 (the label boundary in
-the C19 status test, test only), regression and the owners' stopping rule (D-032; docs/DOC-AUDIT6-BRIEF.md). Audit #1's
-bundle was built at 8d8be84 (release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit #3's at
-c24be7f (docaudit3-f82e1334), audit #4's at 95fe05d (docaudit4-f01d344d), audit #5's at 431beaf (docaudit5-5f35d75b).
-D-032 adds report #5 with its note, brief #5, audit #5's run, RUN-CONTINUITY-D032.md and docs/DEVIATIONS.md (the
-owner interpretation of Protocol L555 (3) and the disclosed limitations); the builder refuses a pre-D5-1 test.
+"""Build dist/openvef-docaudit-bundle.zip for document audit #7 of the v1.3.7 CANDIDATE: D6-1 (the label boundary in
+the C19 status test, test only), D6-2 (the D-032 interpretation replaced by the owner-authorized waiver DEV-003),
+regression and the owners' stopping rule (D-033; docs/DOC-AUDIT7-BRIEF.md). Audit #1's bundle was built at 8d8be84
+(release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit #3's at c24be7f (docaudit3-f82e1334),
+audit #4's at 95fe05d (docaudit4-f01d344d), audit #5's at 431beaf (docaudit5-5f35d75b), audit #6's at 2451a00
+(docaudit6-e9719fb3). D-032 added report #5 with its note, brief #5, audit #5's run, RUN-CONTINUITY-D032.md and
+docs/DEVIATIONS.md. D-033 adds report #6 with its note, brief #6, audit #6's run and RUN-CONTINUITY-D033.md; D-034's
+owner records (docs/owner-records/, quoted by DEV-004) are bundled for reference. The builder refuses a pre-D6-1 test,
+docs without the DEV-003 waiver verbatim, or a DEVIATIONS.md that still carries the pre-D-034 DEV-004 label.
 
 Contents: the candidate pack (with its CHANGELOG), the CORRECTIONS rationale, the build script, the PD records, the
 v1.3.6 baseline for diffing, the latest candidate F18 run, the results.jsonl and summary.json of audit #2's, #3's and
@@ -36,7 +39,7 @@ CAND = "proposals/v1.3.7/pack"
 CAND_SUMS = f"{CAND}/SHA256SUMS-v1.3.7-candidate.txt"
 RUN = max((p.parent for p in (REPO / "evidence").glob("run-v137c-*/summary.json")),
           default=REPO / "missing").relative_to(REPO).as_posix()
-BRIEF = "docs/DOC-AUDIT6-BRIEF.md"
+BRIEF = "docs/DOC-AUDIT7-BRIEF.md"
 REPORT1 = "docs/reviews/doc-audit1-gpt6-2026-11-27.md"
 REPORT1_SHA256 = "ba81408bde5339291d4b2ef25cab70b5eaa3e518412ecd45cdbeb11f54604b95"
 REPORT2 = "docs/reviews/doc-audit2-gpt6-2026-11-27.md"
@@ -47,10 +50,26 @@ REPORT4 = "docs/reviews/doc-audit4-gpt6-2026-11-28.md"
 REPORT4_SHA256 = "0cc724cd8c0661c216f956bd98628e2d359fe5702c87f5f3887a6046c8174850"
 REPORT5 = "docs/reviews/doc-audit5-gpt6-2026-11-28.md"
 REPORT5_SHA256 = "efb7b795c4a3dc5fe36d3151b3657fcfabcce704bd5240a85f23e0ccf1d725bb"
-# D-032 item 2, verbatim (docs/ambiguities.md and docs/DEVIATIONS.md).
+REPORT6 = "docs/reviews/doc-audit6-gpt6-2026-11-28.md"
+REPORT6_SHA256 = "809b2d863542ed50353dab64b8ca29509812afffc5691781598ac2046f2078c7"
+# D-032 item 2, verbatim (docs/ambiguities.md and docs/DEVIATIONS.md). Superseded by DEV-003 (D-033 item 1) and kept
+# visible there, not deleted; the builder checks that it still is.
 DEV_RUN_READING = ("the owners authorized development-only regression runs (run_class: development) during the v1.3.7 "
                    "document audits; they are not implementation or fixture execution under Protocol L555(3)'s gate and "
                    "are not F18 acceptance")
+# D-033 item 1, verbatim: the owner-authorized deviation DEV-003 (docs/ambiguities.md and docs/DEVIATIONS.md).
+DEV003_WAIVER = ("Protocol L555(3) bars implementation or fixture execution until the document audit and owner record are "
+                 "complete. The owners waived this bar for development-only regression runs (run_class: development) from "
+                 "the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected, to check that corrections did not "
+                 "change outcomes. These runs are fixture execution; they are not F18 acceptance and are not counted as F18 "
+                 "evidence. The waiver ends when v1.3.7 is adopted or rejected.")
+# D-034: the label DEV-004 used before the owner records were added; it must not remain as the current label.
+OLD_DEV004_LABEL = '**Label on every covered run until this closes:** "v1.3.6 gate not shown met (DEV-004)"'
+NEW_DEV004_LABEL = '"v1.3.6 gate recorded as met; gaps DEV-004"'
+OWNER_RECORDS = {"docs/owner-records/owner-decision-record-rev25.md":
+                 "64b836147ea35dbd2c98489513e8575fa3f0d1a130a5cf6973ec76d39c32594b",
+                 "docs/owner-records/owner-signoff-pack-rev95.md":
+                 "13b805cb3ec9cf91eda4a3cee8aa35e380f5a17512124b834fd4274c8159a83d"}
 # D-031 item 3: the C18 candidate (the pack audit #3 audited), from git at audit #3's bundle build commit; its manifest
 # is the one audit #3's run pinned (run-v137c-20261127T153351Z, pack_manifest_sha256).
 C18_COMMIT = "c24be7f"
@@ -65,14 +84,17 @@ STOPPING_RULE = ("If document audit #5 finds no BLOCKER, MAJOR or MINOR finding,
 PRIOR_RUNS = {"evidence/run-v137c-20261127T134318Z": "81c73e32cc7643c8900dd3f83c5824b5f7ae6ae82d90f140f4465b2f4c8acd09",
               "evidence/run-v137c-20261127T153351Z": "4b9714a43e7dfb4d9833de986302bf5f9d476da200e4e6871e967b608329284b",
               "evidence/run-v137c-20261127T163649Z": "9b07f3c8d390d84bc6096f898188fd9b18cf63192153b5f0a8b77db7f38ce21b",
-              "evidence/run-v137c-20261128T033242Z": "51ad41354f1f354fe6b257d552c9d9a0aed96309b58b26876927ae4a9f5d6cfb"}
+              "evidence/run-v137c-20261128T033242Z": "51ad41354f1f354fe6b257d552c9d9a0aed96309b58b26876927ae4a9f5d6cfb",
+              "evidence/run-v137c-20261128T042052Z": "ad446364ad604b93410c8b55dddeee0756f25b0f2fc71a7124482bf2497623cd"}
 CONTINUITY = {"evidence/RUN-CONTINUITY-D030.md": ("evidence/run-v137c-20261127T134318Z",
                                                   "evidence/run-v137c-20261127T153351Z"),
               "evidence/RUN-CONTINUITY-D030-regression.md": ("evidence/run-v137c-20261127T153351Z",
                                                              "evidence/run-v137c-20261127T163649Z"),
               "evidence/RUN-CONTINUITY-D031.md": ("evidence/run-v137c-20261127T163649Z",
                                                   "evidence/run-v137c-20261128T033242Z"),
-              "evidence/RUN-CONTINUITY-D032.md": ("evidence/run-v137c-20261128T033242Z", None)}
+              "evidence/RUN-CONTINUITY-D032.md": ("evidence/run-v137c-20261128T033242Z",
+                                                  "evidence/run-v137c-20261128T042052Z"),
+              "evidence/RUN-CONTINUITY-D033.md": ("evidence/run-v137c-20261128T042052Z", None)}
 VERBATIM = "## Tool report (verbatim)\n\n"
 PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "proposals/v1.3.7/build_candidate.py",
          "docs/pack-defects.md", BRIEF, RUN, REPORT1,
@@ -83,6 +105,8 @@ PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "propos
          REPORT4, "docs/reviews/doc-audit4-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT4-BRIEF.md",
          "evidence/NOTE-D031-contended-runs.md",
          REPORT5, "docs/reviews/doc-audit5-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT5-BRIEF.md", "docs/DEVIATIONS.md",
+         REPORT6, "docs/reviews/doc-audit6-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT6-BRIEF.md",
+         *OWNER_RECORDS, "docs/owner-records/NOTE.md",
          *(f"{r}/{f}" for r in PRIOR_RUNS for f in ("results.jsonl", "summary.json"))]
 OUT = REPO / "dist" / "openvef-docaudit-bundle.zip"
 LIMIT = 20_000_000
@@ -186,12 +210,26 @@ def main() -> int:
         problems.append("audit #4 report is not the saved verbatim copy")
     if sha(files[REPORT5]) != REPORT5_SHA256:
         problems.append("audit #5 report is not the saved verbatim copy")
+    if sha(files[REPORT6]) != REPORT6_SHA256:
+        problems.append("audit #6 report is not the saved verbatim copy")
+    for rec, digest in OWNER_RECORDS.items():
+        if sha(files[rec]) != digest:
+            problems.append(f"{rec} is not the saved export")
     test_src = files["tests/test_v137_candidate_pack.py"].decode()
-    if "class LabelledStatusRuleTests" not in test_src or "WORD_CHAR" not in test_src or ".isalnum()" in test_src:
-        problems.append("the candidate-pack test predates D-032 (D5-1)")
+    if "class LabelledStatusRuleTests" not in test_src or ".isalnum()" in test_src or \
+            'LABEL_PRECEDERS = frozenset(" (|*")' not in test_src or "_is_word_char(before" in test_src:
+        problems.append("the candidate-pack test predates D-033 (D6-1)")
     for doc in ("docs/ambiguities.md", "docs/DEVIATIONS.md"):
-        if DEV_RUN_READING not in " ".join(files[doc].decode().split()):
-            problems.append(f"{doc}: the D-032 owner interpretation is not there verbatim")
+        flat = " ".join(files[doc].decode().split())
+        if DEV_RUN_READING not in flat:
+            problems.append(f"{doc}: the superseded D-032 owner interpretation is not kept verbatim")
+        if DEV003_WAIVER not in flat:
+            problems.append(f"{doc}: the DEV-003 waiver (D-033 item 1) is not there verbatim")
+    deviations = files["docs/DEVIATIONS.md"].decode()
+    if OLD_DEV004_LABEL in deviations or NEW_DEV004_LABEL not in deviations:
+        problems.append("docs/DEVIATIONS.md: DEV-004 predates D-034")
+    if RUN.removeprefix("evidence/") not in deviations.split("## DEV-003", 1)[-1].split("## DEV-004", 1)[0]:
+        problems.append(f"docs/DEVIATIONS.md: the latest run {RUN} is not listed in DEV-003")
     for doc in ("docs/ambiguities.md", BRIEF):
         if STOPPING_RULE not in " ".join(t for t in files[doc].decode().split() if t != ">"):  # blockquote markers
             problems.append(f"{doc}: the D-031 stopping rule is not there verbatim")
@@ -212,7 +250,7 @@ def main() -> int:
         problems.append("a fixture descriptor differs between C18 and the current candidate")
     c18_vs_now = sorted(r for r in set(c18) | set(cand) if c18.get(r) != cand.get(r))
     if RUN in PRIOR_RUNS:
-        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run after D5-1")
+        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run after D6-1")
     for run, recorded in PRIOR_RUNS.items():  # D-030 (D3-1): the prior runs are the ones the audits recorded
         res, summ = files[f"{run}/results.jsonl"], json.loads(files[f"{run}/summary.json"])
         if sha(res) != recorded or summ["results_sha256"] != recorded:
@@ -225,11 +263,14 @@ def main() -> int:
 
     for n, d in c18.items():
         files[f"{C18_PREFIX}/{n}"] = d
-    info = {"purpose": "document audit #6 of the v1.3.7 CANDIDATE: D5-1 (the label boundary in the C19 status test; test "
-                       "only, no pack text change), regression and the owners' stopping rule (D-032); not an "
-                       "implementation audit, not F18",
-            "stopping_rule": STOPPING_RULE, "stopping_rule_applies_to": "document audit #6 (D-032)",
-            "owner_interpretation_l555_3": DEV_RUN_READING,
+    info = {"purpose": "document audit #7 of the v1.3.7 CANDIDATE: D6-1 (the label boundary in the C19 status test; test "
+                       "only, no pack text change), D6-2 (the owner-authorized waiver DEV-003 replacing the D-032 "
+                       "interpretation), regression and the owners' stopping rule (D-033); not an implementation audit, "
+                       "not F18",
+            "stopping_rule": STOPPING_RULE, "stopping_rule_applies_to": "document audit #7 (D-033)",
+            "owner_waiver_l555_3_dev003": DEV003_WAIVER,
+            "superseded_owner_interpretation_l555_3": DEV_RUN_READING,
+            "owner_records": OWNER_RECORDS,
             "c18_snapshot": {"path": C18_PREFIX, "from_commit": C18_COMMIT, "manifest_sha256": C18_MANIFEST_SHA256,
                              "files": len(c18), "e01_e218_rows_identical": len(old_rows),
                              "descriptors_identical": len(descriptors), "files_differing_from_current": c18_vs_now},
@@ -249,7 +290,9 @@ def main() -> int:
                 {"report": REPORT4, "report_sha256": REPORT4_SHA256,
                  "bundle_sha256": "f01d344d150d89aae0f545890a0e5c97ad2f49a4f6a0e88a9add6731fbfe73cb", "verdict": "NOT CLEARED"},
                 {"report": REPORT5, "report_sha256": REPORT5_SHA256,
-                 "bundle_sha256": "5f35d75bd7a5fdac36aa8f49be1ad049fa339f61f62d5a8af20143408136cd47", "verdict": "NOT CLEARED"}],
+                 "bundle_sha256": "5f35d75bd7a5fdac36aa8f49be1ad049fa339f61f62d5a8af20143408136cd47", "verdict": "NOT CLEARED"},
+                {"report": REPORT6, "report_sha256": REPORT6_SHA256,
+                 "bundle_sha256": "e9719fb37ff9c548b22c6b8262ef93b911bca9bb06bc79844acf684d91f86982", "verdict": "NOT CLEARED"}],
             "continuity": {doc: {"old": old, "new": new or RUN} for doc, (old, new) in CONTINUITY.items()},
             "build_commit": git("rev-parse", "HEAD").strip(), "files": len(files),
             "label": "v1.3.7 CANDIDATE, not audited",
