@@ -82,6 +82,12 @@ control drivers and checkers for F1–F5 and F7–F13 to this list (independence
 harness author). Control mutants are RTL edits of `design/fifo/rtl/ovf_fifo.v` (D-007).
 Owner artifacts go in `design/fifo/controls/` (see its README); Claude builds only the
 harness that runs them and must not place content in their slots.
+Owner rule (Krishika, 28 Nov 2026; applies to every later session): never edit, rewrite or generate any
+owner-written control file (every slot in design/fifo/controls/slots.json, every mutant .v file, every directed
+scenario file). When Krishika says a file is ready, run only the controls that file feeds (slots.json `feeds`), and
+report the results in prose only, quoting pack lines. Never propose code, pseudocode or skeletons for these files
+(Sign-off Pack Part 2 row 5). If a control is still NOT_WIRED, say so; composing its procedure is harness work and
+never touches the owner's files.
 
 Disclosure (D-005), carried in docs/assistance-log.md: "The FIFO specification, RTL and
 authoring-packet payloads were drafted by Claude (Anthropic) via Claude Code and reviewed
