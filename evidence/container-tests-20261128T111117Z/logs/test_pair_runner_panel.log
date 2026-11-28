@@ -1,0 +1,25 @@
+test_dontcare_only_is_raw_not_masked (test_pair_runner_panel.ComparePairTests.test_dontcare_only_is_raw_not_masked) ... ok
+test_earlier_next_input_is_invalid (test_pair_runner_panel.ComparePairTests.test_earlier_next_input_is_invalid) ... ok
+test_harness_error_raises (test_pair_runner_panel.ComparePairTests.test_harness_error_raises) ... ok
+test_identical (test_pair_runner_panel.ComparePairTests.test_identical) ... ok
+test_null_failure_is_integrity (test_pair_runner_panel.ComparePairTests.test_null_failure_is_integrity) ... ok
+test_row_alignment_is_integrity (test_pair_runner_panel.ComparePairTests.test_row_alignment_is_integrity) ... ok
+test_same_row_tie_is_output_first (test_pair_runner_panel.ComparePairTests.test_same_row_tie_is_output_first) ... ok
+test_truncated_after_masked (test_pair_runner_panel.ComparePairTests.test_truncated_after_masked) ... ok
+test_unequal_complete_lengths_is_integrity (test_pair_runner_panel.ComparePairTests.test_unequal_complete_lengths_is_integrity) ... ok
+test_watchdog_without_masked (test_pair_runner_panel.ComparePairTests.test_watchdog_without_masked) ... ok
+test_window_evaluated_on_null_row (test_pair_runner_panel.ComparePairTests.test_window_evaluated_on_null_row) ... ok
+test_build_stream (test_pair_runner_panel.PanelTests.test_build_stream) ... ok
+test_evaluate_checker (test_pair_runner_panel.PanelTests.test_evaluate_checker) ... ok
+test_invalid_pair_excluded_from_q (test_pair_runner_panel.PanelTests.test_invalid_pair_excluded_from_q) ... ok
+test_partition_identity (test_pair_runner_panel.PanelTests.test_partition_identity) ... ok
+test_scenario_excluded_when_rtl_null_masked_differ (test_pair_runner_panel.PanelTests.test_scenario_excluded_when_rtl_null_masked_differ) ... ok
+test_checker_error (test_pair_runner_panel.RunPairTests.test_checker_error) ... ok
+test_detected (test_pair_runner_panel.RunPairTests.test_detected) ... ok
+test_pipeline_anomaly_on_identical_trace (test_pair_runner_panel.RunPairTests.test_pipeline_anomaly_on_identical_trace) ... ok
+test_truncated_has_no_checker (test_pair_runner_panel.RunPairTests.test_truncated_has_no_checker) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.008s
+
+OK

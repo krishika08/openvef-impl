@@ -1,0 +1,33 @@
+test_next_input_mismatch_before_raw_divergence_is_terminal (test_simulation.CompareRunsTests.test_next_input_mismatch_before_raw_divergence_is_terminal) ... ok
+test_same_input_masked_divergence_is_halt (test_simulation.CompareRunsTests.test_same_input_masked_divergence_is_halt) ... ok
+test_unobserved_divergence_is_not_a_halt (test_simulation.CompareRunsTests.test_unobserved_divergence_is_not_a_halt) ... ok
+test_artifact_cannot_reach_simulator (test_simulation.SimulationTests.test_artifact_cannot_reach_simulator) ... ok
+test_check_e_executable_predicate (test_simulation.SimulationTests.test_check_e_executable_predicate) ... ok
+test_check_e_non_executable_predicate_is_not_determined (test_simulation.SimulationTests.test_check_e_non_executable_predicate_is_not_determined) ... ok
+test_check_e_predicate_failure_is_a_harness_error (test_simulation.SimulationTests.test_check_e_predicate_failure_is_a_harness_error) ... ok
+test_consumed_inputs_are_captured_and_agree_with_prior_schedule (test_simulation.SimulationTests.test_consumed_inputs_are_captured_and_agree_with_prior_schedule) ... ok
+test_factory_checks_run_in_the_simulation (test_simulation.SimulationTests.test_factory_checks_run_in_the_simulation) ... ok
+test_fixture_port_names_override_key_set (test_simulation.SimulationTests.test_fixture_port_names_override_key_set) ... ok
+test_four_state_values_preserved (test_simulation.SimulationTests.test_four_state_values_preserved) ... ok
+test_held_inputs_are_not_driver_keys (test_simulation.SimulationTests.test_held_inputs_are_not_driver_keys) ... ok
+test_l334_timeout_and_simulate_pair (test_simulation.SimulationTests.test_l334_timeout_and_simulate_pair) ... ok
+test_masked_divergence_is_a_design_halt (test_simulation.SimulationTests.test_masked_divergence_is_a_design_halt) ... ok
+test_missing_design_field (test_simulation.SimulationTests.test_missing_design_field) ... ok
+test_missing_keys_before_extra_keys (test_simulation.SimulationTests.test_missing_keys_before_extra_keys) ... ok
+test_paired_runs_agree_on_equivalent_null (test_simulation.SimulationTests.test_paired_runs_agree_on_equivalent_null) ... ok
+test_reactive_divergence_is_not_nondeterminism (test_simulation.SimulationTests.test_reactive_divergence_is_not_nondeterminism) ... ok
+test_reset_sampling_complete_and_safe_idle (test_simulation.SimulationTests.test_reset_sampling_complete_and_safe_idle) ... ok
+test_row_field_names_are_the_pack_names (test_simulation.SimulationTests.test_row_field_names_are_the_pack_names) ... ok
+test_scheduler_marks_sources (test_simulation.SimulationTests.test_scheduler_marks_sources) ... ok
+test_simulator_error_on_bad_design (test_simulation.SimulationTests.test_simulator_error_on_bad_design) ... ok
+test_step_exception (test_simulation.SimulationTests.test_step_exception) ... ok
+test_truncated_trace_status (test_simulation.SimulationTests.test_truncated_trace_status) ... ok
+test_unexecutable_predicate_is_not_determined (test_simulation.SimulationTests.test_unexecutable_predicate_is_not_determined) ... ok
+test_vector_reasons_in_order (test_simulation.SimulationTests.test_vector_reasons_in_order) ... ok
+test_watchdog (test_simulation.SimulationTests.test_watchdog) ... ok
+test_waveform_audit_file (test_simulation.SimulationTests.test_waveform_audit_file) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 81.197s
+
+OK
