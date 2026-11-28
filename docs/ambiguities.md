@@ -2086,3 +2086,28 @@ the single entry in AUDIT-READINESS.md.
    `docaudit4-<first 8 of sha>`, and push.
 
 Rationale and the C19 line list: `proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md` section 13 (correction cycle 4).
+
+## D-031 — Response to document audit #4, and the stopping rule (DECIDED)
+
+**Owner decision by Krishika**, on a Claude (claude.ai) triage of document audit #4 (GPT-6, an AI model, operated by
+Krishika; bundle `f01d344d…73cb`; NOT CLEARED on one LIMITATION D4-1 only; 0 BLOCKER, 0 MAJOR, 0 MINOR; D3-1 resolved;
+no open finding against the pack text; `docs/reviews/doc-audit4-gpt6-2026-11-28.md`). Takes effect under D-008; Ayush's
+ratification stays the single entry in AUDIT-READINESS.md.
+
+1. **Stopping rule**, recorded before audit #5, here and in the audit #5 brief (`docs/DOC-AUDIT5-BRIEF.md`), verbatim:
+
+   > "If document audit #5 finds no BLOCKER, MAJOR or MINOR finding, the owners adopt v1.3.7 as the corrected pack;
+   > every remaining LIMITATION is disclosed in DEVIATIONS.md. A lexical test cannot prove semantic correctness; that is
+   > established by the audited manual review."
+
+   Adoption under this rule is the owners' act. Claude does not adopt the candidate, does not mark it adopted, and does
+   not change the default pack (v1.3.6) or edit `baseline/`.
+2. **D4-1** (test only, no pack text change): in `labelled_status`, count every quote kind in `QUOTES` consistently
+   (straight single and double, backtick, typographic pairs); require the exact `"label: "` separator; give each clause
+   a closed vocabulary drawn from the 17 current lines (Development-run evidence must name a run or say none/not
+   counted; Formal F18 status must use the pack's formal-status terms; Approval must state an approval state), so
+   placeholders fail. Add negative tests: the auditor's single-quoted line, the `x`/`y`/`z` line, `label:` without a
+   space, and two more. Confirm all 17 lines and both fixture-index fields still pass.
+3. Re-run v1.3.7c, the controls and the container tests in the pinned image (guard on), statuses unchanged. Rebuild the
+   bundle with a brief scoped to D4-1, the stopping rule and regression, and also bundle the C18 candidate snapshot so
+   E01–E218 can be byte-compared. Publish it as release `docaudit5-<first 8 of sha>`, and push.
