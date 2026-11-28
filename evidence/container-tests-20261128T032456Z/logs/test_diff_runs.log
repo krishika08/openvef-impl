@@ -1,0 +1,15 @@
+test_bad_input_exit_2 (test_diff_runs.DiffRunsTests.test_bad_input_exit_2) ... diff_runs: /tmp/tmpnbiz3j4o/b.jsonl: line 1: not JSON (Expecting value: line 1 column 1 (char 0))
+diff_runs: /tmp/tmpvg_qjsm0/b.jsonl: line 1: no string 'fixture_id'
+diff_runs: /tmp/tmp6yvel_b0/b.jsonl: line 2: duplicate fixture_id 'X1'
+ok
+test_critical_fields_exit_3 (test_diff_runs.DiffRunsTests.test_critical_fields_exit_3) ... ok
+test_fixture_in_one_file_only_and_order (test_diff_runs.DiffRunsTests.test_fixture_in_one_file_only_and_order) ... ok
+test_identical (test_diff_runs.DiffRunsTests.test_identical) ... ok
+test_non_critical_field_is_reported_by_path (test_diff_runs.DiffRunsTests.test_non_critical_field_is_reported_by_path) ... ok
+test_same_json_different_bytes (test_diff_runs.DiffRunsTests.test_same_json_different_bytes) ... ok
+test_type_and_absent_differences (test_diff_runs.DiffRunsTests.test_type_and_absent_differences) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.018s
+
+OK

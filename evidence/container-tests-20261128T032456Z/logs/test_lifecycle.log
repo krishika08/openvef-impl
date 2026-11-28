@@ -1,0 +1,10 @@
+test_every_string_value_is_verbatim_in_the_protocol (test_lifecycle.LifecycleTests.test_every_string_value_is_verbatim_in_the_protocol) ... ok
+test_every_supported_field_has_a_citation (test_lifecycle.LifecycleTests.test_every_supported_field_has_a_citation) ... ok
+test_study_reset_is_fully_supported (test_lifecycle.LifecycleTests.test_study_reset_is_fully_supported) ... ok
+test_unknown_change_class (test_lifecycle.LifecycleTests.test_unknown_change_class) ... ok
+test_unsupported_fields_are_reported_not_filled (test_lifecycle.LifecycleTests.test_unsupported_fields_are_reported_not_filled) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+OK

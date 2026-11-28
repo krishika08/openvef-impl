@@ -1,0 +1,7 @@
+test_build_commit_is_head (test_audit_bundle.BundleBuildTests.test_build_commit_is_head) ... ok
+test_dirty_tree_exits_1_and_writes_nothing (test_audit_bundle.BundleBuildTests.test_dirty_tree_exits_1_and_writes_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.504s
+
+OK

@@ -1,0 +1,31 @@
+test_async_comprehension_inside_async_def_is_rank_6 (test_ast_signature.CategoryTests.test_async_comprehension_inside_async_def_is_rank_6) ... ok
+test_await_in_comprehension_is_async (test_ast_signature.CategoryTests.test_await_in_comprehension_is_async) ... ok
+test_comprehension_in_default_uses_enclosing_definition (test_ast_signature.CategoryTests.test_comprehension_in_default_uses_enclosing_definition) ... ok
+test_driver_body_statements (test_ast_signature.CategoryTests.test_driver_body_statements) ... ok
+test_each_category (test_ast_signature.CategoryTests.test_each_category) ... ok
+test_explicit_object_base_allowed (test_ast_signature.CategoryTests.test_explicit_object_base_allowed) ... ok
+test_global_category_order_across_files (test_ast_signature.CategoryTests.test_global_category_order_across_files) ... ok
+test_within_category_driver_first_then_position (test_ast_signature.CategoryTests.test_within_category_driver_first_then_position) ... ok
+test_await_outside_async_function (test_ast_signature.CompileTests.test_await_outside_async_function) ... ok
+test_compile_passes (test_ast_signature.CompileTests.test_compile_passes) ... ok
+test_driver_before_checker (test_ast_signature.CompileTests.test_driver_before_checker) ... ok
+test_annotations_ignored (test_ast_signature.ParameterTests.test_annotations_ignored) ... ok
+test_default_or_variadic (test_ast_signature.ParameterTests.test_default_or_variadic) ... ok
+test_kind (test_ast_signature.ParameterTests.test_kind) ... ok
+test_names (test_ast_signature.ParameterTests.test_names) ... ok
+test_names_before_kind_before_shape (test_ast_signature.ParameterTests.test_names_before_kind_before_shape) ... ok
+test_step_and_check_trace (test_ast_signature.ParameterTests.test_step_and_check_trace) ... ok
+test_annotation_without_value_is_not_a_binding (test_ast_signature.RequiredSymbolTests.test_annotation_without_value_is_not_a_binding) ... ok
+test_any_binding_kind_counts_as_extra (test_ast_signature.RequiredSymbolTests.test_any_binding_kind_counts_as_extra) ... ok
+test_checker_symbol (test_ast_signature.RequiredSymbolTests.test_checker_symbol) ... ok
+test_driver_kind_and_step (test_ast_signature.RequiredSymbolTests.test_driver_kind_and_step) ... ok
+test_fixed_sequence (test_ast_signature.RequiredSymbolTests.test_fixed_sequence) ... ok
+test_missing_extra_wrong_kind (test_ast_signature.RequiredSymbolTests.test_missing_extra_wrong_kind) ... ok
+test_nested_definition_is_not_at_the_required_scope (test_ast_signature.RequiredSymbolTests.test_nested_definition_is_not_at_the_required_scope) ... ok
+test_required_pass_before_categories (test_ast_signature.RequiredSymbolTests.test_required_pass_before_categories) ... ok
+test_valid_pair (test_ast_signature.RequiredSymbolTests.test_valid_pair) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.017s
+
+OK

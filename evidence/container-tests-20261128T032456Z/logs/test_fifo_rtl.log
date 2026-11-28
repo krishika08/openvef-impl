@@ -1,0 +1,12 @@
+test_check_e_rejects_write_while_full_without_read (test_fifo_rtl.FifoRtlTests.test_check_e_rejects_write_while_full_without_read) ... ok
+test_null_export_preserves_top_and_ports (test_fifo_rtl.FifoRtlTests.test_null_export_preserves_top_and_ports) ... ok
+test_null_export_twice_identical (test_fifo_rtl.FifoRtlTests.test_null_export_twice_identical) ... ok
+test_paired_runs_no_divergence (test_fifo_rtl.FifoRtlTests.test_paired_runs_no_divergence) ... ok
+test_random_legal_driver_matches_model (test_fifo_rtl.FifoRtlTests.test_random_legal_driver_matches_model) ... ok
+test_worked_example_on_null_netlist (test_fifo_rtl.FifoRtlTests.test_worked_example_on_null_netlist) ... ok
+test_worked_example_on_rtl (test_fifo_rtl.FifoRtlTests.test_worked_example_on_rtl) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 28.749s
+
+OK
