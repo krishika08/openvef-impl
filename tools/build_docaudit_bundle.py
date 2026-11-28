@@ -1,7 +1,9 @@
-"""Build dist/openvef-docaudit-bundle.zip for document audit #5 of the v1.3.7 CANDIDATE: D4-1 (the C19 status test,
-test only), the owners' stopping rule and regression (D-031; docs/DOC-AUDIT5-BRIEF.md). Audit #1's bundle was built at
-8d8be84 (release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit #3's at c24be7f
-(docaudit3-f82e1334), audit #4's at 95fe05d (docaudit4-f01d344d).
+"""Build dist/openvef-docaudit-bundle.zip for document audit #6 of the v1.3.7 CANDIDATE: D5-1 (the label boundary in
+the C19 status test, test only), regression and the owners' stopping rule (D-032; docs/DOC-AUDIT6-BRIEF.md). Audit #1's
+bundle was built at 8d8be84 (release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit #3's at
+c24be7f (docaudit3-f82e1334), audit #4's at 95fe05d (docaudit4-f01d344d), audit #5's at 431beaf (docaudit5-5f35d75b).
+D-032 adds report #5 with its note, brief #5, audit #5's run, RUN-CONTINUITY-D032.md and docs/DEVIATIONS.md (the
+owner interpretation of Protocol L555 (3) and the disclosed limitations); the builder refuses a pre-D5-1 test.
 
 Contents: the candidate pack (with its CHANGELOG), the CORRECTIONS rationale, the build script, the PD records, the
 v1.3.6 baseline for diffing, the latest candidate F18 run, the results.jsonl and summary.json of audit #2's, #3's and
@@ -34,7 +36,7 @@ CAND = "proposals/v1.3.7/pack"
 CAND_SUMS = f"{CAND}/SHA256SUMS-v1.3.7-candidate.txt"
 RUN = max((p.parent for p in (REPO / "evidence").glob("run-v137c-*/summary.json")),
           default=REPO / "missing").relative_to(REPO).as_posix()
-BRIEF = "docs/DOC-AUDIT5-BRIEF.md"
+BRIEF = "docs/DOC-AUDIT6-BRIEF.md"
 REPORT1 = "docs/reviews/doc-audit1-gpt6-2026-11-27.md"
 REPORT1_SHA256 = "ba81408bde5339291d4b2ef25cab70b5eaa3e518412ecd45cdbeb11f54604b95"
 REPORT2 = "docs/reviews/doc-audit2-gpt6-2026-11-27.md"
@@ -43,6 +45,12 @@ REPORT3 = "docs/reviews/doc-audit3-gpt6-2026-11-27.md"
 REPORT3_SHA256 = "757ae6e53002b93bc8738cbe07fac36f865b6253dafd1d4d042fa2f3cd94a34f"
 REPORT4 = "docs/reviews/doc-audit4-gpt6-2026-11-28.md"
 REPORT4_SHA256 = "0cc724cd8c0661c216f956bd98628e2d359fe5702c87f5f3887a6046c8174850"
+REPORT5 = "docs/reviews/doc-audit5-gpt6-2026-11-28.md"
+REPORT5_SHA256 = "efb7b795c4a3dc5fe36d3151b3657fcfabcce704bd5240a85f23e0ccf1d725bb"
+# D-032 item 2, verbatim (docs/ambiguities.md and docs/DEVIATIONS.md).
+DEV_RUN_READING = ("the owners authorized development-only regression runs (run_class: development) during the v1.3.7 "
+                   "document audits; they are not implementation or fixture execution under Protocol L555(3)'s gate and "
+                   "are not F18 acceptance")
 # D-031 item 3: the C18 candidate (the pack audit #3 audited), from git at audit #3's bundle build commit; its manifest
 # is the one audit #3's run pinned (run-v137c-20261127T153351Z, pack_manifest_sha256).
 C18_COMMIT = "c24be7f"
@@ -56,12 +64,15 @@ STOPPING_RULE = ("If document audit #5 finds no BLOCKER, MAJOR or MINOR finding,
 # (old run, new run; None = the latest candidate run).
 PRIOR_RUNS = {"evidence/run-v137c-20261127T134318Z": "81c73e32cc7643c8900dd3f83c5824b5f7ae6ae82d90f140f4465b2f4c8acd09",
               "evidence/run-v137c-20261127T153351Z": "4b9714a43e7dfb4d9833de986302bf5f9d476da200e4e6871e967b608329284b",
-              "evidence/run-v137c-20261127T163649Z": "9b07f3c8d390d84bc6096f898188fd9b18cf63192153b5f0a8b77db7f38ce21b"}
+              "evidence/run-v137c-20261127T163649Z": "9b07f3c8d390d84bc6096f898188fd9b18cf63192153b5f0a8b77db7f38ce21b",
+              "evidence/run-v137c-20261128T033242Z": "51ad41354f1f354fe6b257d552c9d9a0aed96309b58b26876927ae4a9f5d6cfb"}
 CONTINUITY = {"evidence/RUN-CONTINUITY-D030.md": ("evidence/run-v137c-20261127T134318Z",
                                                   "evidence/run-v137c-20261127T153351Z"),
               "evidence/RUN-CONTINUITY-D030-regression.md": ("evidence/run-v137c-20261127T153351Z",
                                                              "evidence/run-v137c-20261127T163649Z"),
-              "evidence/RUN-CONTINUITY-D031.md": ("evidence/run-v137c-20261127T163649Z", None)}
+              "evidence/RUN-CONTINUITY-D031.md": ("evidence/run-v137c-20261127T163649Z",
+                                                  "evidence/run-v137c-20261128T033242Z"),
+              "evidence/RUN-CONTINUITY-D032.md": ("evidence/run-v137c-20261128T033242Z", None)}
 VERBATIM = "## Tool report (verbatim)\n\n"
 PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "proposals/v1.3.7/build_candidate.py",
          "docs/pack-defects.md", BRIEF, RUN, REPORT1,
@@ -71,6 +82,7 @@ PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "propos
          "tools/diff_runs.py", "tests/test_diff_runs.py", *CONTINUITY,
          REPORT4, "docs/reviews/doc-audit4-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT4-BRIEF.md",
          "evidence/NOTE-D031-contended-runs.md",
+         REPORT5, "docs/reviews/doc-audit5-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT5-BRIEF.md", "docs/DEVIATIONS.md",
          *(f"{r}/{f}" for r in PRIOR_RUNS for f in ("results.jsonl", "summary.json"))]
 OUT = REPO / "dist" / "openvef-docaudit-bundle.zip"
 LIMIT = 20_000_000
@@ -172,8 +184,14 @@ def main() -> int:
         problems.append("the candidate predates D-030 cycle 4 (no C19 entries)")
     if sha(files[REPORT4]) != REPORT4_SHA256:
         problems.append("audit #4 report is not the saved verbatim copy")
-    if "class LabelledStatusRuleTests" not in files["tests/test_v137_candidate_pack.py"].decode():
-        problems.append("the candidate-pack test predates D-031 (D4-1)")
+    if sha(files[REPORT5]) != REPORT5_SHA256:
+        problems.append("audit #5 report is not the saved verbatim copy")
+    test_src = files["tests/test_v137_candidate_pack.py"].decode()
+    if "class LabelledStatusRuleTests" not in test_src or "WORD_CHAR" not in test_src or ".isalnum()" in test_src:
+        problems.append("the candidate-pack test predates D-032 (D5-1)")
+    for doc in ("docs/ambiguities.md", "docs/DEVIATIONS.md"):
+        if DEV_RUN_READING not in " ".join(files[doc].decode().split()):
+            problems.append(f"{doc}: the D-032 owner interpretation is not there verbatim")
     for doc in ("docs/ambiguities.md", BRIEF):
         if STOPPING_RULE not in " ".join(t for t in files[doc].decode().split() if t != ">"):  # blockquote markers
             problems.append(f"{doc}: the D-031 stopping rule is not there verbatim")
@@ -194,7 +212,7 @@ def main() -> int:
         problems.append("a fixture descriptor differs between C18 and the current candidate")
     c18_vs_now = sorted(r for r in set(c18) | set(cand) if c18.get(r) != cand.get(r))
     if RUN in PRIOR_RUNS:
-        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run after D4-1")
+        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run after D5-1")
     for run, recorded in PRIOR_RUNS.items():  # D-030 (D3-1): the prior runs are the ones the audits recorded
         res, summ = files[f"{run}/results.jsonl"], json.loads(files[f"{run}/summary.json"])
         if sha(res) != recorded or summ["results_sha256"] != recorded:
@@ -207,9 +225,11 @@ def main() -> int:
 
     for n, d in c18.items():
         files[f"{C18_PREFIX}/{n}"] = d
-    info = {"purpose": "document audit #5 of the v1.3.7 CANDIDATE: D4-1 (the C19 status test; test only, no pack text "
-                       "change), the owners' stopping rule and regression (D-031); not an implementation audit, not F18",
-            "stopping_rule": STOPPING_RULE,
+    info = {"purpose": "document audit #6 of the v1.3.7 CANDIDATE: D5-1 (the label boundary in the C19 status test; test "
+                       "only, no pack text change), regression and the owners' stopping rule (D-032); not an "
+                       "implementation audit, not F18",
+            "stopping_rule": STOPPING_RULE, "stopping_rule_applies_to": "document audit #6 (D-032)",
+            "owner_interpretation_l555_3": DEV_RUN_READING,
             "c18_snapshot": {"path": C18_PREFIX, "from_commit": C18_COMMIT, "manifest_sha256": C18_MANIFEST_SHA256,
                              "files": len(c18), "e01_e218_rows_identical": len(old_rows),
                              "descriptors_identical": len(descriptors), "files_differing_from_current": c18_vs_now},
@@ -227,7 +247,9 @@ def main() -> int:
                 {"report": REPORT3, "report_sha256": REPORT3_SHA256,
                  "bundle_sha256": "f82e13342664679e5caa8f56f42c5e6dde0ee1b04bab653fb7cc3c313290b26b", "verdict": "NOT CLEARED"},
                 {"report": REPORT4, "report_sha256": REPORT4_SHA256,
-                 "bundle_sha256": "f01d344d150d89aae0f545890a0e5c97ad2f49a4f6a0e88a9add6731fbfe73cb", "verdict": "NOT CLEARED"}],
+                 "bundle_sha256": "f01d344d150d89aae0f545890a0e5c97ad2f49a4f6a0e88a9add6731fbfe73cb", "verdict": "NOT CLEARED"},
+                {"report": REPORT5, "report_sha256": REPORT5_SHA256,
+                 "bundle_sha256": "5f35d75bd7a5fdac36aa8f49be1ad049fa339f61f62d5a8af20143408136cd47", "verdict": "NOT CLEARED"}],
             "continuity": {doc: {"old": old, "new": new or RUN} for doc, (old, new) in CONTINUITY.items()},
             "build_commit": git("rev-parse", "HEAD").strip(), "files": len(files),
             "label": "v1.3.7 CANDIDATE, not audited",
