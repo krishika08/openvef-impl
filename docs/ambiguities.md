@@ -936,6 +936,11 @@ pseudocode or file content, which Sign-off Pack Part 2 row 5 allows. It is discl
 independence from the harness author, and the guidance came from a Claude model. Krishika decides the design and
 writes all of the file's code. Assistance log, entry of 28 Nov 2026 (session 16, continued).
 
+**Amended by D-038** (Krishika, 28 Nov 2026; below). For `drivers/reference_driver.py` only, Claude (claude.ai) may
+give the interface shell fixed by the pack, with no logic and no stimulus design. All stimulus logic in `step` is
+written by Krishika. Claude Code still writes nothing in the file. Every other owner control file stays under the
+23 Nov row-5 rule unchanged.
+
 ## A-036 — Hash randomization inside the sandbox (DECIDED BY CLAUDE — approved under D-009)
 
 File 30 §6 is headed "Import sandbox and deterministic execution". Paired runs compare
@@ -2293,3 +2298,28 @@ ratification is pending; it stays the single entry in AUDIT-READINESS.md.
    L293, L296 and L299 quotes appear verbatim in both packs. It checks that the runner stops on a changed hash or another
    cap, and that the record was committed before any mutant (host only; the pinned image has no git). It also checks the
    usage message.
+
+## D-038 — Interface shell for the reference driver from Claude (claude.ai) (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026. Takes effect under D-008. Ayush's ratification is pending; it stays the
+single entry in AUDIT-READINESS.md. Recorded by Claude Code at Krishika's instruction. Verbatim:
+
+> "D-038 by Krishika: I amend my 23 Nov row-5 rule for the reference driver only: Claude (claude.ai) may give the
+> interface shell fixed by the pack (class Driver with method step(self, cycle_index, outputs_after_edge) returning
+> "COMPLETE", and create_driver(seed) returning Driver()), with no logic and no stimulus design. All stimulus logic in
+> step is written by me. Record this in ambiguities.md, the assistance log and the D-007 note. Do not edit the file."
+
+1. **What it amends.** It amends the 23 Nov Sign-off Pack Part 2 row-5 rule ("never propose code, pseudocode or
+   skeletons" for owner control files), for `design/fifo/controls/drivers/reference_driver.py` only.
+2. **What is allowed.** Claude (claude.ai) may give only the interface shell. That shell is fixed by the pack: File 30 L35
+   ("`Driver.step` has exactly three required positional-or-keyword parameters named `self`, `cycle_index`,
+   `outputs_after_edge`"; "The factory constructs `Driver()`") and L50 (`step` returns "either the exact string
+   `COMPLETE` or a complete dictionary"). The shell has no logic and no stimulus design.
+3. **What stays with Krishika.** All stimulus logic in `step`, and every design choice, are written by Krishika.
+4. **What is unchanged.** Claude Code does not edit, write or generate the file (owner rule of 28 Nov; D-036). Every
+   other owner control file (other slots in `design/fifo/controls/slots.json`, mutants, directed scenarios) stays under
+   the row-5 rule. `tests/test_controls_provenance.py` still fails if a Claude Code-authored commit last changed the file.
+5. **Disclosure.** Because the shell comes from a Claude model, it is recorded under D-007's disclosure note (above) and in
+   the assistance log. It sits next to D-007's independence aim. The shell carries only what the pack fixes, so it
+   contains no design content.
+
