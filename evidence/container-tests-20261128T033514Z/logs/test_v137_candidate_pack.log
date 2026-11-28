@@ -1,0 +1,33 @@
+test_checksums_and_index (test_v137_candidate_pack.CandidatePackTests.test_checksums_and_index) ... ok
+test_corrected_m27_reaches_check_e (test_v137_candidate_pack.CandidatePackTests.test_corrected_m27_reaches_check_e) ... ok
+test_current_status_lines_have_three_parts (test_v137_candidate_pack.CandidatePackTests.test_current_status_lines_have_three_parts)
+D-029 (D2-1), D-030 (D3-2): every current status line that mentions F18 states development-run evidence, ... ok
+test_cycle2_follows_cycle1 (test_v137_candidate_pack.CandidatePackTests.test_cycle2_follows_cycle1)
+D-027: cycle-2 entries come after E158 and every cycle-1 entry keeps its number and correction. ... ok
+test_cycle3_follows_cycle2 (test_v137_candidate_pack.CandidatePackTests.test_cycle3_follows_cycle2)
+D-029: cycle-3 (C18) entries come after E205, so every earlier entry keeps its number and correction. ... ok
+test_cycle4_follows_cycle3 (test_v137_candidate_pack.CandidatePackTests.test_cycle4_follows_cycle3)
+D-030: cycle-4 (C19) entries come after E218, so every earlier entry keeps its number and correction. ... ok
+test_expected_objects_unchanged (test_v137_candidate_pack.CandidatePackTests.test_expected_objects_unchanged) ... ok
+test_file_25_copy_still_equals_the_protocol (test_v137_candidate_pack.CandidatePackTests.test_file_25_copy_still_equals_the_protocol)
+A2: File 25 L32 "normative text below is identical to Protocol §3.4". ... ok
+test_labels (test_v137_candidate_pack.CandidatePackTests.test_labels) ... ok
+test_no_line_moves_and_only_edited_lines_change (test_v137_candidate_pack.CandidatePackTests.test_no_line_moves_and_only_edited_lines_change) ... ok
+test_no_stale_name_or_hash (test_v137_candidate_pack.CandidatePackTests.test_no_stale_name_or_hash) ... ok
+test_od3_schema_covers_every_change_class_property (test_v137_candidate_pack.CandidatePackTests.test_od3_schema_covers_every_change_class_property)
+OD-3 (D-027, D1-1/D1-2): Protocol §20 lists every property of the change-class and domain-validation expected ... ok
+test_only_the_expected_files_differ (test_v137_candidate_pack.CandidatePackTests.test_only_the_expected_files_differ) ... ok
+test_owner_specified_block (test_v137_candidate_pack.CandidatePackTests.test_owner_specified_block)
+D-026: OS-1-OS-3 are appended after the C12-C16 lines, labelled OWNER-SPECIFIED, logged as their own last ... ok
+test_rebuild_is_byte_identical (test_v137_candidate_pack.CandidatePackTests.test_rebuild_is_byte_identical) ... ok
+test_status_rule_rejects_unlabelled_quoted_reordered_and_empty (test_v137_candidate_pack.CandidatePackTests.test_status_rule_rejects_unlabelled_quoted_reordered_and_empty)
+D-030 (D3-2): the rule is lexical, but needs the labels, not the words. The v1.3.6 wording D2-1 named, the C18 wording (right words, no ... ok
+test_d4_1_negative_cases_fail_for_their_reason (test_v137_candidate_pack.LabelledStatusRuleTests.test_d4_1_negative_cases_fail_for_their_reason) ... ok
+test_every_quote_kind_is_checked (test_v137_candidate_pack.LabelledStatusRuleTests.test_every_quote_kind_is_checked)
+Each kind in QUOTES, opened before the labels and not closed, hides them. ... ok
+test_well_formed_lines_still_pass (test_v137_candidate_pack.LabelledStatusRuleTests.test_well_formed_lines_still_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.112s
+
+OK
