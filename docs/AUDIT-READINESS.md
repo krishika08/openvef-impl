@@ -12,6 +12,12 @@ It is a status document: it claims no gate as passed.
   feasibility scope of L555 step (4), as the owners' Sign-off Pack opened it (CLAUDE.md).
   The v1.3.6 baseline files still record their own pre-implementation status (Files 16,
   21, 23 and 32); they are read-only and are not updated by this work.
+- **Step (3), v1.3.6 (D-034):** "v1.3.6 gate recorded as met, with evidentiary gaps" ([DEV-004](DEVIATIONS.md)).
+  The owner records are in [owner-records/](owner-records/NOTE.md): the Sign-off Pack Part 4 signature by Krishika,
+  23 Nov 2026 13:54 IST, adopting the Decision Record at revision 25. The record states "PASS, 23 Nov 2026
+  (independent, documents only)" for the document audit. Four gaps stay open, each with its "Ends when": the audit
+  report is absent; Ayush's signature is unverified; the Part 3 ticks disagree with blank Decision Record items; the
+  boxes were marked by Claude. This document does not claim the step passed.
 - **Not done:** step (5), the independent implementation re-audit. It is **not
   done**. Under DEV-002 a different AI model audits it, which is not a human independent
   audit. A first report (OpenAI GPT-6) is saved ([report](reviews/implementation-audit-gpt6-2026-11-25.md)): one BLOCKER, one MAJOR and four limitations. The
@@ -41,10 +47,10 @@ Latest evidence run: **`evidence/run-20261127T134112Z`** (pack v1.3.6), on the r
   D-024 to D-027 changed no v1.3.6 status, note or label. `run-20261127T113929Z` (retired image `fa254bba…`) is
   equivalence evidence only (D-028).
 - **Candidate pack (D-024; v1.3.7 CANDIDATE, not audited; not v1.3.6 F18 evidence, does not count toward F18):**
-  `run-v137c-20261128T042052Z`, commit `cc12849` (C19 pack, manifest `d64a91a8`, unchanged by D-031 and D-032), same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
+  `run-v137c-20261128T102409Z`, commit `e993517` (C19 pack, manifest `d64a91a8`, unchanged by D-031 to D-033; development run under DEV-003), same image: 143 PASS, 0 FAIL, 1 NOT_IMPLEMENTED, 0 ERROR. Counted
   separately (D-026, D-027 Phase B): **PACK-DERIVED** 131 / 0 / 0 / 0; **OWNER-DECIDED** (OD-1–OD-4) 11 / 0 / 0 / 0 (M13,
   M41 OD-4; M15, M42, M47 OD-1; M27 OD-2; M48, M50, M53, M54, M58 OD-3); **OWNER-SPECIFIED** 1 PASS (M37, OS-2) / 0 FAIL /
-  1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059, approved by Krishika under D-029). Every status and category equals `run-v137c-20261127T134318Z`, `153351Z`, `163649Z` and `run-v137c-20261128T033242Z` (C18 and C19 changed no expected object; D-031 and D-032 changed only a test); row-level diffs in `evidence/RUN-CONTINUITY-D030.md`, `-D030-regression.md`, `-D031.md` and `-D032.md` (only `simulator.l334` timings differ). The candidate needs an
+  1 NOT_IMPLEMENTED (P17, OS-3: its stage is at runtime) / 0 ERROR. M41 counts OWNER-DECIDED and keeps OS-1 (A-059, approved by Krishika under D-029). Every status and category equals `run-v137c-20261127T134318Z`, `153351Z`, `163649Z`, `run-v137c-20261128T033242Z` and `042052Z` (C18 and C19 changed no expected object; D-031 to D-033 changed only a test); row-level diffs in `evidence/RUN-CONTINUITY-D030.md`, `-D030-regression.md`, `-D031.md`, `-D032.md` and `-D033.md` (only `simulator.l334` timings differ). The candidate needs an
   independent document audit and owner approval before it could replace v1.3.6.
 - D-022 (re-audit #4: `stop` cites File 36 L48; literal `inspect.signature` after
   import) changed no status, note or label. D-019 to D-022 are audited (fourth and fifth audits); A9-2 is closed as a
