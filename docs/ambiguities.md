@@ -2111,3 +2111,33 @@ ratification stays the single entry in AUDIT-READINESS.md.
 3. Re-run v1.3.7c, the controls and the container tests in the pinned image (guard on), statuses unchanged. Rebuild the
    bundle with a brief scoped to D4-1, the stopping rule and regression, and also bundle the C18 candidate snapshot so
    E01–E218 can be byte-compared. Publish it as release `docaudit5-<first 8 of sha>`, and push.
+
+## D-032 — Response to document audit #5 (DECIDED)
+
+**Owner decision by Krishika**, on a Claude (claude.ai) triage of document audit #5 (GPT-6, an AI model, operated by
+Krishika; bundle `5f35d75b…cd47`; NOT CLEARED on one MINOR finding D5-1; D5-2 LIMITATION and six named limitations;
+manual review PASS for all 17 lines and both fixture-index fields; D3-2 resolved; `docs/reviews/doc-audit5-gpt6-2026-11-28.md`).
+Takes effect under D-008; Ayush's ratification stays the single entry in AUDIT-READINESS.md.
+
+The D-031 stopping rule is unchanged. It was not met by audit #5 (D5-1 is MINOR), and it applies again, verbatim, to
+document audit #6:
+
+> "If document audit #5 finds no BLOCKER, MAJOR or MINOR finding, the owners adopt v1.3.7 as the corrected pack;
+> every remaining LIMITATION is disclosed in DEVIATIONS.md. A lexical test cannot prove semantic correctness; that is
+> established by the audited manual review."
+
+with "#5" read as "#6". Adoption stays the owners' act; Claude adopts nothing.
+
+1. **D5-1** (test only, no pack text): the label boundary in `labelled_status` uses one consistent `\w`-based rule
+   (underscore counts as a word character) everywhere; negatives for `_Development-run evidence:`,
+   `x_Development-run evidence:` and the same for the other two labels; every existing negative and positive re-run.
+   Nothing else in the validator changes: **D5-2 stays a disclosed LIMITATION**.
+2. **Limitation 4, an owner interpretation with no pack text change.** Recorded here and in `docs/DEVIATIONS.md`,
+   verbatim: "the owners authorized development-only regression runs (run_class: development) during the v1.3.7
+   document audits; they are not implementation or fixture execution under Protocol L555(3)'s gate and are not F18
+   acceptance". The pack text (Protocol L555 (3)) names no such exception; this is the owners' reading of it.
+3. **D5-2 and limitations 1–6** of report #5 are added to `docs/DEVIATIONS.md` now as disclosed limitations, so that an
+   adoption, if audit #6 clears, only has to reference them.
+4. Re-run v1.3.7c, the controls and the container tests (guard on; check for leftover containers first), statuses
+   unchanged. Rebuild the bundle (brief #6: D5-1, regression and the stopping rule), publish it as release
+   `docaudit6-<first 8 of sha>`, and push.

@@ -216,3 +216,37 @@ Not an accepted deviation: recorded for the auditor, at Krishika's instruction (
 **Audited; residual not closed.** D-019 to D-021 were covered by the fourth audit and D-022 (item 3) by the fifth
 (CLEARED for D-022). A9-2 is closed as a finding (D-023); the forgery residual above stands as a disclosed
 limitation (fifth audit L-10), and nothing here closes it.
+
+## Owner interpretation (D-032) — development-only regression runs (Protocol L555 (3))
+
+An owner reading of a pack rule, with no pack text change. It is recorded here because document audit #5 named it
+(limitation 4) and the owners asked for it to be disclosed with the deviations. It is not numbered as a DEV because
+the owners do not treat it as a departure; a reader who takes the rule literally may, and the quote is given for that.
+
+> [02 L555] "(3) Only after that document re-audit passes, the owner must explicitly record acceptance or rejection of A1–A11 and choose the X14 strict-AST branch. Until both the document audit and owner record are complete, no implementation or fixture execution is authorized."
+
+**Owner interpretation (Krishika, D-032, 28 Nov 2026), verbatim:** "the owners authorized development-only regression
+runs (run_class: development) during the v1.3.7 document audits; they are not implementation or fixture execution
+under Protocol L555(3)'s gate and are not F18 acceptance".
+
+- The pack names no development-only exception; the reading is the owners', not the text's.
+- It covers runs whose `summary.json` has `run_class: development` (`evidence/run-v137c-*`, `controls-*`) and the
+  container test runs. Every such run is labelled development, never F18 acceptance, and is not F18 evidence (CLAUDE.md
+  rule 8, D-024).
+
+## Disclosed limitations of the v1.3.7 candidate (D-032)
+
+Recorded now, at Krishika's instruction (D-032 item 3), so that an adoption under the D-031 stopping rule only has to
+reference this section. Not accepted deviations and not closed: each stays a limitation until the condition named
+"Ends when" is met. Source: document audit #5 (`docs/reviews/doc-audit5-gpt6-2026-11-28.md`, section 8), an AI document
+audit (GPT-6), not a human independent review.
+
+| ID | Kind | Limitation (report #5's wording, shortened) | Ends when |
+|---|---|---|---|
+| D5-2 | LIMITATION | Lexical acceptance does not establish semantic truth: the run-ID form in `labelled_status` accepts any timestamp-shaped ID without binding it to a run record, and `APPROVAL_TAIL` accepts any sentence after a period. Truth of the status values rests on the audited manual review (report #5 section 4: PASS for all 17 lines and both index fields), which must be repeated whenever a status value changes. | Not ended by a test change; owner decision D-032 item 1 keeps it |
+| L1 | PACK | 61 `archive_*` objects named in baseline `27_SHA256SUMS.txt` are absent from the extraction; all 202 extracted baseline files match, the absent ones are unverified. | The archive objects are supplied and checked |
+| L2 | LIMITATION | The implementation source is not in the document-audit bundle: M27 `check_e` was skipped there, and implementation behaviour, predicate purity and runner internals were not audited by the document audit. | The implementation re-audit (Protocol L555 (5); DEV-002) covers them |
+| L3 | LIMITATION | No formal F18 acceptance: every run is a development run; the document audit does not execute F18, certify fixture acceptance, or satisfy Protocol L555 (5) or L271. | An authorized F18 acceptance run passes (CLAUDE.md rule 8) |
+| L4 | LIMITATION | Protocol L555 (3) gives no express development-only exception, while D-031 directed a development re-run. | Answered by the owner interpretation above (D-032); the pack text itself is unchanged |
+| L5 | LIMITATION | The implementation that measures `simulator.l334` is not bundled, so the source-level cause and method of the timing differences are not established by the document audit. | The implementation re-audit covers `l334_timeout` |
+| L6 | LIMITATION | No implementation approval or owner adoption: a document audit cannot qualify the implementation or record owner acceptance of A1–A11 or X14. | The owners record those decisions; Claude records none |
