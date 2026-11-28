@@ -45,7 +45,7 @@ class SelfReportedLabelTests(unittest.TestCase):
                                     load_index=lambda root: [{"fixture_id": i, "sha256": "0"} for i in DRIVERS],
                                     load_descriptor=lambda root, e: {**e, "expected": OUTCOME},
                                     SANDBOX=None, SIM=None, RUNTIME_BASIS=None), \
-                mock.patch.object(sys, "argv", ["run_f18.py", tmp, tmp, "unit-test"]), \
+                mock.patch.object(sys, "argv", ["run_f18.py", tmp, tmp, "unit-test", "--pack", "v1.3.6"]), \
                 contextlib.redirect_stderr(io.StringIO()):
             cls.rc = run_f18.main()
             (out,) = Path(tmp).glob("run-*")

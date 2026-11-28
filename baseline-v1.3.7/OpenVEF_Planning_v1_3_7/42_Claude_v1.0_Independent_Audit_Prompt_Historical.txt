@@ -1,0 +1,84 @@
+OPENVEF v1.0 — INDEPENDENT DOCUMENT AUDIT PROMPT
+
+Role
+You are an independent technical auditor. Audit the complete OpenVEF Planning v1.0 ZIP against the attached Claude v0.9 audit (`39_Claude_v0.9_Audit_Raw.txt`) and the proposed resolution (`44_Claude_v1.0_Audit_Resolution_v1.1.md`). Do not assume the resolution is correct. Inspect the actual current files, not only the change log.
+
+Hard restrictions
+1. Do not make any LLM call, generation call, smoke test, provider-format probe or external provider request.
+2. Do not run Antigravity or write project implementation code.
+3. Do not retrieve, open or visually inspect source PDFs or other primary literature for this audit.
+4. Do not run a project parser, assembler, harness, simulator or F1–F18 experiment. You may perform bounded, independent static checks with small scripts: hashes, JSON Schema validation of hand-written fixture objects, prompt extraction/rendering, text comparisons, descriptor/index consistency and deterministic fixture-contract inspection. Clearly distinguish such checks from project implementation or F18 execution.
+5. Do not infer owner/applicant/contributor/approver identities and do not infer owner approval from the existence of this ZIP.
+
+Audit questions
+
+A. V1 — model-visible strict AST policy
+- Compare the complete normative AST policy in `30_Response_Parser_and_Execution_Contract_v1.1.md` with the model-visible B5/B7/B8 blocks in both prompt templates.
+- Confirm byte-for-byte fixed-text agreement and the exact `\n\n` boundary after each fixed block.
+- Check that the selected strict branch is internally consistent with allowed imports: no `abc`, `dataclasses` or `enum` when their ordinary class/decorator patterns are disallowed.
+- Verify that `Driver` has exactly one permitted `step` method, no `__init__`, no helper/nested class, no decorators/metaclass; `checker.py` has no classes/decorators; module-level statement and literal-only rules are both normative and model-visible.
+- Verify positional-or-keyword (not positional-only) and no-default requirements for `create_driver`, `step` and `check_trace`.
+- State explicitly that the strict branch is still an owner-choice proposal, not an accepted decision.
+
+B. V2 — imports and prohibited names
+- Inspect AST rules and fixtures for exact-root imports, aliases, `from collections import abc`, `import collections.abc`, all other from-imports, `re.compile`, builtin `compile`, `builtins.open`, `__import__`, and module-global `random.*` / `random.SystemRandom`.
+- Determine whether each source form has one deterministic accept/reject disposition and exact diagnostic.
+- Check that `random.Random(seed)` remains permitted and that sandbox initialization of `random` is disclosed as untested/TO FREEZE, not asserted as verified.
+
+C. V3 — diagnostic grammar and JSON Pointer
+- Compare the literal diagnostic code block, fixed value enumerations, JSON Pointer selection rule, feedback serialization rules, and failure-to-stage table in Protocol §3.4 and file 25. They should be identical where the pack says they are repeated verbatim.
+- Check that every dynamic placeholder (`FILE`, `LINE`, `COLUMN`, `REASON`, `PHASE`, `SYMBOL`, `NAME`, `EXCEPTION_CLASS`, pointer) has a finite or explicitly bounded deterministic rule.
+- Inspect parser fixtures P06/P07/P08. Independently recompute their expected pointers using the declared sort rule; report any disagreement.
+- Inspect R01–R13 and M fixtures to ensure each repair feedback string is literal, not a placeholder or free-form paraphrase.
+
+D. V4 — precedence, map exhaustiveness and halt semantics
+- Verify the order: source decoding/parsing; static import/AST/signature checks; driver compile; checker compile; driver factory/runtime on RTL then null; paired RTL/null trace comparison; checker null invocation 1; checker null invocation 2; adjudication.
+- Verify that `driver.py` precedes `checker.py` inside each applicable stage.
+- Audit every failure class identified in v0.9: driver exception/timeout/vector issue; runtime signature mismatch; factory return type; artifact next-input divergence; same-input RTL/null masked divergence; simulator error on RTL or null; harness/trace-integrity failure; checker crash/invalid return/timeout; two-run disagreement; null rejection; and design-level baseline failure.
+- Confirm which are repair-stage outcomes, terminal-invalid slots, or design halts, and whether any common event falls through to an ambiguous catch-all.
+- Confirm design-level baseline failure does not get counted as a per-slot artifact failure.
+
+E. V5 — placeholder and assembly consistency
+- Verify all schema and payload placeholders use `{{UPPER_SNAKE_CASE}}` and the unresolved matcher is exactly `\{\{[A-Z0-9_]+\}\}`.
+- Independently render the template-stage ORG-A and ORG-B prompts using the assembly spec and sidecar, inserting schema bytes exactly while leaving the seven design payloads unresolved.
+- Recompute schema, system, repair, ORG-A and ORG-B hashes/byte lengths. Compare them to the sidecar. Confirm the two arms differ only by whole-block order and that design-specific payload hashes are honestly TO_FREEZE.
+- Inspect extraction from file 25, role mapping, blank-line rules, repair feedback serialization and the sidecar's manifest/spec-version linkage.
+
+F. V6 — fixture suite
+- Confirm all parser fixtures P01–P30 (including suffix-split cases), repair fixtures R01–R13 and missing-case fixtures M01–M34 are mandatory in files 30, 21 and 36.
+- Inspect all fixture descriptors under `41_F18_Fixture_Inputs/`. Verify index count, exact file presence, byte lengths, SHA-256, and one complete expected disposition/stage/error-class/diagnostic per fixture.
+- Check for duplicate fixture IDs, ambiguous expected results, contradictory normative rules, missing inputs, placeholders, and expected strings not defined by the normative contract.
+- Confirm that no fixture is claimed executed; F18 must remain NOT RUN / NOT PASSED.
+
+G. V7 — clause IDs and authoring manifest
+- Verify the manifest template has an anchored clause-ID regex, unique/sorted clause list, reserved `UNSPECIFIED`, seven visible payload sources and fixed B5/B7/B8 contract paragraphs explicitly non-citable.
+- Verify the assembly spec describes exact set equality between regex-matched IDs in the seven design-specific payload regions and `manifest.clause_ids`, excluding the fixed non-citable contract prefix and `UNSPECIFIED`.
+- Verify the sidecar's `spec_version_sha256` must equal the manifest's field and remains TO_FREEZE until the design specification exists.
+- Since there are no populated design payloads yet, do not mark the actual clause-ID check as passed. Decide whether the rule is sufficiently executable once payloads are authored; list any remaining ambiguity.
+
+H. Pack status, owner gate and provenance
+- Verify current controlling documents consistently say A1–A11 are PROPOSED / NOT ACCEPTED, no signed record exists, and nothing is currently authorized.
+- Verify the v1.0 strict-AST option remains a recommendation/owner choice, not approved.
+- Verify no document claims F1–F18 or fixtures have passed, no provider was contacted, and no source PDF was inspected in this audit.
+- Verify all current-document cross-references exist, version labels are coherent, README lists the controlling files, checksums cover every current/archive file except the checksum manifest itself, and ZIP integrity passes.
+
+Required output
+
+1. Overall verdict with separate status for:
+   - technical document gate V1–V7;
+   - owner-acceptance gate A1–A11;
+   - implementation/F18 execution status.
+2. A blocker table: ID, file/section, evidence, why it matters, exact correction, and whether it blocks any LLM call.
+3. A V1–V7 pass/partial/fail table.
+4. A fixture table listing every P/R/M fixture and its assessment: deterministic/pass, ambiguous, contradictory, missing or not assessable; include exact reason and file/line or fixture ID.
+5. Recomputed hashes and byte lengths for the schema, system message, repair template and both template-stage prompts.
+6. A cross-document consistency matrix for Protocol, Charter, prompt templates, file 25, parser contract, assembly spec, sidecar, manifest, checklist, fixture catalog, fixture index, status, approval record and README.
+7. A clear statement of what work is currently authorized. Do not authorize anything yourself; report the pack's actual recorded status.
+8. A short exact-edit list, grouped by blocking vs non-blocking.
+
+Gate rule
+- No LLM call of any kind, including F16, a smoke test or provider probe, is permitted unless (i) V1–V7 are concretely testable and pass independent re-audit, and (ii) the owner has explicitly recorded acceptance of A1–A11.
+- Even after those two conditions, do not claim confirmatory generation is authorized until every Protocol §18 freeze item is complete and sealed.
+- Preparing a proposed document correction is not owner acceptance, test execution or implementation.
+
+Be adversarial, cite exact file names and sections, and do not give a pass merely because the change log says a correction was made. Inspect the actual bytes and cross-document rules. If a point cannot be checked because design payloads, runtime pins or owner identities are still TO_FREEZE, say exactly that rather than guessing.

@@ -1,0 +1,576 @@
+OpenVEF Step 3 Audit: LLM-Era Verification Literature
+Nov 22, 2026 · @Conductors
+1. Executive verdict
+Overall: CONDITIONAL GO. The research question must be rewritten before Step 4.
+The Step 3 review is careful and mostly accurate. Every headline number I could check against a primary or author-hosted source matched. It still understates the prior art in three ways and leaves the central interpretive problem unresolved.
+1.  The highest-value preprint was not fully readable here. I could only access the TechRxiv preprint's abstract: the PDF mirror and the TechRxiv page both blocked automated reads. The abstract confirms the core predicate: outputs differ between correct and faulty RTL, all tests still pass, therefore checkers are missing. It also confirms an approximately 80 s detection cycle. Step 3's finer claims (checker-dependent observability, 12 cases, 2 designs, one model) remain unverified by this audit. One discrepancy needs checking: the abstract says "automated fault injection", while Step 3 reports manual mutation injection.
+2.  Step 3 missed a close new benchmark: DVBench (arXiv 2611.25066, Nov 2026). Agent-generated UVM testbenches are scored on golden acceptance, mutant detection, coverage and independent reference-model correctness across 95 tasks and 13 agent–model configurations, and a synchronous FIFO is its worked example. The authors state that mutation testing measures whether stimulus and checker together distinguish defects. That is exactly the coupling problem OpenVEF faces.
+3.  CovR already substitutes components. It replaces CorrectBench's driver track with its own stimulus while keeping the downstream checker, and it already uses MCY-Yosys mutants (10 per design). The MCY fault population and component substitution are both precedented.
+4.  The primary metric does not measure checker quality. PND/(NP+PND) describes the composition of misses for a coupled driver–checker pair. A prompt difference in that ratio is a valid total effect of the prompt on composition. It cannot be read as a checker effect, and the analysis conditions on artifact validity, which the prompt itself can change. Section 7 sets out the fix.
+Three separate novelty judgments
+Question
+Judgment
+Confidence
+1. Is the general concept novel?
+No. Mutation-based qualification of generated testbenches (AutoBench lineage, PRO-V, DVBench), stimulus/checker miss decomposition (functional qualification, Huang 2015, Verify the Verifier), the "outputs differ but tests pass" checker-gap predicate (TechRxiv preprint), and repeated prompt-arm studies of generated verification artifacts (SecTB-RTL) are all prior art
+High
+2. Is the exact combination absent from the sources reviewed?
+Not found in the sources reviewed. The combination is: LLM-authored driver plus offline checker as the unit; matched-information prompt-structure factor; checker-independent specification mask; per-artifact miss composition; post-synthesis netlist mutants. DVBench surfaced only during this audit, so the space is moving monthly and this is not a novelty finding
+Low–moderate
+3. Is it a meaningful contribution?
+For a TEEP/student project: yes, as a controlled, reproducible measurement study. For a workshop paper: borderline as currently framed. It becomes defensible if it reports a per-artifact validity → exposure → detection funnel with the prompt effect estimated on all three stages, and adds a cheap common-trace checker panel that measures checker sensitivity on standardised exposure (Section 7). Without these, the headline ratio is hard to interpret and easy for a reviewer to dismiss
+Moderate
+What must change before Step 4:
+• Rewrite the RQ and H1/H2 so they claim miss composition and total prompt effects, not checker quality.
+• Add validity as a co-primary outcome, so selection by validity is visible.
+• Pin down exactly how the two prompts may differ.
+• Decide, explicitly and not silently, whether to adopt the common-trace checker panel.
+• Add DVBench, CovR's substitution design and the other works in Section 9 to related work.
+• Read the TechRxiv full text, through a manual download, before citing its details.
+2. Paper-by-paper claim audit
+Status key:
+• Correct: the claim matches the source.
+• Nuance: true, but it needs qualification.
+• Incorrect: the source says otherwise.
+• Not located: I could not confirm it from the text I could reach.
+Locations are the paper's own section, table and equation labels. I give no page numbers, because I read search-indexed or HTML text, not paginated PDFs. "Source" means the paper says it; "interpretation" means Step 3 or I infer it.
+2.1 TechRxiv "LLM-Aided Verification Gap Detection" (Vagala, Feb 2026): deep check
+Access: abstract and metadata only. The cloudfront PDF failed on robots.txt, and the TechRxiv and DOI pages returned client errors. Status: unreviewed preprint; author is an independent researcher.
+Question from the brief
+Answer
+Basis
+Is "output divergence but tests pass" the same as OpenVEF's PND?
+Same predicate, different observation boundary and population. The abstract states that when outputs differ between correct and faulty RTL but all tests still pass, checkers are missing. This is PND with a raw-output or checker-domain boundary. OpenVEF uses a pre-frozen specification mask. A divergence on an output the specification calls don't-care is a gap in the preprint's logic but NP in OpenVEF
+Source: abstract. Boundary detail: Step 3's reading of Sec. II-A, not verified here
+Checker-dependent or raw boundary?
+Step 3 reports that the preprint defines output observability as "validated by at least one checker". If that is right, the gap is outputs not covered by any checker, which is checker-dependent, like the Certitude user taxonomy. I could not verify the definition
+Not located (abstract only)
+Existing human UVM tests or LLM artifacts?
+Existing UVM testbenches (title: "Missing Checkers in UVM Testbenches")
+Source: title and abstract
+What does the LLM generate?
+A suggested missing checker (repair), not the artifact under evaluation. The abstract says the method uses structured LLM prompting to detect missing checkers
+Source: abstract. Engineer review step: Step 3, not verified
+Are 12 cases, 2 designs and 1 model enough for prior art?
+Enough for conceptual prior art; not enough as empirical evidence. Prior art is about disclosure of an idea, and the idea is stated plainly in a public, dated abstract. Its evidence weight is low: proof of concept, unreviewed, and Step 3 reports that the author calls it a feasibility demonstration (Sec. VII-D, not verified)
+Interpretation
+What distinction survives for OpenVEF?
+Four things. (1) The unit is an LLM-authored driver/checker pair, not an existing suite. (2) The goal is measurement across repeated samples, not repair. (3) The boundary is a checker-independent specification mask, not raw or checker-domain outputs. (4) There is a controlled prompt factor. None of these makes the gap concept new. OpenVEF must cite this preprint as the origin of the predicate in the LLM-era literature, alongside functional qualification
+Interpretation
+Discrepancy to resolve
+The abstract says "automated fault injection"; Step 3 says manual mutation injection (Sec. VII-E). Read the full text before citing either
+Source vs Step 3
+2.2 SecTB-RTL (Xiao et al., arXiv 2609.19844): deep check
+Access: search-indexed passages of the arXiv HTML and PDF, the Google Research publication page, and the alphaXiv summary. Status: arXiv preprint; no peer-reviewed venue located.
+Item
+Finding
+Status and location
+Artifact model
+A constrained JSON/DSL verification plan, executed by a trusted harness. The DSL allows reset assignment, top-level driving, bounded ticks (1–16) and output assertions. It is a stimulus-plus-check plan, not free-form driver code plus a separate checker
+Correct; Sec. IV
+Prompt arms
+Four arms. Confirmed: an equal-attention functional control (FC) and explicit security requirements (SE). The other two (functional objective; abstract security context) are named in Step 3 and partly in the excerpts. The schema, token budget and base prompt are fixed across arms. The arms vary content and attention, not formatting
+Correct
+Repetitions and randomisation
+31 tasks × 3 model aliases × 4 arms × 5 repetitions = 465 complete blocks and 1,860 generations. Arms are randomised within each block, and the global invocation order is randomised
+Correct
+Unit of analysis
+The RTL task (n = 31), with model, repetition and mutant nested within task. Paired contrasts, a bootstrap resampling whole tasks, primary test SE–FC at α = 0.05, Holm-adjusted secondaries (Sec. D)
+Correct. This is very close to OpenVEF's own analysis plan
+Mutant population
+Four security-regression mutants authored per task before generation, 124 in total. Gates include an exact interface match, synthesis, a legal witness exposed at the top-level ports, formal non-equivalence, witness replay and pairwise distinctness
+Correct; Sec. IV-B
+Golden validation
+Each artifact is run unchanged on the known-correct design and four hidden mutants
+Correct
+Outcome denominator
+Funnel: scheduled → response/schema → compile → golden-valid → conclusive execution → kill. All scheduled calls are kept. The paper also defines a coverage blind spot: a mutant that survives while the verifier passes golden and meets line ≥ 90% and toggle ≥ 80% coverage
+Correct; Sec. E. Step 3 omits the coverage-blind-spot definition, which is close to a PND-style quantity
+9 of 1,860
+Confirmed: 1,857 provider-accepted, 9 production-semantic valid. An earlier run (C1-R2) failed schema prevalidation and was followed by an outcome-blind, schema-only repair
+Correct
+Prompt-effect estimate
+Confirmed: the run is kept as an instrument-validation incident and no prompt-effect estimate is reported. The confirmatory procedures are explicitly not used
+Correct. It must not be cited as evidence for any arm
+Authors
+Step 3 lists Kainan Zhou, Gangzhen Qian and Lu Yi. The Google Research page lists Mark Zhou, Iris Qian and Annabel Yi. Check against the arXiv author line before citing
+Needs nuance (bibliographic)
+Overlap and difference
+Overlap: generated stimulus-and-check artifacts; golden plus hidden mutants; prompt arms with an equal-attention control; randomised blocks; task-cluster bootstrap; failure-preserving funnel. Difference: DSL plan rather than code; security content arms rather than formatting arms; four hand-authored mutants per task rather than a tool-generated netlist population; no driver/checker separation; no mask
+Interpretation
+2.3 The other sources
+Source (status)
+Step 3 claim
+Status
+Correction and location
+Access
+AutoBench (MLCAD 2024; ACM DOI 10.1145/3670474.3685956; arXiv 2407.03891)
+Separate driver and Python checker; Eval2 = same pass/fail report as the golden testbench on mutants; 26.00% vs 7.73% Eval2 pass@1 on 75 sequential tasks
+Correct
+Add: mutants are LLM-generated; a testbench "passes Eval2" when agreement exceeds a threshold (80% per the ConfiBench text); the unit is the task with pass@k. The golden testbench is the oracle, not a specification. AutoBench also claims to be "the first LLM-based testbench generator"
+Search-indexed PDF text
+CorrectBench (DATE 2025; arXiv 2411.08510)
+88.85% validation; 70.13% vs 52.18% vs 33.33%
+Correct
+Abstract. Unit is the task; the pass ratio is Eval-based
+Abstract and excerpts
+ConfiBench (TODAES; DOI 10.1145/3773087)
+72.22% overall; scenario mask is not an observation mask
+Correct
+The 72.22% is the Eval2 pass rate (results table). The repository says it was submitted to the TODAES MLCAD special issue; the DOI resolves to an ACM PDF
+ACM PDF excerpts; the mediatum mirror was not opened
+GRPO-SMu (arXiv 2601.07593; an IEEE Xplore record exists)
+500 designs × 3 mutants; 33.3% golden pass; 13.9% detection; model sees buggy RTL
+Correct / nuance
+Numbers confirmed (abstract; IEEE record 11534750). Authors are from NVIDIA (Kochar, Pinckney, Liu, Ho, Deng, Ren, Khailany). The stage-2 prompt asks the testbench to print a pass marker for the original and a fail marker for the mutated module, so the reference and DUT are both in the harness. Whether the plan model sees mutant RTL at evaluation was not confirmed. Soften to "the generation setup is mutation-aware". Add the IEEE venue
+HTML excerpts
+AssertLLM2 (arXiv 2605.27472)
+83 designs, 13 categories; killed if at least one proven assertion is violated
+Correct
+Add: mutants are JasperGold-checked for non-equivalence (Sec. 4.3); checker-only, with no driver
+HTML excerpts
+GateTruth (arXiv 2608.12635)
+46 designs, 775 mutants, 440/320/15, 56.8% pooled, 74.0% median, 72% below the floor; FIFO 24 and UART 46 valid; UART 43/46
+Correct
+Add: kills count only behavioural simulation failures; per-design mutant counts range from 1 to 115, and kill rate correlates negatively with mutant count (relevant to OpenVEF's per-artifact denominators). Single author
+Abstract and excerpts
+From FIPS to FPGA (arXiv 2611.25339)
+399 netlist mutants, 76% kills; fresh draw of 150 at 70.7%; decapsulation 48% → 74%; timeout counts as a kill
+Mostly correct
+303/399 confirmed (Table IV). "Timeout counts as a kill" was not located; verify. It is an agentic workflow case study in which gates are LLM-agent-built tests audited by netlist mutants, not an independently sampled artifact cohort
+HTML excerpts
+CovR (MLCAD 2026; arXiv 2609.19189)
+18.95% coverage, 1.19% mutation score; 4.46% is a reference-model failure signal
+Correct; under-used
+Add: it uses MCY-Yosys, 10 mutants per design, and it replaces CorrectBench's driver track while keeping its checker. That is a direct precedent for component substitution (Sec. 4.4)
+HTML excerpts
+PRO-V (arXiv 2506.12200; later versions retitled PRO-V-R1)
+87.17% golden and 76.28% mutants vs 78.85% / 55.77%; 156 tasks; 82%/18% mutant split
+Correct
+Note the version drift: v1 is "PRO-V", v2–v4 are "PRO-V-R1" with RL training. Cite the version used
+Abstract and conclusion
+LLM4DV (FCCM 2025)
+6 LLMs, 6 prompting improvements, 8 designs
+Correct
+Add the 2023 arXiv origin (2310.04535, with 4 improvements in v1). Its prompt "improvements" are content and feedback strategies, not matched-information formatting
+arXiv abstract
+Replication study (PACMSE 3(ISSTA), ISSTA002, Oct 2026; DOI 10.1145/3832093)
+Coverage and mutation scores are context-dependent proxies
+Correct
+Software only; adjacent
+Excerpt
+VerifLLMBench, HAVEN, DeepAssert, data-integrity paper, survey
+As summarised
+Not re-checked
+Not prioritised in this pass; Step 3's descriptions are plausible. The data-integrity paper appears on a NeurIPS 2026 virtual page, so confirm whether it is a workshop paper
+Not opened
+Verify the Verifier
+As in the Step 1 audit
+Correct
+—
+Prior audit
+2.4 The eight special-attention points
+1.  AutoBench Eval2 is golden-testbench agreement. Confirmed. Step 3 states this correctly.
+2.  ConfiBench's scenario mask is not an observation mask. Confirmed.
+3.  GRPO-SMu is a mutation-aware training setup. Confirmed in substance; soften the specific claim about RTL visibility.
+4.  AssertLLM2 is checker-only. Confirmed.
+5.  GateTruth overlaps on FIFO and UART. Confirmed. DVBench (FIFO) and the data-integrity paper (asynchronous FIFO, UART TX) add further overlap.
+6.  From FIPS to FPGA is a broader agentic workflow, not an independent artifact cohort. Confirmed.
+7.  The TechRxiv preprint is unreviewed and small, but it is relevant prior art. Confirmed at abstract level.
+8.  The replication study is software evidence only. Confirmed.
+3. Corrected comparison matrix
+Columns are chosen to separate exactly the dimensions OpenVEF claims to differ on. "Exposure boundary" means what counts as a fault reaching observation. Rows marked new or changed differ from the Step 3 matrix.
+Work
+Who authors the artifact being evaluated
+Artifact form
+Exposure / oracle boundary
+Fault population
+Unit of analysis
+Prompt or treatment factor
+OpenVEF v0.5
+LLM (two prompt arms), plus human and random baselines
+Cycle-synchronous cocotb driver + offline Python checker
+Frozen, checker-independent specification mask over top-level outputs and cycles
+Yosys/MCY post-synthesis netlist signal mutants, bounded-equivalence filtered
+Artifact (driver+checker), within design
+Matched-information prompt structure
+SecTB-RTL
+LLM (3 models × 4 arms × 5 reps)
+Constrained JSON/DSL plan: reset, drive, ticks, output assertions
+Generated output assertions; golden-valid gate
+4 hand-authored, formally distinct security mutants per task (124)
+RTL task (n = 31)
+Content/attention arms with an equal-attention control; randomised blocks. No estimate produced
+TechRxiv checker-gap preprint
+Existing (human) UVM testbench; LLM proposes repair
+Suggested missing checker
+Raw output difference between golden and mutant while tests pass; observability reportedly checker-dependent (unverified)
+RTL mutations (manual or automated; inconsistent)
+Mutant / test case (12 reported per Step 3)
+None
+DVBench (new)
+LLM agents (13 agent–model configurations)
+Full UVM testbench + reference model + feature list and test plan
+Golden acceptance + mutant detection + coverage + independent reference-model replay
+Task-specific hand-designed mutants (10 diffs released as examples)
+Task (95), binary overall success
+Agent framework and model; no matched prompt factor
+AutoBench
+LLM (staged vs direct)
+Verilog driver + Python checker
+Golden testbench verdict on mutants (agreement ≥ threshold)
+LLM-generated RTL mutants
+Task, pass@k
+Pipeline vs direct generation (different information flow)
+CorrectBench / ConfiBench
+LLM pipeline
+Hybrid testbench + self-validation / scenario mask / ensemble
+Golden testbench agreement (Eval2)
+LLM-generated mutants
+Task
+Pipeline variants vs direct
+PRO-V(-R1)
+LLM multi-agent
+Python functional model + stimulus
+Golden-report agreement on mutants
+LLM-generated mutants (82% incorrect / 18% correct)
+Task
+Sampling and judge configurations
+CovR (changed)
+LLM stimulus engine (trained)
+Stimulus only; substituted into CorrectBench and PRO-V checkers
+Downstream checker of the host framework
+MCY-Yosys, 10 per design
+Task
+Training regime; component substitution
+GRPO-SMu
+Trained SLM
+Test plan → testbench
+Testbench prints pass/fail for reference vs mutated module
+3 mutants per design (1,500 total)
+Task
+Training (SFT/RL)
+AssertLLM2
+LLM
+SVA set only
+Formal: proven on golden, violated on variant
+AST-level mutants, JasperGold non-equivalent
+Design / variant
+Bug-prevention vs bug-hunting inputs
+Verify the Verifier
+Existing human UVM regression; LLM audits
+SVA + directed tests
+Qualified assertion (cex on mutant, proof on reference)
+BugGen LLM source mutants
+Mutant
+None
+GateTruth
+Existing benchmark testbenches
+—
+Behavioural simulation failure
+Seeded semantic source mutants
+Design
+None
+From FIPS to FPGA
+LLM-agent workflow (gates)
+Simulation gates + specification-derived tests
+Gate failure
+Tool-selected netlist mutants
+Module / gate
+Workflow replays, not prompt arms
+LLM4DV
+LLM
+Stimulus only
+Coverage bins
+—
+Design / coverage
+Prompting improvements (content and feedback)
+What the corrected matrix shows (interpretation):
+• The only rows with a checker-independent exposure boundary are OpenVEF and, partially, DVBench's independent reference-model replay.
+• The only rows with a matched-information prompt factor are OpenVEF and SecTB-RTL's equal-attention control, and SecTB-RTL did not produce an estimate.
+• The only rows that separate driver from checker are AutoBench's lineage (architecturally) and CovR (by substitution).
+These three cells are where OpenVEF's distinctiveness has to live.
+4. Overlap ranking (closest first)
+Ranked by how much of OpenVEF's study design each work already occupies. This differs from Step 3, which put the TechRxiv preprint first on concept alone.
+1.  SecTB-RTL. Same study shape: LLM-generated stimulus-and-check artifacts, a golden gate, hidden non-equivalent mutants, prompt arms with an attention-matched control, randomised complete blocks, task-cluster bootstrap with Holm correction, and a failure-preserving funnel. It differs in artifact form (DSL, not code), the nature of the prompt contrast (content, not structure), the fault model, and the absence of a mask and of driver/checker separation. Its failure to produce an estimate means the question is still open, not that the design is new.
+2.  TechRxiv checker-gap preprint. The identical core predicate (outputs diverge, tests pass, so a checker is missing), applied to existing UVM suites for repair. Conceptually closest; empirically weakest.
+3.  DVBench (missed by Step 3). LLM agents author complete UVM verification environments, scored on golden acceptance and mutant detection together with reference-model accuracy, and a FIFO is the running example. It explicitly frames mutation detection as a joint stimulus–checker property.
+4.  AutoBench → CorrectBench → ConfiBench, with CovR. The generated driver + Python checker artifact, mutant evaluation and direct-generation baselines. CovR adds component substitution and MCY-Yosys mutants.
+5.  Verify the Verifier. The miss decomposition (non-activated vs activated-but-passing) on human regressions, plus the stage attribution.
+6.  PRO-V(-R1). Generated verification models and stimulus scored on mutants, with automated testbench-versus-DUT error triage.
+7.  AssertLLM2, DeepAssert. Checker-only generation scored on mutants.
+8.  GateTruth, From FIPS to FPGA. Mutation audits of testbenches and gates, with FIFO/UART and netlist-mutant overlap.
+9.  GRPO-SMu, LLM4DV, HAVEN, VerifLLMBench, the data-integrity paper. Generation, coverage or training work with weaker overlap on the estimand.
+10.  The survey and the software replication study. Context only.
+Key correction to Step 3: move SecTB-RTL to the top, and insert DVBench at rank 3. The TechRxiv preprint remains the most important citation for the predicate, but a reviewer comparing study designs will reach for SecTB-RTL and DVBench first.
+5. Novelty claims OpenVEF must not make
+OpenVEF must not say, or imply in a title, abstract, poster or faculty email, that it is the first or a novel:
+1.  LLM-generated testbench, driver/checker (hybrid) testbench, or offline Python checker. (AutoBench and successors)
+2.  Use of mutants to evaluate LLM-generated verification artifacts, or mutation-based testbench qualification in general. (AutoBench, PRO-V, DVBench, AssertLLM2, GateTruth, SecTB-RTL; Certitude lineage)
+3.  Method for detecting missing checkers from outputs that diverge while tests pass. (TechRxiv preprint; Certitude non-detected class; Huang 2015)
+4.  Decomposition of verification misses into stimulus versus checker causes, or activation/propagation/detection analysis. (Functional qualification; Huang 2015; Verify the Verifier)
+5.  Study of prompt arms for LLM-generated hardware verification artifacts, or a randomised, pre-registered prompt experiment in this area. (SecTB-RTL, LLM4DV)
+6.  Use of Yosys/MCY netlist mutants for evaluating LLM-generated tests. (CovR; From FIPS to FPGA)
+7.  Separation or substitution of generated stimulus and checking components. (AutoBench architecture; CovR substitution)
+8.  Use of FIFO/UART benchmarks for this purpose. (GateTruth, TechRxiv, DVBench, data-integrity paper)
+9.  "Checker quality" or "stimulus quality" measurement from PND/(NP+PND) alone. This is a validity problem rather than a novelty one, but it would be the first thing a reviewer attacks.
+Never write "no prior work" or "to our knowledge, the first". Write "not found in the sources we searched (list, dates)".
+6. Defensible candidate contribution statement
+OpenVEF is an open, reproducible measurement study of LLM-authored hardware verification artifacts. For cycle-exact sequential RTL designs and a declared population of post-synthesis netlist signal mutants, it records per artifact where verification fails: whether the artifact is valid, whether its stimulus exposes a fault at outputs defined by a pre-frozen, checker-independent specification mask, and whether its own offline checker then rejects the faulty behaviour. It estimates how two prompt structures carrying identical design information shift each stage. Mutation-based testbench evaluation, the activation/propagation/detection decomposition, the "outputs differ but tests pass" checker-gap predicate and prompt-arm studies of generated verification plans are prior work (functional qualification; Huang et al. 2015; AutoBench lineage; DVBench; the TechRxiv checker-gap preprint; SecTB-RTL). OpenVEF's contribution is the measurement under this specific combination of artifact unit, exposure boundary, fault population and controlled prompt factor, with all artifacts, traces and analyses released. The combination was not found in the sources searched as of [date]; that is not a claim that it has never been done.
+If the common-trace checker panel in Section 7 is adopted, add one sentence:
+It additionally evaluates every generated checker on a shared set of traces, separating checker sensitivity from the exposure produced by each artifact's own driver.
+This statement is defensible because each element it claims (unit, boundary, fault population, factor, release) maps to a cell of the matrix in Section 3 that no reviewed source fills. Every conceptual element is credited to its origin.
+7. Methodology concerns and resolution choices
+7.1 What PND/(NP+PND) actually measures
+Because the mask is checker-independent, exposure is a property of the driver alone. Whether a masked divergence occurs depends only on the driver's stimulus and the mutant. That gives a clean algebraic decomposition, ignoring errors, timeouts and anomalies:
+• E_i = (DET_i + PND_i) / N_i: driver exposure rate (checker-free).
+• S_i = DET_i / (DET_i + PND_i): own-checker detection given exposure.
+• NP_i/N_i ≈ 1 − E_i and PND_i/N_i = E_i · (1 − S_i).
+• Therefore miss share = E_i(1 − S_i) / [1 − E_i S_i].
+The primary metric is a non-linear blend of a driver quantity and a checker quantity. The same share can come from a strong driver with a weak checker or from a weak driver with a moderately weak checker. It measures the composition of misses for a coupled pair, not checker quality. Report E_i and S_i directly; the share then adds little.
+7.2 Can a prompt difference be read causally?
+• As a total effect, yes, with conditions. Calls must be independent and order-randomised, and the comparison must not condition on outcomes the prompt affects. A prompt difference in miss share is then a causal effect of the prompt on composition.
+• As a mechanism ("structured prompts improve checkers"), no. The prompt acts on the driver and the checker at once; v0.5 cannot separate the two paths.
+• v0.5 conditions on post-treatment variables. It analyses only valid artifacts, and only artifacts with MISS_i ≥ 5. If one prompt produces fewer valid artifacts, or artifacts with fewer misses, the compared populations differ and the contrast is no longer a clean total effect. SecTB-RTL's 9 of 1,860 shows how severe validity selection can be. Fix: make validity a co-primary outcome, report the full funnel per scheduled call (intention-to-treat), and label the valid-only comparison as conditional.
+7.3 Is checker_gap = PND/(DET+PND) enough?
+No. It equals 1 − S_i, which is conditional on the mutants that artifact's own driver exposed. A checker paired with a driver that exposes only easy, gross mutants (an inverted output bit) looks better than the same checker on subtle exposures. The exposure sets differ across artifacts, so S_i is still confounded by the driver.
+7.4 Should OpenVEF cross drivers and checkers?
+Recommended: yes, in its cheapest form. This is a decision for the owner, and I have not written it into the Charter. The architecture makes crossing almost free. Checkers are pure functions over traces, and every driver's traces on the null netlist and all mutants are already recorded. Crossing needs no new simulation, only more checker evaluations.
+Option
+Design
+Cost
+What it identifies
+Main risk
+A. Keep v0.5, narrow the claims
+Coupled artifact only; report E_i, S_i and the funnel
+None
+Total prompt effect on exposure and on own-checker detection; no driver/checker separation
+Reviewer: "you can't tell which component the prompt changed"
+B. Common-trace checker panel (minimal)
+Run every valid LLM checker on one shared trace set: the deterministic random-baseline driver's traces (null plus all mutants), and optionally the human driver's
+Checkers × mutants evaluations (about 20 × 100 per design); seconds to minutes of CPU
+Checker sensitivity on standardised exposure, comparable across artifacts and prompt arms. With driver exposure E_i (checker-free), the two paths of the prompt effect become separable
+Compatibility: a checker that hard-codes its own stimulus's expected values will reject the shared null trace. Report the compatibility rate (itself a finding about checker generality); score only compatible checkers
+C. Full within-design cross
+All valid drivers × all valid checkers within each design
+About 400 cells × 100 mutants of checker evaluations per design; cheap compute, heavier analysis
+Driver and checker main effects plus a driver × checker interaction (does a checker work mainly on its own driver's traces?)
+Two-way dependence; needs a crossed random-effects model or two-way cluster bootstrap; more to pre-register
+Recommendation: A + B as pre-registered secondary analyses, and C only as exploratory. B requires one contract change: the checker must compute expectations from the trace's inputs (reference-model style), not from constants tied to its own stimulus. That is a modest, defensible restriction, but it changes the artifact task, so decide it before the prompts are frozen.
+7.5 The specification mask: advantages and new risks
+Advantages.
+• Exposure becomes a checker-free driver property (Section 7.1).
+• It is identical across artifacts, so counts are comparable.
+• It is frozen before generation, which leaves no room for post hoc boundary choices.
+• It aligns "exposure" with what the specification obliges a verifier to check.
+New risks.
+1.  The experimenter's mask decides the PND count. An over-inclusive mask (for example, every cycle of a status flag) inflates PND for checkers that sensibly check at transaction boundaries. Resolution: pre-register one stricter mask variant (contract-critical outputs and cycles only) as a sensitivity analysis, and have someone other than the mask author review it.
+2.  The mask is handed to the generator. v0.5 gives both prompts the observation mask. That is unusual relative to practice, and it tells the checker exactly what to check, which could push PND toward zero and limit external validity. Resolution: decide explicitly. Either keep it and call the condition "mask-informed generation", or give only the specification (the mask is derived from it) and keep the mask for evaluation. This choice matters more for the headline than anything else in the design.
+3.  Mapping to checker-dependent schemes. The TechRxiv preprint and Certitude-style taxonomies classify by whether a checker observes an output. Resolution (optional, cheap): wrap the trace object so it logs which signals each checker reads. That yields a checker-dependent classification as a secondary diagnostic, and makes the two schemes comparable rather than merely contrasted.
+7.6 Fault model
+Yosys/MCY post-synthesis signal mutants are aligned with the claim only if the claim says "structural netlist fault simulation". They are not design-bug mutation; CovR uses the same tool for a similar purpose.
+Specific risks:
+• Saturation. Inversions on output-cone signals are exposed by almost any driver, so few misses occur and many artifacts fail MISS_i ≥ 5, leaving the primary metric undefined.
+• Location skew. Mutants may concentrate in wide datapath bits.
+Resolution:
+• In F-gate validation, measure the exposure distribution with the random driver only. That uses no LLM artifacts and no outcome peeking.
+• Stratify the mutant population descriptively (control/state versus datapath; distance to output).
+• Pre-register what happens if the median MISS_i falls below threshold.
+• Keep source-level mutants out of the MVP.
+7.7 Benchmarks
+FIFO and UART TX are adequate engineering choices, but they are not independent of prior work. GateTruth, the TechRxiv preprint, DVBench and the data-integrity paper all use FIFOs, and UART TX appears in GateTruth and the data-integrity paper. There is also a contamination risk: countless FIFO and UART testbenches are in training data, which can produce ceiling effects and erase prompt differences.
+Resolution (no scope change):
+• Write original cycle-exact specifications with distinctive, non-default semantics. For example: a registered almost_full at a parameterised threshold, a specific simultaneous read/write-at-full rule, UART with configurable parity and a defined break condition.
+• Disclose the overlap.
+• Treat "two designs" as two strata, not a sample: make no across-design generalisation.
+7.8 Is F16 adequate after SecTB-RTL?
+In principle, yes. It uses the exact production path, keeps failures in the denominator and includes the null control, which goes beyond SecTB-RTL's schema-only repair. Add five rules:
+1.  Pilot both arms and report validity per arm. Pre-register a maximum acceptable validity difference, beyond which H2 becomes conditional-only.
+2.  Re-pilot after any contract change. SecTB-RTL's schema-only repair is the cautionary example.
+3.  Keep the pilot blind to mutant outcomes. Run pilot artifacts on the null netlist only, or seal mutant results, so the pilot cannot inform delta_checker, mask choices or thresholds.
+4.  Pre-register a stop rule, for example: if validity is below the threshold after one repair cycle, the study pauses for redesign rather than expanding the sample.
+5.  Include checker-panel compatibility (Option B) in the pilot if B is adopted.
+7.9 The prompt manipulation itself
+"Identical information, different structure" is hard to guarantee. A structured prompt that says "first list every observable output, then write a check for each" adds attention guidance, which is exactly what SecTB-RTL's equal-attention control exists to neutralise.
+Resolution:
+• Define allowed differences operationally. Byte-identical content blocks (specification, ports, contract) appear in both prompts. Only ordering, section headers and formatting differ. No added task instructions.
+• Token counts must be within a pre-set tolerance.
+• An independent reviewer signs a content-equivalence check.
+• If step-by-step instructions are wanted, rename the factor "prompt scaffolding" and say it changes attention guidance.
+8. Exact edits recommended for Charter v0.5 and Protocol v0.5
+Items marked [decision] need an owner choice. The others are corrections.
+#
+Location (v0.5)
+Current
+Replace with or add
+1
+Charter §3.1 and Protocol §2 (primary RQ)
+"what fraction of missed faults produce a specification-observable output divergence that the artifact's own checker accepts, and does this per-artifact share differ between direct and structured prompts…"
+"For LLM-authored driver/offline-checker artifacts on cycle-exact sequential RTL and a declared population of post-synthesis netlist signal mutants, how do two prompt structures carrying identical design information change (a) artifact validity, (b) driver exposure of mutants at outputs defined by a pre-frozen, checker-independent specification mask, and (c) the artifact's own-checker detection of exposed mutants? The resulting composition of misses is reported descriptively."
+2
+Charter §3.3 H1
+Lower CI bound of the miss share above delta_checker makes the share "practically meaningful"
+Make H1 descriptive: estimate E_i, S_i and the miss share per condition with CIs. Drop delta_checker, or keep it only as a descriptive reference line. A threshold on a blended ratio has no clear practical meaning (Section 7.1)
+3
+Charter §3.3 and Protocol H2
+Mean per-artifact miss share differs between conditions
+"H2: the prompt-structure total effect on (a) validity per scheduled call, (b) E_i, and (c) S_i. Estimated intention-to-treat over scheduled calls for (a), and conditional on validity for (b) and (c), with that conditioning stated. The miss-share contrast is secondary and descriptive." Keep the cluster bootstrap and within-design permutation; apply Holm across (a)–(c)
+4
+Protocol §13 (metrics)
+miss_checker_share primary; checker_gap secondary
+Promote E_i = (DET+PND)/N and S_i = DET/(DET+PND) to primary descriptive metrics. Report the identity linking them to the miss share. Keep MISS_i ≥ 5 only for the share
+5
+Protocol §13 (new) [decision]
+—
+Add the common-trace checker panel (Section 7.4, Option B) as a pre-registered secondary analysis: every valid checker on the random-baseline driver's traces; outputs are compatibility rate, standardised sensitivity and false alarm. The full cross (Option C) is exploratory only
+6
+Charter §8 and Protocol §5 (prompt inputs) [decision]
+Both prompts receive the observation mask
+Either keep it and rename the condition "mask-informed generation" in the RQ and limitations, or withhold the mask from generation and give the specification only
+7
+Protocol §5 (prompt controls)
+"Only prompt organisation/instructions differ"
+"Only ordering, section headers and formatting differ. All content blocks are byte-identical. No task instructions appear in one prompt and not the other. Token counts match within X%. An independent reviewer signs a content-equivalence check before the freeze. Otherwise the factor is renamed 'prompt scaffolding'."
+8
+Protocol §10 (checker contract) [decision; required by #5]
+Pure function over the trace
+Add: "Expected values must be computed from the trace's recorded inputs; constants tied to the artifact's own stimulus are not allowed."
+9
+Protocol §9 (mask)
+Single frozen mask
+Add one pre-registered strict-mask sensitivity variant, reviewed by someone other than its author. Optional: log the trace fields each checker reads, to produce a checker-dependent classification as a diagnostic
+10
+Protocol §11 (fault population)
+Netlist signal mutants
+Add: "described as structural netlist fault simulation"; descriptive stratification by mutant location; a random-driver-only exposure-distribution check in the F-gate; a rule for what happens if the median MISS_i falls below threshold
+11
+Protocol §17 F16
+Single pilot
+Add: pilot both arms, report validity per arm, set a maximum allowed difference, re-pilot after any contract change, keep the pilot blind to mutant outcomes, and pre-register a stop rule
+12
+Charter §4 (prior art)
+As in v0.5
+Add the TechRxiv preprint (predicate origin), SecTB-RTL (design precedent; no estimate), DVBench, CovR (MCY mutants and driver substitution) and the AutoBench lineage. Use the contribution statement in Section 6 of this audit
+13
+Charter §7 (benchmarks)
+FIFO, UART TX
+Add: original specifications with distinctive semantics; disclosure of the GateTruth, TechRxiv, DVBench and data-integrity overlap; contamination stated as a threat; designs treated as strata
+14
+Threats section
+—
+Add: selection by validity (post-treatment); the coupling of driver and checker; mask-informed generation if kept; model and version drift; contamination
+15
+Step 3 bibliography
+—
+Fix as in Section 2: SecTB-RTL author names; GRPO-SMu IEEE record; AutoBench MLCAD DOI 10.1145/3670474.3685956; LLM4DV arXiv origin; PRO-V version naming; replication-study venue details
+9. Missing related work and search recommendations
+Works located in this audit that are absent from Step 3
+Access is search excerpt or abstract only, unless noted. Verify each before citing.
+Work
+Why it matters
+DVBench, "End-to-End Benchmark for Real-World UVM Design Verification Agents" (arXiv 2611.25066)
+Agent-generated UVM testbenches with stimulus, checker and reference model, evaluated on golden acceptance, mutant detection, coverage and reference-model replay; 95 tasks, 13 configurations, best overall 21.05%; FIFO worked example. Rank 3 overlap
+UVM² (arXiv 2504.19959) and UVMarvel (arXiv 2605.04704)
+LLM-generated UVM testbenches with coverage-driven refinement; extend the UVM-generation family alongside HAVEN
+Agentic Python framework for LLM-driven UVM synthesis (arXiv 2611.16202)
+Structured-feedback versus raw-feedback comparison; notes the checker-class gaps of generated scoreboards
+"Closing the Loop on LLM-Generated RTL Assertions with Quality-Aware Formal Verification" (arXiv 2606.21451)
+Mutation-guided refinement of assertions; reports source edits invisible to the formal tool ("true equivalents"), relevant to equivalence handling
+Coverage-driven RTL assertion generation with formal exploration (arXiv 2608.18482)
+Surviving mutants used as "uncovered obligations" for checker refinement
+Structured Testbench Generation, STG (arXiv 2606.12983)
+Known-reference testbench generation versus LLM testbenches; ablation on structure
+"Evaluating the effectiveness of class-level LLM-generated test suites in Python" (arXiv 2609.24341)
+Software: prompts differ more in how often their output runs than in conditional mutation score. A direct warning that OpenVEF's prompt effect may sit mostly in validity, which supports making validity co-primary
+CHORUS (arXiv 2608.10090), LLM4Cov, Spec2Cov
+Coverage-guided stimulus generation; context for the driver side
+Embedded.com practitioner article on AI-generated testbenches missing checkers
+Practitioner evidence that generated UVM can drive stimulus but omit handshake checkers; cite as practitioner material only
+From the Step 2 audit: coverage discounting (Lisherness & Cheng), RIPR, "Covered Is Not Checked" (arXiv 2610.33708)
+Checker-sensitivity and miss-classification precedents
+Search protocol to run and log before Step 4
+1.  Databases:
+    ◦ IEEE Xplore and ACM DL, native search with an institution login, which UPES likely provides;
+    ◦ DAC, ICCAD, DATE, MLCAD, LAD and DVCon proceedings for 2024–2026;
+    ◦ arXiv cs.AR and cs.SE;
+    ◦ TechRxiv;
+    ◦ Google Scholar.
+2.  Forward citations of AutoBench, CorrectBench, SecTB-RTL, Verify the Verifier, GateTruth, DVBench and the TechRxiv preprint. This is the highest-yield step, because closely related work will cite these.
+3.  Query strings, logged with date and hit counts:
+    ◦ "LLM testbench" AND (mutation OR mutant);
+    ◦ "missing checker" OR "checker gap" OR "verification gap";
+    ◦ "test oracle" AND (RTL OR hardware) AND LLM;
+    ◦ "verification plan" AND LLM AND UVM;
+    ◦ "functional qualification" AND (LLM OR "large language model");
+    ◦ "stimulus" AND "checker" AND decomposition;
+    ◦ "prompt" AND ("testbench" OR "verification") AND (randomized OR ablation).
+4.  Obtain the TechRxiv full text manually (browser download) and verify Sec. II-A, VII-D and VII-E and the fault-injection method.
+5.  Record every access failure. This audit had arXiv rate limits, TechRxiv blocks and an unreachable mirror.
+The field is producing relevant preprints monthly (DVBench and From FIPS to FPGA both appeared in Nov 2026), so re-run the forward-citation search immediately before any submission.
+10. Source-access log and confidence
+Access per source
+Source
+What I actually accessed
+Not accessible
+TechRxiv checker-gap preprint
+Abstract and metadata (TechRxiv listing via search)
+Full PDF: the cloudfront mirror failed on robots.txt; the TechRxiv page and DOI returned client errors
+SecTB-RTL
+Search-indexed passages of the arXiv HTML and PDF (Secs. IV, IV-B, D, E; design table); Google Research page; alphaXiv summary
+Direct arXiv fetch (rate-limited in earlier steps; not retried)
+AutoBench
+Search-indexed PDF text (evaluation table, Eval definitions); ACM DOI
+Full read
+CorrectBench, ConfiBench
+Abstracts; ACM PDF and GitHub excerpts
+Full read; the mediatum mirror was not opened
+GRPO-SMu
+arXiv HTML excerpts; IEEE Xplore abstract
+Full method section
+AssertLLM2, GateTruth, FIPS to FPGA, CovR, PRO-V, DVBench
+arXiv HTML and PDF excerpts and abstracts
+Full reads
+LLM4DV
+arXiv v1/v2 abstracts and excerpts
+FCCM full text
+Replication study
+ACM reference block and excerpt
+Full read
+VerifLLMBench, HAVEN, DeepAssert, data-integrity paper, survey
+Not re-checked this pass
+—
+Confidence per conclusion
+Conclusion
+Confidence
+Why
+The general concept is not novel
+High
+Multiple independent, primary-source confirmations
+SecTB-RTL design facts (1,860 calls, 9 valid, task unit, no estimate)
+High
+Verbatim passages from the paper
+The TechRxiv predicate matches PND logic
+Moderate–high
+Stated in the abstract
+TechRxiv details (checker-dependent definition, 12 cases, 2 designs, 1 model, manual injection)
+Low (unverified)
+Full text not accessible; abstract partly contradicts "manual"
+DVBench is close prior art
+Moderate
+Excerpts only; no full read
+CovR uses MCY-Yosys mutants and driver substitution
+Moderate–high
+Explicit excerpts
+The exact OpenVEF combination was not found
+Low–moderate
+Targeted, not systematic, search; new close work surfaced during the audit itself
+The miss share is compositional, not a checker-quality measure
+High
+Follows algebraically from the v0.5 definitions
+A common-trace checker panel is cheap and informative
+Moderate–high
+Follows from the v0.5 architecture; compatibility rate unknown until the pilot
+Workshop-level contribution after the revisions
+Moderate
+Depends on results and on what the systematic search finds
+All numbers in this audit come from text I saw this session, or from the Step 1 and Step 2 audits. No page numbers are given, because no paginated PDF was read.

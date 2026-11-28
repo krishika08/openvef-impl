@@ -1,0 +1,25 @@
+{
+  "fixture_id": "M50",
+  "fixture_version": "1.3",
+  "scope": "missing-case",
+  "fixture_class": "lifecycle_unit_vector",
+  "description": "A shared author-visible or estimand-defining change halts the study and invalidates every arm × design slot; old confirmatory artifacts are not reusable.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "change_class": "SHARED_AUTHOR_VISIBLE_OR_ESTIMAND_DEFINING_ITEM_CHANGED"
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "AUTHORING_REVISION_REQUIRED",
+    "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+    "required_action": "halt_study_invalidate_all_designs_and_all_arm_x_design_slots_archive_and_disclose_partial_confirmatory_ledgers_new_preregistration_refreeze_f16_and_fresh_confirmatory_generation",
+    "reuse_old_confirmatory_artifacts": false,
+    "new_confirmatory_generation_required": true,
+    "affected_slots": "all_designs_x_all_arms",
+    "archive_and_disclose_partial_ledgers": true,
+    "new_preregistration_required": true
+  }
+}

@@ -1,0 +1,26 @@
+# Claude Independent Audit Prompt — OpenVEF v1.3.1
+
+You are an independent technical auditor. Audit the complete OpenVEF Planning Pack v1.3.1 ZIP against the v1.3 findings recorded in `52_v1.3.1_Correction_Resolution.md`. Read the actual source files and literal fixture bytes. Do not assume this resolution record proves that a correction is valid. Treat `archive_v1.3/OpenVEF_Planning_v1.3.zip` and `archive_v1.2/OpenVEF_Planning_v1.2.zip` as immutable historical evidence. Do not edit or silently repair the pack.
+
+## Required checks
+
+1. Verify M53's error class is declared and maps to the correct normative lifecycle event; verify M54's diagnostic and error class are in the closed lifecycle/control vocabulary.
+2. Verify Protocol §3.4 lifecycle rules and file 25 are byte-identical over the copied section, including the three initial policy bullets. Check all lifecycle `required_action` literals against M48/M50/M53/M54/M58 and confirm no old, undeclared, design-only action values remain. Verify arm/design/slot scope and the study-reset rule.
+3. Verify every `ast.AsyncFunctionDef` at every lexical depth is assigned once to AST_SIGNATURE; confirm it uses `ENTRY_POINT_REJECT` / `ASYNC_DEFINITION`, category rank 6 and the exact global key `(category, file_order, lineno, col_offset, end_lineno, end_col_offset)`. Verify required-symbol precedence still occurs first. Recompute M59 and confirm Python 3.11 parses its nested async-def source. Check top-level and nested async definitions are not split across conflicting stages.
+4. Verify B5/B7 fixed text across ORG-A, ORG-B and the parser contract, including that nested async definitions are explicitly forbidden at every lexical depth. Recheck B5/B7/B8 two-LF boundaries.
+5. Verify Charter §16 points to the current v1.3.1 Protocol and has no stale current-release v1.2 references.
+6. Verify the superseded v1.2 ORG-B hash has 64 hex characters and exactly matches the archived v1.2 sidecar. Verify v1.1/v1.2/v1.3 values are marked superseded and current v1.3.1 prompt-stage hashes are independently recomputed from the exact assembly algorithm.
+7. Verify all 133 fixture descriptors, actual bytes, SHA-256 values, lengths, index entries, catalog rows and exact expected outcomes. Identify any fixture ambiguity or contradiction.
+8. Verify all active filenames, version references, README, changelog, status/gates, owner register, approval record, package SHA-256 manifest and ZIP integrity. Confirm the v1.3 archive is byte-identical to its released ZIP.
+
+## Non-negotiable boundaries
+
+- Make no LLM/provider calls. Do not run generation, F16, provider-format probes or confirmatory work.
+- Do not implement or execute the project parser, assembler, harness, simulator or F1–F18. Static scripts and Python syntax/tokenization checks are allowed but must be distinguished from project implementation execution.
+- Do not access source PDFs or claim literature verification.
+- Do not infer owner identity, applicant, contributors or approver. A1–A11 remain unaccepted and X14 remains open unless a signed record says otherwise.
+- Do not claim authorization.
+
+## Required output
+
+Return a detailed independent audit with: (a) overall LLM-call gate verdict; (b) one row per v1.3 finding and v1.3.1 correction; (c) one row per fixture with deterministic/ambiguous/contradictory status and exact expected result; (d) hash/assembly results; (e) all cross-document contradictions; (f) new blockers; (g) prioritized exact edits; (h) owner/authorization status. Distinguish document-only evidence, Python-runtime evidence and implementation-execution evidence. Do not silently repair the pack.

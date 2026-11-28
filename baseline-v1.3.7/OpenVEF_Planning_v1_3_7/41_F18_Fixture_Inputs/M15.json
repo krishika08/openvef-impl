@@ -1,0 +1,21 @@
+{
+  "fixture_id": "M15",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "description": "Non-normative path-bearing diagnostic is rejected by the closed feedback serializer (no redaction stage).",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "diagnostic": "COMPILE_ERROR|path=/tmp/run/a.py C:\\work\\run\\b.py \\\\server\\share\\c.py",
+    "allowed_diagnostics": [
+      "COMPILE_ERROR|file=driver.py|line=1"
+    ]
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "FEEDBACK_SERIALIZER",
+    "error_class": "FEEDBACK_SERIALIZER_REJECT",
+    "diagnostic": "FEEDBACK_SERIALIZER_REJECT|reason=NON_NORMATIVE_DIAGNOSTIC"
+  }
+}

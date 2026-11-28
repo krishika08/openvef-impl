@@ -1,0 +1,25 @@
+{
+  "fixture_id": "M40",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "fixture_class": "f18_packet_fixture",
+  "description": "Malformed clause-like token FIFO-01 is rejected as a near-match",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "visible_payload": "Clause FIFO-01 is malformed.",
+    "manifest_clause_ids": [
+      "FIFO-001"
+    ],
+    "clause_id_regex": "^[A-Z]{2,6}-[0-9]{3}$",
+    "clause_id_search_regex": "(?<![A-Za-z0-9_-])[A-Z]{2,6}-[0-9]{3}(?![A-Za-z0-9_-])",
+    "clause_id_near_match_regex": "(?<![A-Za-z0-9_-])[A-Za-z]{2,6}-[0-9]{1,3}(?![A-Za-z0-9_-])"
+  },
+  "expected": {
+    "disposition": "F18_REJECT",
+    "stage_id": "F18",
+    "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+    "diagnostic": "F18_REJECT|reason=MALFORMED_CLAUSE_ID_TOKEN"
+  }
+}

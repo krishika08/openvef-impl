@@ -19,11 +19,12 @@
 #   evidence/controls-<UTC>. The runner script comes from this fixed list only.
 set -euo pipefail
 
-RUN_CLASS=${1:?usage: run_f18_container.sh <run_class> [f18|controls] [v1.3.6|v1.3.7-candidate]}
-PACK=${3:-v1.3.6}   # D-024: the candidate pack is for F18 only; v1.3.6 stays the default
+RUN_CLASS=${1:?usage: run_f18_container.sh <run_class> [f18|controls] [v1.3.7|v1.3.6|v1.3.7-candidate]}
 case "${2:-f18}" in
-  f18) RUNNER_SCRIPT=run_f18.py; OUT_PREFIX=run ;;
-  controls) RUNNER_SCRIPT=run_controls.py; OUT_PREFIX=controls ;;
+  # D-035 item 4: v1.3.7 (adopted) is the F18 default. The controls runner is not pack-selectable (F15 reads the
+  # v1.3.6 Protocol by file name) and keeps v1.3.6.
+  f18) RUNNER_SCRIPT=run_f18.py; OUT_PREFIX=run; PACK=${3:-v1.3.7} ;;
+  controls) RUNNER_SCRIPT=run_controls.py; OUT_PREFIX=controls; PACK=${3:-v1.3.6} ;;
   *) echo "unknown runner '${2}'; expected f18 or controls" >&2; exit 2 ;;
 esac
 # Host invocation, captured before anything changes it (AUDIT-READINESS §3 item 4).
@@ -42,11 +43,16 @@ HOST_ENV_B64=$(
 )
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 case "$PACK" in
-  v1.3.6) BASELINE="$REPO/baseline/OpenVEF_Planning_v1_3_6"; PACK_ARGS=() ;;
+  v1.3.6) BASELINE="$REPO/baseline/OpenVEF_Planning_v1_3_6"
+    # D-035: run_f18.py now defaults to v1.3.7, so v1.3.6 is named; run_controls.py takes no --pack.
+    if [ "$RUNNER_SCRIPT" = run_f18.py ]; then PACK_ARGS=(--pack v1.3.6); else PACK_ARGS=(); fi ;;
+  v1.3.7)
+    [ "$RUNNER_SCRIPT" = run_f18.py ] || { echo "the v1.3.7 pack is for F18 runs only" >&2; exit 2; }
+    BASELINE="$REPO/baseline-v1.3.7/OpenVEF_Planning_v1_3_7"; PACK_ARGS=(--pack v1.3.7); OUT_PREFIX=run-v137 ;;
   v1.3.7-candidate)
     [ "$RUNNER_SCRIPT" = run_f18.py ] || { echo "the candidate pack is for F18 runs only" >&2; exit 2; }
     BASELINE="$REPO/proposals/v1.3.7/pack"; PACK_ARGS=(--pack v1.3.7-candidate); OUT_PREFIX=run-v137c ;;
-  *) echo "unknown pack '$PACK'; expected v1.3.6 or v1.3.7-candidate" >&2; exit 2 ;;
+  *) echo "unknown pack '$PACK'; expected v1.3.7, v1.3.6 or v1.3.7-candidate" >&2; exit 2 ;;
 esac
 HARNESS_DIR="$REPO/sandbox"
 
@@ -73,7 +79,7 @@ read_args() {  # read_args <file> -> one flag per line, comments and blanks remo
 }
 
 GIT_COMMIT=$(git -C "$REPO" rev-parse HEAD)
-if [ -n "$(git -C "$REPO" status --porcelain -- src runner sandbox requirements.lock design docs/fifo-spec-v0.2.md proposals/v1.3.7/pack)" ]; then
+if [ -n "$(git -C "$REPO" status --porcelain -- src runner sandbox requirements.lock design docs/fifo-spec-v0.2.md proposals/v1.3.7/pack baseline-v1.3.7)" ]; then
   GIT_COMMIT="$GIT_COMMIT+UNCOMMITTED_CHANGES"
 fi
 

@@ -1,0 +1,56 @@
+ASSEMBLER METADATA — NOT MODEL-VISIBLE. Do not include these lines in either model prompt.
+Template format version: 1.0
+All placeholder payloads must be filled from the same frozen authoring packet for both arms.
+
+[Task instruction]
+Create one deterministic cycle-synchronous stimulus driver and one offline checker for the design represented by the supplied authoring packet. Follow every section of the authoring packet exactly. Do not assume access to RTL source, internal signals, evaluator-only materials, expected-output tables or mutant information. The driver must use only the documented public outputs and must return one complete next-cycle input vector per call or COMPLETE. The checker must compute expected behaviour from the design specification and the trace's recorded inputs and permitted public-output/history fields. Do not hard-code the artifact's own stimulus sequence. Return the requested artifacts in the exact response schema below; do not add steps or assumptions not present in the packet.
+
+[Design specification]
+{{DESIGN_SPECIFICATION_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Port manifest]
+{{TOP_LEVEL_PORT_MANIFEST_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Reset and legal-input rules]
+{{RESET_PROTOCOL_AND_LEGAL_INPUT_ASSUMPTIONS_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Execution envelope]
+{{CYCLE_CAP_AND_SAFE_IDLE_POLICY_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Driver API]
+The harness owns the clock, scheduler, recorder and simulator handles. The harness calls the module-level `create_driver(seed)` factory exactly once to obtain a `Driver` instance. The first `Driver.step` call occurs after reset release, with `cycle_index=0` and `outputs_after_edge` containing the complete top-level public-output snapshot sampled after the reset-release active edge. Each subsequent call increments `cycle_index` by one and receives the public-output snapshot sampled after that cycle's active edge.
+
+`create_driver(seed)` accepts exactly one required positional-or-keyword parameter named `seed`; it is not positional-only and has no default. The returned `Driver` object exposes `step(cycle_index, outputs_after_edge)` with exactly those two required positional-or-keyword parameters after `self`; neither is positional-only and neither has a default. Annotations are ignored for acceptance. The factory constructs `Driver()` and may initialize its instance attributes after construction; the class must not define `__init__`. `step` returns either the exact string `COMPLETE` or a complete dictionary whose keys are exactly the top-level input-port names in the port manifest. Each value is a string of exactly that port's declared width, containing only `0` and `1`; X/Z, missing keys, extra keys, wrong widths and inputs that violate the legal-input rules are invalid. The harness validates each vector before driving it.
+
+The driver source file may contain allowed imports, one optional module docstring, synchronous undecorated helper function definitions at any lexical depth not otherwise prohibited by the class/method rules, literal-only module constants, and exactly one module-level class named `Driver`. The `Driver` class has no decorators, no metaclass keywords, and either no explicit base or the single base `object`. Its body may contain one docstring, literal-only class constants, and exactly one synchronous undecorated instance method named `step`. It must not define `__init__`, any other method, any nested class or any decorator. No helper classes are allowed. No function, class or method decorator is allowed anywhere in `driver.py`. Module-level executable statements, control flow, calls, comprehensions, non-literal assignments and side effects are prohibited. Every `async def` is prohibited at every lexical depth, including inside synchronous helper functions; the parser rejects each such definition at `AST_SIGNATURE`. Do not define async functions, async generators or async comprehensions. Helper functions do not replace the required module-level entry points.
+
+Use only a local `random.Random(seed)` instance for deterministic pseudo-random choices. Do not call module-global `random` functions or `random.SystemRandom`. The harness does not seed or expose global random state. Do not obtain unseeded entropy. The driver must not own the clock, create or schedule coroutines, wait on simulator triggers, access simulator handles, inspect internal signals, read or write files, access the network, read environment variables or wall-clock time, create processes or threads, or invoke subprocesses. The fixed import allow-list and exact no-third-party rule are in the Response schema block.
+
+Design-specific API and top-level port details:
+{{CYCLE_SYNCHRONOUS_DRIVER_API_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Trace schema]
+{{TRACE_SCHEMA_AND_FIELD_DEFINITIONS_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Checker contract]
+The checker is a synchronous offline function `check_trace(trace, metadata)` in `checker.py`, executed in a separate process after the trace is immutable. It receives no simulator handles, live DUT access, RTL source, mutant identity, driver seed, stimulus list or evaluator-only materials. It must not read or write files, access the network, read environment variables or wall-clock time, create processes or threads, or invoke subprocesses.
+
+`metadata` contains exactly these public fields: `design_id` (string), `spec_version_sha256` (64-character lowercase hexadecimal string), `trace_schema_version` (string), `cycle_cap` (positive integer), `reset_release_cycle` (non-negative integer), and `trace_integrity_status` (the literal string `VALID`). It contains no driver seed, stimulus list, mutant identity, null/mutant label, mask entry or expected value.
+
+The function `check_trace(trace, metadata)` accepts exactly two required positional-or-keyword parameters named `trace` and `metadata`; they are not positional-only and have no defaults. Annotations are ignored for acceptance. The checker source file may contain allowed imports, one optional module docstring, the required module-level function `check_trace`, synchronous undecorated helper function definitions at any lexical depth not otherwise prohibited by the class rules, and literal-only module constants. It must not define any class, including helper classes. No function or method decorators are permitted anywhere in `checker.py`. Module-level executable statements, control flow, calls, comprehensions, non-literal assignments and side effects are prohibited. Every `async def` is prohibited at every lexical depth, including inside synchronous helper functions; the parser rejects each such definition at `AST_SIGNATURE`. Do not define async functions, async generators or async comprehensions.
+
+The function returns exactly one dictionary with exactly two keys: `verdict` and `diagnostics`. `verdict` must be exactly `PASS` or `FAIL`. `diagnostics` is a required list and may be empty. Each well-formed diagnostic item has exactly `code` (string), `message` (string), `cycle` (integer or null) and `clause_id` (string or null). A malformed diagnostic item is logged as a diagnostic-format event and discarded; it does not change the `PASS`/`FAIL` verdict or create a checker error. A missing/non-list `diagnostics` field, missing/extra top-level key, invalid verdict, non-dictionary return or process crash is a checker error. Expected behaviour is computed from the received specification and recorded trace inputs/history only; do not use the driver's literal stimulus sequence.
+
+Design-specific checker obligations and specification clauses:
+{{OFFLINE_CHECKER_CONTRACT_BYTES_FROM_FROZEN_AUTHORING_PACKET}}
+
+[Response schema]
+Return exactly one UTF-8 JSON object and no Markdown fences or surrounding prose. It must validate against the supplied OpenVEF Response Schema v1.0. The schema version is independent of the planning-pack version. The exact filenames and function/class entry points are fixed by the schema and the authoring packet.
+
+The only allowed imported Python standard-library module roots are `__future__`, `collections`, `copy`, `functools`, `itertools`, `json`, `math`, `operator`, `random`, `re`, `statistics` and `typing`. Each `import` statement must contain exactly one module name and use the form `import <one exact root>` with no alias; comma-separated imports such as `import math, json` are prohibited. The only allowed `from` statement is exactly `from __future__ import annotations`. All other `from` imports, relative imports, star imports, submodule imports (including `from collections import abc` and `import collections.abc`), aliases, third-party packages and unlisted modules are prohibited. No dynamic imports (`__import__`, `importlib`), `exec`, `eval`, the built-in `compile`, `open`, filesystem access, network access, environment access, wall-clock access, OS-entropy APIs, process/thread creation, subprocess calls or package installation are permitted. `re.compile` is allowed; this permission does not allow the built-in `compile`. AST references to the names `__import__`, `eval`, `exec`, `compile` or `open` are prohibited, and `builtins.<name>` access for those names is prohibited. `import random` is permitted only to construct a local `random.Random(seed)` instance; calls through the module-global `random` object and `random.SystemRandom` are prohibited. The response `dependencies` array must be empty. Every Python identifier lexeme in `driver.py` and `checker.py` must contain ASCII characters only. After `ast.parse`, scan `tokenize.NAME` and `tokenize.ERRORTOKEN` tokens in source order. For each non-ASCII `ERRORTOKEN` code point, define `START(c)` as `c.isidentifier()` and `CONTINUE(c)` as `("A" + c).isidentifier()` under pinned Python 3.11; reconstruct the maximal same-line contiguous run containing it by extending left and right across `CONTINUE` characters, and reject the complete run at its first character only when that character satisfies `START`. Reject any `NAME` containing a non-ASCII code point. `STRING` and `COMMENT` tokens are not scanned, so Unicode in strings, bytes and comments is allowed. This catches valid identifiers such as U+2118 even if the tokenizer emits the character as `ERRORTOKEN`.
+
+The driver source-structure rules are fully specified in the Driver API block; the checker source-structure and return-object rules are fully specified in the Checker contract block. Contract paragraphs in these fixed blocks are not citable clause IDs. Each assumptions entry must cite an author-visible clause ID matching the frozen manifest's clause-ID pattern and exact `clause_ids` set. Use the reserved value `UNSPECIFIED` only when the design-specific authoring packet does not specify the relevant behavior; state the missing requirement in the assumption text. Do not invent behavior. Unknown clause IDs are rejected by the parser. F18 verifies that the set of clause IDs visible in design-specific payload bytes is exactly the set in the manifest.
+
+BEGIN_OPENVEF_RESPONSE_SCHEMA_JSON
+{{OPENVEF_RESPONSE_SCHEMA_JSON}}
+END_OPENVEF_RESPONSE_SCHEMA_JSON

@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openvef:response-schema:v1.0",
+  "title": "OpenVEF LLM Artifact Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "language",
+    "language_version",
+    "driver",
+    "checker",
+    "dependencies",
+    "assumptions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "language": {
+      "const": "python"
+    },
+    "language_version": {
+      "const": "3.11"
+    },
+    "driver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filename",
+        "factory",
+        "class_name",
+        "method",
+        "source"
+      ],
+      "properties": {
+        "filename": {
+          "const": "driver.py"
+        },
+        "factory": {
+          "const": "create_driver(seed: int) -> Driver"
+        },
+        "class_name": {
+          "const": "Driver"
+        },
+        "method": {
+          "const": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "checker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filename",
+        "entry_point",
+        "source"
+      ],
+      "properties": {
+        "filename": {
+          "const": "checker.py"
+        },
+        "entry_point": {
+          "const": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "maxItems": 0
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "clause_id",
+          "text"
+        ],
+        "properties": {
+          "clause_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

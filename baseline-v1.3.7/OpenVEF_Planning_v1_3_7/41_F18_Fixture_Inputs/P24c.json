@@ -1,0 +1,36 @@
+{
+  "fixture_id": "P24c",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "Prohibited built-in name reference compile.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "import random\n\ndef create_driver(seed):\n    driver = Driver()\n    driver.rng = random.Random(seed)\n    return driver\n\nclass Driver:\n    def step(self, cycle_index, outputs_after_edge):\n        compile(\"x\")\n        return \"COMPLETE\"\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "def check_trace(trace, metadata):\n    return {\"verdict\": \"PASS\", \"diagnostics\": []}\n"
+      },
+      "dependencies": [],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "IMPORT_POLICY",
+    "error_class": "IMPORT_POLICY_REJECT",
+    "diagnostic": "PROHIBITED_BUILTIN|name=compile"
+  }
+}

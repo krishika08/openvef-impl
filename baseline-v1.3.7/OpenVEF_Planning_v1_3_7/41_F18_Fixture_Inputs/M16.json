@@ -1,0 +1,19 @@
+{
+  "fixture_id": "M16",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "Both source files empty; driver.py has precedence",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "driver_source": "  ",
+    "checker_source": "\n"
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "SOURCE_AST",
+    "error_class": "SOURCE_EMPTY",
+    "diagnostic": "SOURCE_EMPTY|file=driver.py"
+  }
+}

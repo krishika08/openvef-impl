@@ -1,0 +1,77 @@
+{
+  "release": "1.3.6",
+  "previous_document_audit_status": "PASS_DOCUMENTS_ONLY_OWNER_SUPPLIED_SUMMARY",
+  "current_document_audit_status": "PENDING_INDEPENDENT_REAUDIT",
+  "llm_call_gate": "NOT MET",
+  "authorization": "NONE",
+  "blocking_finding_from_v1_3_5": "NONE_REPORTED",
+  "corrective_scope": "v1.3.5 non-blocking cleanup and C7 audit-export inclusion",
+  "fixture_inventory": {
+    "total": 144,
+    "P": 59,
+    "R": 13,
+    "M": 72,
+    "mandatory": true
+  },
+  "fixture_execution_status": "NOT RUN / NOT PASSED",
+  "checks": {
+    "file21_cross_reference_includes_M70": true,
+    "file21_mandatory_fixture_count_144": true,
+    "file21_M_range_M01_to_M70": true,
+    "charter_historical_v1_3_4_wording_corrected": true,
+    "approval_record_title_v1_3_6": true,
+    "sidecar_hash_history_note_corrected": true,
+    "file50_heading_current": true,
+    "v1_3_2_audit_export_exact_size_and_sha256_verified": true,
+    "v1_3_2_audit_export_active_copy_equals_upload": true,
+    "v1_3_2_audit_export_archive_copy_equals_upload": true,
+    "v1_3_5_archive_byte_identical": true,
+    "v1_3_5_audit_summary_is_not_misrepresented_as_full_export": true,
+    "prompt_model_visible_bytes_unchanged": true,
+    "protocol_file25_section_3_4_body_byte_identical": true,
+    "all_144_fixture_descriptors_still_not_run": true,
+    "pinned_python_3_11_frozen": false,
+    "project_parser_or_assembler_executed": false,
+    "f18_fixtures_executed": false,
+    "llm_or_provider_calls_made": false,
+    "fixture_index_version_current": true,
+    "v1_3_2_audit_export_exact_source_verified": true
+  },
+  "prompt_template_stage": {
+    "ORG-A": {
+      "sha256": "960b6cc9877f731e46f4c53aa755e4974bcae567ae0451bda833344876c7db7d",
+      "bytes": 13377,
+      "status": "TEMPLATE_STAGE_ONLY_DESIGN_PAYLOADS_UNRESOLVED"
+    },
+    "ORG-B": {
+      "sha256": "ec5d391f3c2fe8c9ed91e857dc0e5d3b18e1e8db9050aae4d66561d53edc432f",
+      "bytes": 13377,
+      "status": "TEMPLATE_STAGE_ONLY_DESIGN_PAYLOADS_UNRESOLVED"
+    }
+  },
+  "v1_3_2_audit_export": {
+    "bytes": 36940,
+    "sha256": "3f23cabb8f38cfbed41b33276bdca8b28d8a59de9a74961a74a9080a92fc6f52",
+    "status": "VERIFIED_AND_INCLUDED",
+    "active_path": "62_OpenVEF_v1.3.2_Independent_Audit.md",
+    "archive_path": "archive_v1.3.2/release_documents/62_OpenVEF_v1.3.2_Independent_Audit.md"
+  },
+  "owner_state": {
+    "A1-A11": "NOT ACCEPTED",
+    "X14": "OWNER CHOICE REQUIRED",
+    "identities": "TO CONFIRM",
+    "signature_date": "NOT RECORDED",
+    "authorization": "NONE"
+  },
+  "sha256_manifest": {
+    "path": "27_SHA256SUMS.txt",
+    "entries": 263,
+    "manifest_itself_excluded": true,
+    "verified_after_write": true
+  },
+  "package": {
+    "zip_file_count": 264,
+    "manifest_entries": 263,
+    "manifest_itself_excluded": true
+  }
+}

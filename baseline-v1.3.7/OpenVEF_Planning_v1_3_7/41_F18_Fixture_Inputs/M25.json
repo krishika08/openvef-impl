@@ -1,0 +1,30 @@
+{
+  "fixture_id": "M25",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "Runtime inspect.signature mismatch after successful static AST check",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "runtime_signature": {
+      "file": "driver.py",
+      "symbol": "Driver.step",
+      "actual": [
+        "self",
+        "cycle_index"
+      ],
+      "expected": [
+        "self",
+        "cycle_index",
+        "outputs_after_edge"
+      ]
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "AST_SIGNATURE",
+    "error_class": "ENTRY_POINT_REJECT",
+    "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.step|reason=RUNTIME_SIGNATURE"
+  }
+}

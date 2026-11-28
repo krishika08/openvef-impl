@@ -94,8 +94,9 @@ class MissingArtifactTests(unittest.TestCase):
 
     def test_broker_runner_allow_list(self):
         script = (REPO / "runner" / "run_f18_container.sh").read_text(encoding="utf-8")
-        self.assertIn("f18) RUNNER_SCRIPT=run_f18.py; OUT_PREFIX=run ;;", script)
-        self.assertIn("controls) RUNNER_SCRIPT=run_controls.py; OUT_PREFIX=controls ;;", script)
+        # D-035 item 4: each runner also sets its default pack (F18: v1.3.7; controls: v1.3.6).
+        self.assertIn("f18) RUNNER_SCRIPT=run_f18.py; OUT_PREFIX=run; PACK=${3:-v1.3.7} ;;", script)
+        self.assertIn("controls) RUNNER_SCRIPT=run_controls.py; OUT_PREFIX=controls; PACK=${3:-v1.3.6} ;;", script)
         self.assertIn('*) echo "unknown runner', script)
 
 

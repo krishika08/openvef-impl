@@ -1,0 +1,18 @@
+{
+  "fixture_id": "P10",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "Invalid UTF-8 byte sequence.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "raw_response_base64": "eyJzY2hlbWFfdmVyc2lvbiI6IjEuMCIs/30="
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "PARSE_SCHEMA",
+    "error_class": "SCHEMA_REJECT",
+    "diagnostic": "SCHEMA_REJECT|pointer=/"
+  }
+}

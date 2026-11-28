@@ -1,0 +1,41 @@
+{
+  "fixture_id": "M30",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "Non-empty third-party dependency array is rejected by the response schema.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "def create_driver(seed): return Driver()\nclass Driver:\n    def step(self, cycle_index, outputs_after_edge): return \"COMPLETE\"\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "def check_trace(trace, metadata): return {\"verdict\":\"PASS\",\"diagnostics\":[]}\n"
+      },
+      "dependencies": [
+        {
+          "name": "numpy",
+          "version": "1.0"
+        }
+      ],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "PARSE_SCHEMA",
+    "error_class": "SCHEMA_REJECT",
+    "diagnostic": "SCHEMA_REJECT|pointer=/dependencies"
+  }
+}

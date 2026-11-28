@@ -1,0 +1,599 @@
+OpenVEF v0.9 Audit
+Nov 22, 2026 · @Conductors
+1. Verdict: FAIL for the LLM-call gate
+The v0.9 pack is a substantial and mostly faithful response to the v0.8 audit.
+• Assembly reproduces exactly. Every hash and byte length in the sidecar matched my own recomputation, and ORG-A and ORG-B differ only in block order.
+• The model-visible fixed text matches the parser contract byte for byte.
+• The checker return contract is now consistent across B7, file 30 and Protocol §10.
+• C9–C17 are essentially done, and the owner and authorization status is honest.
+The gate still fails on your definition, because contradictions, missing rules and untestable requirements remain. The most serious one is substantive, not cosmetic:
+• The model is still not told the parser's most restrictive AST rules. File 30 rejects any Driver class with an __init__ or any method other than step, any helper class, any decorator (including @dataclass), and any non-literal module-level statement. None of this appears in the prompt. An LLM writing def __init__(self, seed) (the most natural Python) would be rejected for a rule it never saw, which is the N3 defect in a new place.
+The remaining blockers are document-level:
+• the repair-stage precedence orders the RTL-vs-null control before the driver run that produces it;
+• several failure classes are still unmapped;
+• exact diagnostic strings and the JSON-Pointer selection rule are undefined;
+• file 31 uses a different placeholder syntax from the templates;
+• the fixture catalog contradicts file 30 about whether R01–R13 are mandatory.
+All are fixable by edits. None needs a redesign. No LLM call is permitted.
+What I did. I re-implemented file 31's extraction and rendering in a short Python check, and ran the schema with jsonschema 4.26 against hand-written objects. I made no LLM calls, built no project code, and accessed no source PDFs.
+2. Blocker table
+ID
+Location
+Evidence
+Why it blocks
+Exact correction
+V1 (N3)
+File 30 §3 "Module-level AST policy" items 1–4; templates B5/B7/B8
+File 30 permits only literal assignments, imports, docstring and functions at module level; exactly one class (Driver), and only in driver.py; no decorators; Driver with exactly one method, step (so no __init__); base object only. My search of the model-visible text found none of these rules. The visible text also allows dataclasses, enum and abc, whose normal use (@dataclass, class X(Enum), ABC subclasses) the AST policy forbids. B5 says "exactly one positional parameter named seed", which a positional-only seed, / satisfies, yet file 30 rejects it
+Validity would measure compliance with invisible rules. That is the N3 defect again, and it likely causes large symmetric attrition plus uninformative ENTRY_POINT_REJECT|class=Driver repairs
+Either (a) add the exact module, class and decorator rules to the B5/B7 fixed text and to file 30 §3.1, or (b) relax the AST policy so it allows __init__, other methods, helper classes and allow-listed decorators such as @dataclass. Then make the allow-list consistent with whichever policy is chosen. State "positional-or-keyword; not positional-only" in B5 and B7
+V2 (N3)
+File 30 §2 and §3 item 3; B8; fixture P24
+"Any call/name use of … compile or open" does not say whether the rule matches ast.Name only or also attributes. re is allowed, and re.compile(...) is idiomatic. from collections import abc imports a submodule through member syntax; the contract bans submodule paths but has no fixture for this form. Global random.random() is forbidden in prose but not detectable by any listed AST rule
+The same source can be accepted or rejected depending on the implementation, so the outcome is not deterministic
+Define the rule by AST node type: ban ast.Name ids in the set, and decide explicitly whether attribute calls such as re.compile are allowed. Add fixtures for re.compile, from collections import abc, random.random() and random.SystemRandom
+V3 (N4)
+Protocol §3.4 table; file 25 control rules; file 36
+(i) The diagnostic grammar CODE|key=value appears only in the fixtures. Exact strings for compile ("code, filename, line"), runtime ("exception class"), checker-runtime and vector feedback are never given; R01, R02, R04 and R08 list no diagnostic. (ii) "First failing JSON Pointer" has no selection rule. On one object with four errors, jsonschema iteration order gave /, /language_version, /driver, /checker/filename; best_match gave /. A missing nested key reports its parent pointer. P06–P08 expect a placeholder (<first failing JSON Pointer>), not a string. (iii) File 25 says import feedback may carry "an allow-listed module" identifier only, while P13 and P23 send module=os and module=collections.abc. (iv) The reason codes (CHECKER_RETURN_INVALID reasons; the IMPORT_POLICY codes) are enumerated only in file 36
+The feedback bytes, and therefore the repair-message hashes, are not reproducible from the normative documents. Three files still disagree
+Add a normative diagnostic grammar and a complete code table to Protocol §3.4, repeated verbatim in file 25 control rules, with one exact template per stage. Define the pointer rule (for example: the error with the lexicographically smallest instance pointer, ties broken by schema keyword order, using the parent pointer for required). Make every P and R fixture state a literal expected string. Reconcile the file 25 "allow-listed module" wording
+V4 (N4)
+Protocol §3.4 table and precedence; §7; R07
+(i) Precedence step 7 (RTL-vs-null and trace-integrity) comes before step 8 (driver execution on RTL then null), but the control is computed from step 8's runs. (ii) The table maps only an RTL-vs-null failure that is "independent of artifact behavior". An artifact-attributable failure (next-input divergence before raw divergence, for example from global-random use) has no row and falls to UNMAPPED_FAILURE. (iii) A design-level baseline failure is a slot-terminal outcome in the table and in R07, but §7 says it "blocks the design". (iv) There is no explicit row for a simulator error on the null run, a checker watchdog or timeout, a runtime inspect.signature mismatch, or create_driver returning a non-Driver. (v) "The same runtime/invalid-return error" across the two checker runs is undefined (same exception class? same code?). (vi) There is no file order within SOURCE_AST, IMPORT_POLICY and AST_SIGNATURE when both files fail; P12 and P25 list "driver.py or checker.py". (vii) A decorated helper function or a non-literal constant could plausibly be either IMPORT_POLICY ("module-level side effect") or AST_SIGNATURE ("forbidden decorator")
+The pack claims the map is exhaustive, but several common outcomes are only covered by the catch-all, and one ordering is impossible
+Reorder precedence to: driver execution on RTL and null → artifact-level RTL-vs-null comparison → checker runs. Add rows for artifact-level RTL/null failure (for example TERMINAL/DRIVER_NONDETERMINISM, or a repair stage, chosen explicitly), simulator error, checker timeout, runtime-inspect mismatch and factory return type. Move design-level baseline failure out of the per-slot table into a design-halt rule (no slot is scored). Define "same error" as the same error code and exception class. Fix the file order as driver.py before checker.py within each stage. Assign the decorator and constant cases to exactly one stage
+V5 (N9)
+File 31 §3 bullet 4, §4 bullet 2
+File 31 writes {OPENVEF_RESPONSE_SCHEMA_JSON} and "unresolved {...} tokens" with single braces. The templates, file 31 §5 and the sidecar use {{…}}
+Taken literally, file 31 finds no schema placeholder, and its unresolved-token rule matches every JSON brace in the schema and payloads
+Use {{OPENVEF_RESPONSE_SCHEMA_JSON}} and the regex \{\{[A-Z0-9_]+\}\} throughout
+V6 (C18)
+File 30 §8; file 36 intro and R-section; checklist 21
+File 30 makes every fixture in file 36 mandatory. File 36 says R01–R13 "can be part of" F18, "alongside P01–P22" (P runs to P30). Checklist 21 lists 31 P fixtures and omits R01–R13. P14's outcome ("ACCEPT import rule") is partial. P21's condition ("text identifies the missing behavior") cannot be machine-checked. Section 4 lists the missing fixtures
+F18 cannot record a deterministic pass when the mandatory set itself is ambiguous
+Make R01–R13 mandatory in files 36 and 21. Fix "P01–P22" to "P01–P30". Give every fixture a full input description and one literal expected outcome. Restate P21 as "UNSPECIFIED with non-empty text → ACCEPT". Add the fixtures listed in Section 4
+V7 (N3)
+File 30 §1; file 31 §3; file 38; B8
+Unknown clause IDs make the whole response SCHEMA_REJECT. But (i) there is no rule that the clause IDs visible to the model and the manifest clause_ids form a one-to-one set, and no ID syntax that would let F18 extract the visible IDs; (ii) the fixed B5/B7/B8 contract text has no clause IDs, so an assumption about a contract rule can only use UNSPECIFIED or be omitted
+A model citing a visibly printed ID that is missing from the manifest fails validity, and F18 cannot detect the mismatch
+Freeze a clause-ID regex. Require F18 to check visible IDs = manifest IDs. Assign clause IDs to the fixed contract paragraphs, or state that contract text is not citable
+3. Cross-document consistency matrix
+Columns are the model-visible templates (19/20 B5, B7, B8), the common system/repair file (25), the Protocol (P: §3.4, §7, §10, §13.1), the parser contract (30), the F18 checklist (21), the fixture catalog (36) and the assembly spec plus sidecar (31/33).
+✓ = states the same rule; — = silent (acceptable); ✗ = conflicts or missing where required.
+Rule
+Visible (19/20)
+25
+P
+30
+21
+36
+31/33
+Import allow-list (15 roots), exact-root rule, __future__ annotations only
+✓ B8
+—
+✓ §5.1 (entropy)
+✓ §2
+✓
+✓ P13/14/23/29/30
+—
+Prohibited builtins (exec, eval, compile, open, __import__)
+✓ B8, but AST scope undefined
+—
+✓
+✓, scope undefined (V2)
+—
+P24, scope undefined
+—
+Module-level statement policy (literal-only assignments, no control flow)
+✗ absent (V1)
+—
+✗ not stated
+✓ §3
+—
+P28 only
+—
+Driver class form (one method step, no __init__, no decorators, base object)
+✗ absent (V1)
+—
+✗
+✓ §3
+—
+P27 only
+—
+No helper classes in checker.py
+✗ absent (V1)
+—
+✗
+✓ (implied by "single required Driver class in driver.py")
+—
+none
+—
+create_driver(seed) parameter kind
+"positional" (✗ vs 30)
+—
+✓
+positional-or-keyword only
+—
+none
+—
+step(self, cycle_index, outputs_after_edge); check_trace(trace, metadata) names
+✓
+—
+✓
+✓
+✓
+P15/16/26
+—
+First-call semantics; local random.Random(seed); global random unseeded; no NumPy
+✓ B5
+—
+✓ §5.1
+✓ §4, §6
+✓
+no fixture for global-random use
+—
+Vector validation (exact keys, width, 0/1, legal-input predicate)
+✓ B5
+✓ (reason code)
+✓ §3.4, §5.1
+✓ §4
+—
+P17, R05
+—
+Checker metadata (6 fields; exclusions)
+✓ B7
+—
+✓ §10
+✓ §5
+✓
+none
+—
+Return object; empty diagnostics; malformed item = warning; checker-error boundary
+✓ B7
+✓
+✓ §10
+✓ §5
+✓
+P18/19/22
+—
+Clause-ID validation and UNSPECIFIED
+✓ B8
+—
+✓ (SCHEMA_REJECT)
+✓ §1
+✓
+P20/21 (P21 condition untestable)
+38: clause_ids empty; no visible-ID bijection (V7)
+Failure → stage map
+—
+partial (no table)
+✓ table, gaps (V4)
+defers to P/25
+✓ (claims exhaustive)
+R01–R13 (optional?)
+—
+Precedence order
+—
+—
+✗ step 7 before 8 (V4)
+defers
+—
+R03/R13
+—
+Null checker double-run adjudication
+✓ B7 ("process crash")
+✓
+✓
+✓
+—
+R08–R11
+—
+Import feedback identifier
+—
+"allow-listed module" ✗
+"disallowed module/root"
+—
+—
+module=os
+—
+Exact diagnostic strings and grammar
+—
+fixed codes, no grammar
+fixed codes, no grammar
+—
+—
+CODE|k=v in P only; R notation differs (V3)
+—
+Redact → truncate → escape; 2,048 pre-escape bytes incl. ...[TRUNCATED]; code-point boundary
+—
+✓
+✓
+—
+✓
+✓ (text), no fixture
+✓ §5
+Feedback JSON: key order, 2-space indent, ensure_ascii=false, final LF, marker retained
+repair body ✓
+✓
+✓
+—
+✓
+—
+✓ §5 (reproduced)
+Placeholder syntax {{…}}
+✓
+✓
+—
+—
+—
+—
+✗ single-brace in §3–§4 (V5); sidecar ✓
+Fixed-text byte equality (B5/B7/B8 vs 30 §3.1)
+✓ (prefix match, verified)
+—
+✓ §10
+✓
+✓
+—
+Boundary rule undefined (nit)
+Fixture set mandatory
+—
+—
+✓ "mandatory"
+"every fixture in 36"
+P only (31) ✗
+R "can be" ✗ (V6)
+—
+Gate: nothing until A1–A11 accepted; no LLM call until C1–C8 and C18 re-audited
+—
+—
+✓ §18
+✓ status line
+✓
+✓
+—
+Plus C (Charter), 16, 23, 32, README and 35 on the gate: ✓ all aligned.
+Positive findings in the matrix: the checker return contract (fixed as N3-b) is now identical in B7, file 30 §5 and Protocol §10. The v0.8 contradiction is resolved.
+4. Parser and repair fixture audit (file 36)
+Scope. None of these fixtures has been executed; F18 is NOT RUN. I judged each one on two questions: is it stated precisely enough to have one deterministic expected outcome, and is that outcome consistent with the schema, file 30, file 25 and Protocol §3.4?
+• PASS = unambiguous and consistent.
+• AMBIGUOUS = more than one outcome or diagnostic string is defensible.
+• FAIL = it contradicts another normative document.
+The catalog describes its inputs but does not include them as literal bytes. Every fixture must be materialized as a file, with a hash, before F18.
+4.1 Parser fixtures P01–P30
+ID
+Result
+Reason
+P01
+PASS
+Valid object under schema 34. My equivalent passed jsonschema
+P02
+PASS
+Fixed SCHEMA_REJECT|pointer=/
+P03
+PASS
+As P02
+P04
+PASS
+As P02
+P05
+PASS
+Duplicate key at any level gives the root pointer; the rule is stated
+P06
+AMBIGUOUS
+<first failing JSON Pointer> is a placeholder. additionalProperties reports the parent (/, not /zzz), and no selection rule is given (V3)
+P07
+AMBIGUOUS
+required reports the parent pointer (for example /driver, not /driver/source). The selection rule is undefined
+P08
+AMBIGUOUS
+Four sub-cases are bundled into one fixture with no literal expected pointer
+P09
+PASS
+—
+P10
+PASS
+—
+P11a
+PASS
+Depends on a provider finish-reason field. Name that field when the provider is frozen
+P11b
+PASS
+—
+P12
+AMBIGUOUS
+"driver.py or checker.py": no file-order rule when both files are empty (V4-vi)
+P13
+FAIL
+File 25 limits import feedback to "an allow-listed module or entry-point identifier", but os is not allow-listed. The Protocol says "disallowed module/root"
+P14
+AMBIGUOUS
+"ACCEPT import rule" is a partial outcome. State the full outcome (ACCEPT for an otherwise-P01 response)
+P15
+PASS
+—
+P16
+PASS
+—
+P17
+PASS
+Stage, class and reason are consistent with P §3.4
+P18
+AMBIGUOUS
+The code CHECKER_RETURN_INVALID|reason=… exists only in file 36; P §3.4 says "fixed error code and exception class". The fixture does not say both runs fail identically, which is the repair precondition
+P19
+AMBIGUOUS
+As P18
+P20
+PASS
+Pointer given literally
+P21
+AMBIGUOUS
+"Text identifies the missing behaviour" cannot be machine-checked; it reduces to "non-empty text"
+P22
+PASS
+Consistent across B7, 30 §5 and P §10
+P23
+FAIL
+Same identifier conflict as P13. Also, from collections import abc is not covered (V2)
+P24
+AMBIGUOUS
+re.compile scope undefined (V2). "First prohibited name" has no order rule (source position?)
+P25
+AMBIGUOUS
+File-order rule missing, as P12
+P26
+PASS
+—
+P27
+PASS
+Mapped to AST_SIGNATURE by the P §3.4 "invalid Driver class form" row
+P28
+PASS
+—
+P29
+PASS
+—
+P30
+PASS
+—
+4.2 Repair fixtures R01–R13
+These are optional in file 36, mandatory in file 30 and absent from checklist 21 (V6).
+ID
+Result
+Reason
+R01
+AMBIGUOUS
+Stage given; no exact diagnostic string ("code, filename, line" has no template)
+R02
+AMBIGUOUS
+As R01
+R03
+PASS (stage) / AMBIGUOUS (diagnostic)
+Precedence 3 < 5 is consistent
+R04
+AMBIGUOUS
+Is the diagnostic KeyError, or RUNTIME_EXCEPTION|class=KeyError?
+R05
+PASS
+Notation differs from P17 (/ WRONG_WIDTH vs |reason=). Unify it
+R06
+PASS
+WatchdogTimeout is fixed
+R07
+FAIL
+Slot-terminal, which contradicts §7 ("design-level baseline failure blocks the design"). The precedence order is also impossible (V4-i, V4-iii)
+R08
+AMBIGUOUS
+"Same error" is undefined, and so is the diagnostic
+R09
+PASS
+Fixed sentence
+R10
+PASS
+—
+R11
+PASS
+—
+R12
+PASS
+Consistent. Design note: a harness fault at the validity stage makes the slot invalid, which penalizes the artifact for an evaluator fault. Prefer "halt, repair harness, rerun the slot" and report the count
+R13
+AMBIGUOUS
+No concrete failure combination is given
+Tally. P fixtures: 19 PASS, 10 AMBIGUOUS, 2 FAIL. R fixtures: 6 PASS, 6 AMBIGUOUS, 1 FAIL.
+4.3 Missing fixtures
+Each of these is a case the normative text covers but no fixture tests:
+• M01: Driver with __init__(self, seed).
+• M02: a helper class in checker.py.
+• M03: @dataclass or @staticmethod on a helper.
+• M04: a non-literal module constant (MASK = (1 << 8) - 1) and if __name__ == "__main__":.
+• M05: def create_driver(seed, /).
+• M06: create_driver returning a non-Driver object.
+• M07: re.compile inside a function.
+• M08: from collections import abc.
+• M09: global random.random() leading to RTL/null next-input divergence.
+• M10: a checker timeout on the null trace.
+• M11: two checker runs crashing with different exception classes.
+• M12: a malformed diagnostic in one run only, with both verdicts PASS.
+• M13: a simulator error on the null run.
+• M14: truncation exactly at 2,048 bytes inside a multibyte code point, with the marker.
+• M15: POSIX, Windows-drive and UNC path redaction.
+• M16: both sources empty.
+• M17: a diagnostic containing quotes, a newline and non-ASCII characters (checks ensure_ascii=false escaping).
+• M18: a payload line equal to a reserved heading.
+• M19: an unresolved placeholder.
+• M20: a visible clause ID missing from the manifest.
+5. Assembly reproduction
+I reproduced file 31's assembly with an independent Python re-implementation, following §1, §4, §5 and §6 literally, except that I treated the file 31 single-brace placeholder as {{…}} (V5). The seven design payload placeholders remain unfilled because the payloads are TO FREEZE, so the ORG hashes below cover the template-stage prompts only.
+Artifact
+My computed bytes
+My computed SHA-256
+Sidecar / file 31 value
+Match
+34_OpenVEF_Response_Schema_v1.0.json (terminal LF present)
+2,529
+6fb5d282b09540949f21ee134b522841c3345031cb3e118a83bdffc18b4e7c34
+2,529 / same
+✓
+System message (file 25, §5 extraction, one terminal LF)
+602
+98020d4f9cf818968f15e4a7c0a5adc3633694aa98c5cbfe170b0904aee3c7a4
+602 / same
+✓
+Repair template (file 25, §5 extraction, marker kept, two-space JSON)
+621
+f11d574f4e5afb223a096b74f039ecb6a222d6ed6dc5bcf7f115dc5922c2620d
+621 / same
+✓
+ORG-A template-stage user prompt, schema inserted
+9,169
+8db2b95b316ecd9eed884926e53deb5c205c302388ce1028be7020203c5df8e1
+not recorded (TO FREEZE)
+—
+ORG-B template-stage user prompt, schema inserted
+9,169
+9d0791b4d1a3edc8df8510327e0649e6e17577779b3136e2b1d43fe20887d20e
+not recorded (TO FREEZE)
+—
+Structural checks
+• Metadata. Exactly three lines plus one blank line are stripped. They are identical in both arms. There are no CR characters and no BOM.
+• Inventory and order. Nine headings, all in the sidecar. The orders equal arm_orders (ORG-B: B0 B2 B5 B1 B6 B3 B7 B4 B8). Every block body is byte-identical across the arms.
+• Schema bytes. The full schema byte sequence occurs once in each arm, between the BEGIN_ and END_OPENVEF_RESPONSE_SCHEMA_JSON lines.
+• Forbidden tokens.
+    ◦ No \bB[0-8]\b, ORG-?[AB] or ASSEMBLER text appears in either rendered prompt, the system message or the repair template.
+    ◦ No "mask" wording appears in model-visible text.
+    ◦ The system wording is now neutral: "Treat the authoring packet as authoritative" (C10 done).
+• Fixed contract text. The B5, B7 and B8 fixed texts in file 30 §3.1 (1,758, 1,648 and 1,601 bytes) are exact byte prefixes of the corresponding block bodies in both templates. Each is followed by \n\n and then the design-specific lead-in or the schema delimiter.
+    ◦ Nit: file 30 says to compare against "the corresponding fixed text" but never says where that text ends inside the block. State "block body begins with the fixed text followed by exactly \n\n".
+• Repair serialization. I substituted a CHECKER_NULL_REJECT feedback object into the extracted repair body using §5 step 6 (placeholder substitution). The resulting JSON block is byte-identical to json.dumps(obj, ensure_ascii=False, indent=2) + "\n", so the two serialization descriptions (§5 steps 5 and 6) agree. The message ends with the JSON's closing } and a single LF, so there is no double terminal LF.
+• Reserved headings. The payload reserved-heading rule is now a hard error with no escape path (C8b done). Not testable until payloads exist (M18).
+Assembly defects
+• V5, the single-brace placeholder syntax in file 31 §3–§4.
+• Missing manifest link. The sidecar has no field linking payload_hashes to the manifest's spec_version_sha256. Add one so that B7 metadata, the CSV and the prompt all bind to the same specification hash.
+• Extra-heading check. Nothing requires F18 to confirm that no payload contains a line equal to a heading of the other blocks in a way that would split a block during re-parsing. The hard-error rule covers this; record it as fixture M18.
+6. Other corrections (C9–C17), owner acceptance and authorization
+6.1 C9–C17
+Item
+Status
+Evidence
+C9 ordinal regex and payload restriction
+Done
+File 31 §1: exact \bB[0-8]\b and the payload-author ban
+C10 neutral system wording
+Done
+File 25 system body; verified in the extracted bytes
+C11 F17 feasibility/confirmatory split; F16 before the manifest
+Done
+P §13.4 "Freeze ordering", §17 intro, F17 row, §18; file 32. Feasibility F17 uses hand-built FIFO control mutants only. F16 and all re-pilots finish on RTL/null before the packet freeze and manifest generation; any later packet change forces a new F16 cycle
+C12 panel mutant-trace repeat
+Done
+P §13.4: two separate-process runs per exposed mutant trace. Only FAIL+FAIL counts as detection. Errors and disagreements are PANEL_ERROR_EVENT and do not change the benign-trace compatibility partition
+C13 J_exposure and feedback-policy wording
+Done
+Gap §4 bullet; C §1 now reads "feedback policy (triggers, grammar, whitelist and cap)"
+C14 RNG, vector and metadata contract; global random and NumPy
+Done in text
+P §5.1, §10; file 30 §4–§6; B5/B7. Global random is not seeded; NumPy is removed. Residual: no static detection of global random.* use (V2, M09). Also, file 30 §6 makes "OS randomness" unavailable in the sandbox, while CPython seeds the global random instance from os.urandom at import. State the sandbox's behaviour, or the import of random itself may fail or fall back
+C15 gate alignment
+Done
+C, P §18, README, files 16, 23, 32 and 35 all say the same thing (Section 6.3)
+C16 unique file numbers
+Done
+No duplicate NN_ prefix in the current directory; the schema is now file 34; the sidecar and references are updated; every cited filename exists
+C17 README, provenance, CSV, funnel, R_max
+Mostly done
+The README lists all current documents. File 22 is retitled v0.9, but its SecTB-RTL row still says "This v0.7 pass" (nit). The CSV header has author_packet_block_heading and clause_appears_in_blocks, with the same format in 21, 31 and 38. The initial-call vs post-repair funnel is in §13.1. R_max=2 means at most three pilots (P §15, F16)
+Checksums
+OK
+27_SHA256SUMS.txt: 76 entries, sha256sum -c all OK; it excludes only itself
+Owner, TEEP applicant, contributors, approver
+Correctly TO CONFIRM
+The C and P headers now say "TO CONFIRM against the actual TEEP application; no identity is inferred". Files 16, 23 and 32 agree. The previous "Ayush" placeholder is gone from the current controlling documents. I am not inferring any identity
+6.2 Owner acceptance
+• A1–A11 are marked "PROPOSED — NOT ACCEPTED" in file 23, "PROPOSED" in file 16, and "owner acceptance NOT RECORDED" in file 32. File 23 shows Owner acceptance: PENDING and Approval date/signature: NOT RECORDED.
+• No signed acceptance record is present. I infer none from the existence of this pack or from this audit request.
+• C1–C18 are "PROPOSED" everywhere, and every document states that their presence is neither approval nor proof of testing.
+6.3 Work authorization
+Currently authorized: nothing. No feasibility work, no F1–F18, no parser or assembler implementation, no provider probe and no LLM call of any kind is authorized.
+After the owner records acceptance of A1–A11, and only then, the hand-built scope opens, as the pack itself defines it:
+1.  FIFO cycle-exact specification, clause manifest and mask-traceability rows.
+2.  A hand-built FIFO harness and ledger.
+3.  F1–F15.
+4.  Parser and assembler tests against hand-written fixtures.
+5.  F17 on hand-built FIFO control mutants only.
+Fixing V1–V7 first is advisable: the parser tests in item 4 would otherwise freeze ambiguous expectations.
+LLM calls: not permitted. This includes F16, smoke tests and provider probes. They stay prohibited until V1–V7 are corrected, a further independent re-audit passes them, and A1–A11 acceptance is recorded. Confirmatory generation remains prohibited until every Protocol §18 item is sealed.
+7. Exact section-by-section corrections
+Rows D1–D10 close the blockers V1–V7 and must be re-audited before any LLM call. D11–D15 are nits.
+#
+File §
+Correction
+Closes
+D1
+File 30 §3 "Module-level AST policy" and §3.1; templates B5, B7 and B8 fixed text (both arms, byte-identical)
+Owner choice: (a) keep the strict policy and add one model-visible paragraph stating it verbatim (module level may contain only imports, a docstring, function definitions, literal-only constants and, in driver.py, the Driver class; Driver has only step, no __init__, no decorators, no base except object; checker.py defines no classes; no decorators anywhere; no module-level control flow), or (b) relax it (recommended) to allow __init__ and other methods, helper classes without metaclasses, and decorators drawn only from allow-listed modules (dataclasses.dataclass, functools.*, staticmethod/classmethod). Then reconcile the allow-list: if (a), drop dataclasses, enum and abc, or say how they may be used
+V1
+D2
+B5 sentence "accepts exactly one positional parameter named seed"; B7 equivalent
+Change to "exactly one positional-or-keyword parameter named seed (not positional-only, no default)", and the same wording for check_trace(trace, metadata) and step
+V1
+D3
+File 30 §2 bullet 4 and §3 item 3; B8 sentence 3; file 36 P24
+Define prohibited-name matching by AST node: ast.Name ids {__import__, eval, exec, compile, open} are rejected, plus attribute access on builtins. Say explicitly whether re.compile is allowed (recommend allowed). Say that from <root> import <submodule> is rejected (list collections.abc and os.path-style forms). Add a static ban on module-level-function use of the global random (random.random, random.randint, …, random.SystemRandom), or declare it a runtime-detected fault mapped in D6
+V2
+D4
+Protocol §3.4 (new "Diagnostic grammar" subsection), repeated verbatim in file 25 control rules
+Freeze one grammar: CODE or CODE|key=value[|key=value] with ASCII keys. List one exact template per row of the §3.4 table, for example COMPILE_ERROR|file=driver.py|line=12, RUNTIME_EXCEPTION|class=KeyError, CHECKER_RETURN_INVALID|reason=<enum>, IMPORT_NOT_ALLOWED|module=<name>. Enumerate every reason and rule code. Replace file 25's "allow-listed module" wording with "offending module root as written"
+V3
+D5
+Protocol §3.4 table row 1; file 25; file 36 P06–P08
+Define the JSON-Pointer rule: validate with the pinned Draft 2020-12 validator; collect all errors; choose the error whose instance pointer is lexicographically smallest by RFC 6901 tokens, with ties broken by validator keyword in a fixed list (additionalProperties, required, const, type, minLength, maxItems); report the instance pointer, which is the parent for required and additionalProperties. Then replace each <first failing JSON Pointer> in P06–P08 with a literal value
+V3
+D6
+Protocol §3.4 precedence paragraph and table
+Reorder precedence: … (6) compile checker → (7) driver factory and step execution on RTL, then on null → (8) artifact-level RTL-vs-null comparison → (9) and (10) checker null runs → (11) adjudication. Add rows for each of: artifact-level RTL/null failure (next-input divergence before raw divergence, or masked divergence under the artifact's stimulus; choose terminal or repair); simulator error on the null run; checker timeout; runtime inspect.signature mismatch; create_driver returning a non-Driver. Define "same checker error" as the same error code plus the same exception class. Fix driver.py before checker.py within SOURCE_AST, IMPORT_POLICY and AST_SIGNATURE. Assign decorated helpers and non-literal constants to one stage
+V4
+D7
+Protocol §3.4 "TERMINAL / RTL_NULL_CONTROL_FAILURE" row; §7; R07
+Remove the design-level baseline failure from the per-slot table. Add §7a: "A design-level RTL/null baseline failure detected during design validation halts generation for that design; no slot is scored; the design is repaired and revalidated before any slot runs." Rewrite R07 accordingly. Consider the same treatment for harness trace-integrity faults (R12)
+V4
+D8
+File 31 §3 bullet 4 and §4 bullet 2
+Replace {OPENVEF_RESPONSE_SCHEMA_JSON} with {{OPENVEF_RESPONSE_SCHEMA_JSON}}. Replace "unresolved {...} tokens" with "any remaining match of \{\{[A-Z0-9_]+\}\}"
+V5
+D9
+File 36 intro and R-section heading; file 21 fixture table; file 30 §8
+Make R01–R13 mandatory in files 36 and 21. Change "P01–P22" to "P01–P30". Split bundled fixtures (P08, P12, P24, P25) into one fixture per case. Give each fixture literal input bytes (stored as files with hashes) and one literal expected stage, class and diagnostic string. P14: "ACCEPT". P21: "UNSPECIFIED with non-empty text → ACCEPT". Add M01–M20 (Section 4.3)
+V6
+D10
+File 30 §1; file 31 §3; file 38; B8
+Add clause_id_regex to the manifest (for example ^[A-Z]{2,6}-[0-9]{3}$). Add an F18 check that the set of regex matches in model-visible payload bytes equals clause_ids. Either give the fixed B5/B7/B8 paragraphs reserved clause IDs (for example CONTRACT-DRV-001), or state in B8 that contract paragraphs are not citable
+V7
+D11
+File 30 §3.1
+Define the fixed-text boundary: "the block body begins with the fixed text followed by exactly \n\n"
+Nit
+D12
+File 30 §6
+State the sandbox behaviour for os.urandom at import random
+Nit (C14)
+D13
+File 22, SecTB-RTL row
+"This v0.7 pass" → "The v0.7–v0.9 passes"
+Nit (C17)
+D14
+File 33
+Add spec_version_sha256 linkage to the manifest; after D8–D10, re-hash and update file 27
+Nit
+D15
+File 36 R05 vs P17
+Unify the diagnostic notation (|reason=)
+Nit
+8. Claims not independently verified
+• Source PDFs and literature. I did not access any source PDF or other primary literature in this audit. This covers TechRxiv, DVBench, CovR, Verify the Verifier, SecTB-RTL and all others. File 22's access records ("opened canonical arXiv PDF text", page counts, "selected page images inspected", the 1,860/1,857/9 funnel) are the pack's own claims, and I have not verified them. Every original-PDF SHA-256 remains NOT CAPTURED. I checked only that file 22 does not present review-file hashes as source hashes, and it does not.
+• Nothing was executed. No parser, assembler, harness, sandbox, F1–F18 control or fixture has been run. My Python checks re-derived only the static byte, hash and rendering results in Section 5, plus schema validation of hand-written objects. They are not the project's F18 implementation, and they do not show that F18 passes.
+• Provider behaviour. Claims about provider behaviour (system role handling, finish-reason reporting for OUTPUT_TRUNCATED, byte-identical message replay) are unverified: no provider was contacted and none is pinned.
+• CPython sandbox behaviour. Whether import random works with OS randomness blocked, and how the restricted runtime enforces the import allow-list at runtime, are unverified.
+• Owner identity and approvals. The owner, TEEP applicant, contributors, approver and any acceptance decision are unverified and not inferred. The pack correctly records them as TO CONFIRM or NOT RECORDED.
+• Earlier audit history. I relied on 29_Claude_v0.8_Audit_Raw.txt and file 35 only as cross-checks. I did not treat any statement in file 35 that a correction was made as evidence; every "Done" in Section 6 is from the actual current files.

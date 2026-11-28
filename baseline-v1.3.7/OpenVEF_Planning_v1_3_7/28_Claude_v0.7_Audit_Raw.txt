@@ -1,0 +1,598 @@
+OpenVEF v0.7 Audit
+Nov 22, 2026 · @Conductors
+1. Verdict: PASS WITH CORRECTIONS
+v0.7 resolves the v0.6 metric, hypothesis and control-logic blockers in substance, not just in wording:
+• T_i/X_i, the H2 family, the slot-level unit, the panel partition, the F16 floor, the power inputs and the owner approvals are all correctly specified.
+• The ORG-A/ORG-B templates are structurally equivalent. I checked them programmatically: same nine-block inventory, identical bytes per block, same total length (1,992 bytes), and only the order of B1–B7 differs.
+• All 32 files listed in 27_SHA256SUMS.txt match their recorded hashes.
+The remaining defects sit in the prompt and repair layer. The actual templates introduce two treatment confounds and one instrument gap that the rules did not anticipate:
+• the model-visible block IDs reveal the permutation;
+• the task instruction's enumeration order matches ORG-A only;
+• the "response schema" is not a schema.
+The repair path also has an undefined context policy and an unbounded feedback channel that can leak golden outputs. These block F16 and F18, and therefore any LLM call. They do not block the hand-built harness work.
+B1–B8 resolution status
+v0.6 blocker
+v0.7 status
+Evidence (current documents)
+Residual
+B1 E_i checker-dependent
+Resolved
+P §13.2 (T_i includes all complete-trace valid pairs; inclusion table); D1
+None
+B2 S_i hides crashes
+Resolved
+P §13.2 (S_i = DET/X_i; optimistic sensitivity separate)
+None
+B3 RQ/H1/H2 misaligned
+Resolved
+P §2, §14; C §3, §13; D2
+Wording issue N5 (J_exposure is not driver-only)
+B4 Prompt factor not verifiable
+Partly resolved
+P §3.3; files 19, 20, 21, 25
+New defects N1–N4, N9 in the actual templates and repair path
+B5 Mask / reference model
+Resolved in rule; rows honestly TO FREEZE
+P §3.2, §9; C §8; file 24 (header only)
+N4 feedback leak; N10 the model-visible prompt mentions an "observation mask"
+B6 Panel under-defined
+Resolved, minor gaps
+P §13.4, F17
+N8 owner blinding infeasible as worded; N12 corpus invalid pairs and panel nondeterminism
+B7 F16 / power
+Resolved, minor gap
+P §13.5, §15, F16; D6
+N14 no re-pilot cap or decision rule when only one arm misses the floor
+B8 Owner decisions pending
+Resolved
+files 16, 23
+Owner name (N17)
+Current blockers
+ID
+Blocker
+Type
+Blocks
+N1
+Model-visible headings carry ordinal block IDs (B0…B8). ORG-B therefore shows B0, B2, B5, B1, …, a visible cue that the order is permuted. ORG-A reads in numeric order
+Methodological (treatment confound)
+F18, F16, all generation
+N2
+The task instruction enumerates "specification, legal-input rules, driver API, trace schema and checker contract", which matches ORG-A's block sequence exactly and not ORG-B's. ORG-A is "instruction-congruent"; ORG-B is not
+Methodological (treatment definition)
+F18, generation
+N3
+B8 "Response schema" is prose with no machine-parseable format: no delimiters or JSON fields, file names, entry-point signatures or dependency allow-list. The production parser cannot be frozen against it; this is exactly the generation-contract versus execution-contract mismatch in SecTB-RTL
+Instrument defect
+F16, F18
+N4
+Repair path: (a) whether a repair is a continuation of the same conversation or a standalone message is not specified, and a standalone repair would lack the authoring packet; (b) PERMITTED_BLACK_BOX_NULL_NETLIST_FEEDBACK_AND_LOGS has no whitelist or length cap. Checker diagnostics and logs can contain null-netlist output values, which act as an expected-output table for the artifact's own stimulus
+Methodological (information boundary)
+F16, F18
+N7
+Human-baseline author independence is not addressed. If the owner writes the human artifact, that author holds the evaluator pack (RTL, mask, mutants)
+Methodological (baseline validity)
+Human-baseline run only
+One further item gates F18 sign-off, though not the hand-built work: N9, the unspecified assembly and normalization rules (Section 4.2). Everything else is a correction or an honestly open TO FREEZE parameter (Sections 6–7).
+May non-confirmatory feasibility engineering begin?
+Yes, but limited. The FIFO harness, recorder, paired runner, classifier, export, miter and F1–F15 may be built and run. F17 may be run with hand-built known-answer checkers only. Those controls depend on the metric definitions (now correct) and not on the prompt layer.
+It needs a feasibility FIFO specification with clause IDs and mask rows authored first, because F5 and F7 test don't-care windows.
+Not yet: no LLM calls of any kind, so F16 is blocked, and no F18 sign-off, until N1–N4 are fixed and re-audited. Confirmatory generation remains prohibited until every Protocol §18 item is complete.
+The pack's own gate (C §15.4; P §18) makes this audit the condition for starting feasibility work. This audit lifts that gate for the scope above only, and only if the owner chooses to proceed.
+2. Metric truth table and denominator audit
+2.1 Truth table (recomputed independently from P §12–§13)
+For one valid artifact i and one primary mutant. 1 means the class contributes to that count; — means not applicable. The last row is the ledger state for every mutant of an invalid or missing slot.
+Class
+T_i
+X_i
+DET
+U_i (truncated)
+U_i^X
+E_i num / den
+S_i num / den
+M_i num / den
+J_exp num
+J_det num
+J_exp^trunc num
+J_det^opt num
+DETECTED
+1
+1
+1
+—
+—
+1 / 1
+1 / 1
+0 / 0
+1
+1
+1
+1
+PND
+1
+1
+0
+—
+—
+1 / 1
+0 / 1
+1 / 1
+1
+0
+1
+0
+NP (both subtypes)
+1
+0
+0
+—
+—
+0 / 1
+—
+0 / 1
+0
+0
+0
+0
+ANOMALY_PIPELINE_OR_NONDETERMINISM
+1
+0
+0
+—
+—
+0 / 1
+—
+—
+0
+0
+0
+0
+ANOMALY_CHECKER_STRICTER_THAN_MASK
+1
+0
+0
+—
+—
+0 / 1
+—
+—
+0
+0
+0
+0
+CHECKER_ERROR_NO_MASKED_DIVERGENCE
+1
+0
+0
+—
+—
+0 / 1
+—
+—
+0
+0
+0
+0
+CHECKER_ERROR_AFTER_MASKED_DIVERGENCE
+1
+1
+0
+—
+—
+1 / 1
+0 / 1
+—
+1
+0
+1
+1
+DRIVER_SIM_ERROR_NO_MASKED_DIVERGENCE
+0
+0
+0
+1
+0
+excluded
+—
+—
+0
+0
+0
+0
+DRIVER_SIM_ERROR_AFTER_MASKED_DIVERGENCE
+0
+0
+0
+1
+1
+excluded
+—
+—
+0
+0
+1
+0
+TIMEOUT_WITHOUT_MASKED_DIVERGENCE
+0
+0
+0
+1
+0
+excluded
+—
+—
+0
+0
+0
+0
+TIMEOUT_AFTER_MASKED_DIVERGENCE
+0
+0
+0
+1
+1
+excluded
+—
+—
+0
+0
+1
+0
+INVALID_PAIR
+0
+0
+0
+0
+0
+excluded
+—
+—
+0
+0
+0
+0
+INVALID_ARTIFACT_SLOT (per mutant)
+—
+—
+—
+—
+—
+—
+—
+—
+0
+0
+0
+0
+For every row, the ITT denominator is |G_cd| × |M_d|. E_i^trunc has numerator X_i + |U_i^X| and denominator |T_i| + |U_i|. S_i^opt has numerator DET_i + CHECKER_ERROR_AFTER_i and denominator X_i.
+Result: the Protocol's inclusion table (P §13.2) agrees with this recomputation in every cell. No pair class is double-counted, and every class enters exactly one of T_i, U_i or invalid. B1 and B2 are fixed.
+2.2 F15 identities: correct, but incomplete
+The stated identities J_exposure = V · ΣX/(n_valid·|M|) and J_detection = V · ΣDET/(n_valid·|M|) are correct. They are, however, algebraic tautologies (V = n_valid/|G|), so they test arithmetic code, not the classifier.
+Add these ledger identities, which do catch classifier bugs:
+1.  Per valid artifact: |T_i| + |U_i| + |INVALID_PAIR_i| = |M_d|.
+2.  Per arm and design: Σ_valid |M_d| + |invalid slots| · |M_d| = |G_cd| · |M_d|. Equivalently, the count of INVALID_ARTIFACT_SLOT ledger rows equals (|G_cd| − n_valid) · |M_d|.
+3.  Per valid artifact: X_i ≤ |T_i|, DET_i ≤ X_i, and |U_i^X| ≤ |U_i|.
+4.  Normal subset: NP_i + PND_i + DET_i = C_i ≤ |T_i|, with the miss-composition identity asserted on C_i only (already required).
+5.  Panel: PanelCompat + PanelError + PanelFalseAlarmPartition = V_cd per stream, design and arm (already in F17).
+2.3 Remaining classification inconsistencies
+• N6: ANOMALY_PIPELINE_OR_NONDETERMINISM is ambiguous. It sits in T_i as "complete, unexposed". But a pipeline or harness nondeterminism means the trace itself is untrustworthy, so the pair's exposure status is not actually known. The validity rule already runs the checker twice on null, so a checker that later fails an identical trace is checker nondeterminism. A harness fault is an integrity violation.
+    ◦ Fix: pre-register an adjudication rule. A harness or trace-integrity cause reclassifies the pair to INVALID_PAIR under precedence rule 1 ("predeclared determinism/integrity rule"). A checker cause leaves it in T_i. Report both counts. Without this, the class changes E_i's denominator through a post hoc judgment.
+• N5: J_exposure is not "driver exposure". An artifact is valid only if its checker passes the null trace twice, so a good driver paired with a broken checker contributes zero ITT exposure. That is correct for an ITT endpoint, but C §2 ("driver exposure at a checker-independent specification mask") and C §1 describe exposure as checker-independent without qualification. State that the conditional E_i is checker-independent, while ITT J_exposure depends on the checker through the validity gate.
+• Panel analogues are missing. The panel has no rule for (a) a corpus pair that violates the paired-input rule (exclude it from Q_ds at corpus freeze and report the count), or (b) a compatible checker returning FAIL on a mutant trace identical to its null trace (panel nondeterminism). Report both separately. Neither should be counted as detection.
+3. RQ, hypotheses, unit of analysis, Holm family and design weighting
+3.1 Alignment: passes
+Check
+Finding
+RQ names exactly the three ITT endpoints
+Yes. P §2, C §3 and Gap §3 use the same wording: validity per scheduled call, joint exposure, joint detection
+H1
+Estimation only (V with intervals per arm and design); not tested, not in the Holm family (P §14 line 34)
+H2(a)–(c)
+Exactly three two-sided endpoints, Holm over these three only. No fourth validity test, no per-design p-values, no panel endpoint in the family
+Unit
+Scheduled generation slot. Each slot contributes one validity indicator and one per-slot `ΣX/
+Fixed-mutant inference
+Mutants are fixed (C §6.1); inference is conditional on the frozen mutant population. The Protocol says so for the panel. Add one sentence saying so for H2 as well (edit E8)
+Directional claims
+Correctly prohibited (P line 34)
+3.2 Equal design weighting as an estimand: acceptable, with three conditions
+With equal weights, the H2 estimand is Δ = ½(Δ_FIFO + Δ_UART): the unweighted average of per-design arm effects. It is not a pooled effect over slots or over mutants.
+This is a legitimate and arguably the right estimand for a design-level question. It also has a useful property: because each per-slot J is already normalized by |M_d|, a design with many more mutants does not dominate. Three consequences must be stated, not discovered later.
+1.  The design set fixes the estimand. The optional FSM (P §4) changes Δ from a two-design to a three-design average. Freeze the confirmatory design set before F16 and state that an optional design that is later dropped is not reweighted in (N13).
+2.  Precision follows the noisiest design. For an unweighted average, Var(Δ) = ¼(Var Δ_FIFO + Var Δ_UART). If UART validity is near the floor while FIFO is high, the UART term dominates the variance. Power simulation must use per-design validity, not a pooled V (edit E9).
+3.  Interpretation. A significant Δ with opposite-sign per-design effects is possible. Pre-register that per-design estimates are always shown beside Δ, and that sign disagreement is reported as heterogeneity, never as "no effect in design X". The Protocol already reports per-design estimates descriptively, which is sufficient once this sentence is added.
+Within-design permutation. It is valid for the combined statistic provided the slot → arm assignment was randomized within design. The randomization schedule is TO FREEZE. Require it to be a within-design balanced assignment, generated from a frozen seed and committed before the first call (edit E10).
+4. Prompt templates, F18, mask and reference-model boundary
+4.1 What I verified directly in files 19, 20 and 25
+• Both templates are 2,207 bytes. Each has three assembler-metadata lines, then nine [Name | Bn_ID] blocks.
+• The block inventory is identical. Each block body is byte-identical across arms, both raw and after whitespace-trimming normalization. Both template bodies total 1,992 bytes. There are no CR characters.
+• Orders:
+    ◦ ORG-A: B0 B1 B2 B3 B4 B5 B6 B7 B8.
+    ◦ ORG-B: B0 B2 B5 B1 B6 B3 B7 B4 B8.
+    ◦ B0 (instruction) and B8 (response schema) are fixed first and last in both. Only B1–B7 move. This satisfies the "whole-block order only" rule as literally stated.
+• The system and repair bodies (file 25) are shared single copies, so byte identity across arms holds by construction.
+• No prompt text contains mask rows, reference-model content or mutant information. The prompts mention that an "observation mask" and "reference model/API" exist and are unavailable (B0; system body; repair body).
+4.2 Defects in the actual templates
+N1: Ordinal block IDs are model-visible (treatment confound). Headings such as [Design specification | B1_DESIGN_SPECIFICATION] are inside the model-visible body. In ORG-B the model reads B0, B2, B5, B1…, a sequence visibly out of order. ORG-B therefore carries an extra, non-semantic "shuffled document" cue that ORG-A lacks. Any arm effect would mix presentation order with the visible-disorder signal.
+Fix: model-visible headings carry the name only ([Design specification]). Block IDs live only in assembler metadata. Alternatively, use non-ordinal IDs (for example, short random tokens) that are identical across arms.
+N2: The instruction's enumeration order matches ORG-A only. B0 says "Follow the specification, legal-input rules, driver API, trace schema and checker contract exactly". The repair body repeats "specification, driver API, trace schema, checker contract and response schema". Both lists follow ORG-A's sequence. ORG-A is therefore instruction-congruent and ORG-B is not. The contrast becomes "congruent order vs. one incongruent permutation", a different treatment from "order alone".
+Fix: replace both lists with order-free wording, such as "Follow every section of the authoring packet exactly". Otherwise, rename the factor and disclose it.
+Related description issue (not a blocker): ORG-B is a single permutation with no stated construction rule. It looks interface-first: ports and driver API before the specification, envelope last. State its construction principle and limit generalization to these two orders (edit E4).
+N3: The response schema is not a schema. B8 says to "Return exactly the required driver source, checker source, dependency declaration and a short assumptions manifest". It specifies no delimiters, file names, language or version, entry-point signatures, dependency allow-list or manifest format.
+• The production parser (F16) cannot be frozen against prose. Parse-failure validity would then measure the parser's leniency rather than the arm.
+• This is the generation-contract/execution-contract mismatch that collapsed SecTB-RTL's funnel to 9 production-valid outputs.
+Fix: a machine-checkable format, for example one JSON object with fixed keys or fixed file-fence delimiters, exact entry points matching B5 and B7, an allowed-imports list, and a manifest row format with clause-ID citations. Freeze the parser and its reject rules with it.
+N4: Repair path.
+(a) Context policy is unspecified. The repair body says to "continue to obey the exact same specification", which implies a multi-turn continuation. Nothing states whether the original system message, user prompt and prior response are resent. A standalone repair message has no authoring packet and no arm ordering; a continuation has both. Freeze one policy, identical across arms: a continuation with the full prior turns resent byte-identically is recommended.
+(b) The feedback field is an unbounded information channel. PERMITTED_BLACK_BOX_NULL_NETLIST_FEEDBACK_AND_LOGS has no whitelist, size cap or truncation rule.
+• One repair trigger is "checker rejection on the null trace". Any feedback that includes the null trace, or diagnostics echoing its output values, gives the model the golden outputs for its own stimulus. That is exactly the expected-output table that P §3.2 withholds.
+• Driver runtime logs can echo DUT outputs in the same way.
+Fix: a frozen feedback grammar per stage:
+• stage ID;
+• error class;
+• compiler or parser messages truncated to a fixed byte count;
+• for checker rejection, only "checker returned FAIL on a legal null-netlist trace" (no row index, no values, no trace);
+• no stdout or stderr from the driver beyond exception type.
+If the owner prefers to allow the null trace, that is a legitimate choice, but it must be declared as golden-trace feedback and disclosed as such.
+(c) Disclosure. Even under the strict grammar, repair on null-trace rejection is oracle-guided repair. Report validity both before repair (initial call only) and after k repairs.
+N9: Assembly is unspecified. The pack does not define:
+• which lines are stripped as metadata (lines 1–3 plus the trailing blank line?);
+• the separator between blocks;
+• trailing-newline handling;
+• the encoding (UTF-8 without BOM);
+• the exact canonical-normalization algorithm that F18 hashes against;
+• placeholder escaping, if a payload contains {{ or [;
+• the provider message-role mapping (system body → system role, template → a single user message).
+"Same bytes after normalization" is only checkable once the algorithm is written. Freeze it as a short spec before F18.
+N10 (minor): Mentioning the mask. Telling the model an "observation mask" exists hints that some outputs are unscored. It is identical in both arms, so it is not a confound. I would still drop the word from the model-visible text (use "evaluator-only materials"), because it invites lenient checkers.
+4.3 Mask and reference-model boundary
+• The rule is sound. The mask, reference model/API and expected-output tables are evaluator-only. Every mask row must map to an author-visible clause, and checkers are barred from reference calls (P §3.2, §9; D4).
+• The traceability CSV (file 24) is a header row only. This is honest TO FREEZE, not a defect.
+• Columns to add (N11):
+    ◦ mask_variant (primary / strict);
+    ◦ spec_version_sha256;
+    ◦ author_packet_block_id (B1/B3/…), so each clause's block is known;
+    ◦ clause_appears_in_blocks, which flags a clause duplicated across blocks. Duplication would change the relative position of content between arms.
+• The file uses CRLF line endings, while the templates use LF. Normalize before hashing.
+• Payload partitioning is unspecified. The specification (B1) and the reset/legal-input rules (B3) can overlap. Add a rule that each clause appears in exactly one block, or that duplication is recorded and identical in both arms.
+4.4 What F18 still needs before the templates are runnable
+1.  Fixes for N1, N2, N3 and N4.
+2.  The assembly and normalization spec (N9).
+3.  Frozen FIFO and UART payloads with clause IDs.
+4.  A populated, independently signed mask-traceability CSV.
+5.  The pinned model and tokenizer, the message-role mapping, and token counts per arm (identical totals expected).
+6.  SHA-256 of each fully assembled arm prompt, system message and repair template.
+7.  The independent reviewer's signature.
+5. Common-trace panel and F16 pilot
+5.1 Panel (P §13.4, F17)
+Item
+Status
+Note
+Corpus legality
+Pass
+Legal reactive random driver plus a spec-only directed suite, built through the production harness; illegal unconstrained random sequences excluded
+Benign baselines
+Pass
+Both original-RTL and null-netlist traces retained; only scenarios passing the RTL-versus-null masked-equivalence and legality controls enter B_ds. B_ds includes directed traces
+Per-stream partition
+Pass
+Precedence ERROR > FALSE_ALARM > COMPATIBLE. I checked the algebra: every valid slot gets exactly one label and invalid slots contribute 0 to all three, so the three ITT proportions sum to V_cd
+Exposed-case denominator
+Pass
+Q_ds is identical for every checker; `
+ITT vs. conditional
+Pass
+`PanelSens_ITT = detections from valid, compatible slots / (
+Event-level false alarms
+Pass
+Event rate over `
+Fixed-mutant inference
+Pass
+Panel results are conditional on the frozen corpus and mutant population (Gap §4)
+"Stream" definition
+Gap (N12)
+k_null is "random seeds per stream". It is not stated whether the directed suite is its own stream or is appended to every random stream. This changes B_ds and Q_ds. Define it: for example, stream = {reactive-random, directed}, with k_null applying to reactive-random only
+Corpus pair validity
+Gap (N12)
+No rule for a corpus null/mutant pair that violates the paired-input rule. Exclude it from Q_ds at freeze and report the count
+Panel nondeterminism
+Gap (N12)
+No rule for a compatible checker returning FAIL on a mutant trace byte-identical to a null trace it passed. Classify it as a panel error event, not detection
+Known-answer controls
+Mostly pass
+F17 covers correct, always-PASS, always-FAIL, stimulus-literal and crashing checkers. Add a stricter-than-mask checker (FAIL on a raw-only unmasked divergence → counted in the stricter-than-mask report, not detection) and a nondeterministic checker (expected to fail validity's double-PASS rule)
+Directed-suite independence
+Gap (N8)
+"Written against the specification only" is good. Also require it to be frozen before the confirmatory mutant manifest is generated or viewed. Otherwise scenarios can be chosen to hit known mutants and inflate Q_ds
+Blinding wording
+Defect (N8)
+P §13.4 says no mutant-panel outcome is shown to the owner before sealing. But F17 requires the owner to run known-answer checkers on mutant traces, which necessarily shows which confirmatory mutants the corpus exposes. As worded, the rule is impossible to follow
+N8 fix. Replace the owner-blinding sentence with an ordering rule:
+The authoring packet (FIFO/UART specifications, templates, system and repair prompts) is frozen and hashed before any confirmatory mutant or panel trace is generated. After that freeze, the owner may see known-answer F17 outcomes. No LLM-generated checker is run on any mutant trace before the analysis freeze. Any later change to the authoring packet requires regenerating the corpus and mutant manifest and is logged.
+The Charter §6.1 hand-built feasibility mutants are separate from the confirmatory MCY population, so F1–F15 do not breach this.
+5.2 F16 mutant-blind pilot (P §17 F16, §13.5)
+Requirement
+Status
+Runs original RTL and null only; no primary mutants
+Pass
+Includes the complete repair path (k repairs) and the production parser
+Pass in rule. Not executable until N3 (schema) and N4 (repair context and feedback) are fixed
+Separate per-arm floor V_min; no stopping on an arm difference
+Pass
+Contract changes symmetric and trigger a full re-pilot
+Pass
+Pilot discarded from confirmatory analysis
+Pass
+Pilot used for validity only; exposure and detection from an assumed grid
+Pass (P §13.5; C §15 item 7). The v0.6 B7 defect is fixed
+Remaining gap (N14). There is no cap on re-pilot iterations and no pre-declared list of what may change between them. Repeated piloting until both arms clear V_min is a form of tuning. It is acceptable only if bounded and disclosed. Add:
+• Permitted changes: parser, schema, API, envelope, repair grammar and payload wording, each applied to both arms. Not permitted: block order, the arm definitions, or any change that touches one arm only.
+• Iteration cap: at most R_max re-pilots (TO FREEZE; for example, 2), each with fresh seeds. All iterations are reported.
+• Stop rule: if either arm misses V_min after R_max, the confirmatory study is declared infeasible for that model and design. The outcome is reported, and the floor is not relaxed after seeing pilot data.
+• Seed separation: pilot seeds and slots are disjoint from the confirmatory randomization schedule.
+6. Literature, provenance, consistency and novelty
+Inspection scope. I did not retrieve or visually inspect any source PDF in this audit. Everything below is checked against the pack's own provenance log (file 22), addendum (17) and gap assessment (12), and against my earlier Step 3 and v0.6 audits.
+6.1 Sources and provenance
+Source
+Pack claim
+Audit finding
+SecTB-RTL
+Funnel 1,860 scheduled / 1,857 provider-accepted / 9 production-semantic-valid; no prompt-effect estimate
+Corrected and consistent with my Step 3 finding across files 12 and 17. Version to reconfirm is honestly open. Not re-fetched in this audit
+TechRxiv checker-gap preprint
+Abstract only; FIFO overlap unverified and not relied upon
+Correct handling (C §7, Gap §7). Detailed method claims must stay out of external text until the full text is read
+DVBench (arXiv v1, 18 Nov 2026)
+95 tasks across nine domains; FIFO example; PDF text read, 75 pages
+Not independently verified by me. The figures rest on the pack's own text-read record. Posted four days before this pack, so check for a v2 and forward citations before any submission
+CovR (v2; MLCAD DOI)
+Authors' term "RTL mutants" preserved; MCY post-synthesis stated separately
+Pass. This resolves my earlier terminology note
+Verify the Verifier
+v1 text read, 7 pages
+Consistent with my Step 1 audit
+PDF hashes
+Every original-PDF SHA-256 is "NOT CAPTURED"; review-file hashes listed and explicitly not substituted
+Correct. No review-document hash is presented as a source hash. Capture PDF binaries, SHA-256 values and page numbers before any full-text claim is cited externally
+Search limits
+IEEE Xplore/ACM DL native search incomplete
+Honestly stated (C §4; Gap §1, §8)
+6.2 Charter–Protocol consistency and stale text
+The Charter and Protocol agree on the metric definitions, H1/H2, the Holm family, the panel, the F16 role, the information boundary and the gates. Discrepancies found:
+1.  C §1 line 15 says "feedback" is held constant, and P §3.4 says "Feedback content … identical across arms". Feedback content depends on each artifact's failure, so it cannot be identical. It should read "feedback policy (grammar, triggers, truncation)".
+2.  C §1–§2 and Gap §5 call exposure checker-independent without qualification. That is true of conditional E_i, not of ITT J_exposure (N5).
+3.  Gap §3 says "identical … response schema". It is identical, but it is not yet a schema (N3).
+4.  Stale after this audit:
+    ◦ C §15 items 2 and 4;
+    ◦ Gap header and §10 ("independent v0.7 audit pending");
+    ◦ P §18 line 437 and §19.
+    Update them to cite this audit's verdict and the limited feasibility scope, not "passed".
+5.  Historical documents. README correctly marks 10 and 11 as historical and 12 and 17 as current. No current document relies on their superseded figures.
+6.3 Owner naming (N17)
+The Protocol header, C §16 and file 23 name the owner as "Ayush (full legal-name form to be confirmed)". The TEEP application is Krishika's. I am not assuming which is correct; Ayush may be a collaborator or co-owner.
+Before any faculty or TEEP use, the owner and author line, the contributor roles and the identity of the person recorded as approving D1–D7 must be confirmed and made consistent. An application document whose owner line names someone else is a real credibility risk.
+6.4 Novelty claims
+The novelty claims are appropriately hedged throughout. The combination is "not found in the sources reviewed as of 22 November 2026", with explicit non-claims (Gap §2) and no "first" wording anywhere in the current documents.
+Because DVBench appeared days ago, re-run the targeted search immediately before any external submission and record its date. No other change is needed.
+7. Exact edits and unresolved TO FREEZE values
+7.1 Section-specific edits
+Edits marked (blocker) must land and be re-audited before any LLM call. The rest can be batched into v0.8.
+#
+Location
+Edit
+Issue
+E1 (blocker)
+Files 19 and 20, all nine headings; P §3.3; file 21
+Change [Name | Bn_ID] to [Name] in model-visible text; move the IDs to assembler metadata. Add an F18 pass criterion: "no ordinal or arm-revealing token in model-visible text"
+N1
+E2 (blocker)
+Files 19 and 20, B0 sentence 2; file 25, repair body sentence 3
+Replace the ordered enumerations with "Follow every section of the authoring packet exactly" and "Continue to obey every section of the authoring packet and the response schema"
+N2
+E3 (blocker)
+Files 19 and 20, B8; P §5 and F16
+Replace the prose with a machine-checkable format: fixed delimiters or JSON keys (driver, checker, dependencies, assumptions); language and version; entry points identical to B5 and B7; an allowed-imports list; assumptions as clause_id: text rows. Freeze the parser and reject rules alongside it
+N3
+E4
+P §3.3; C §1
+Add: "ORG-B is a single pre-specified permutation (interface/contract blocks before behavioral specification; execution envelope last). Inference is limited to these two orders, not to order in general"
+N2 (description)
+E5 (blocker)
+P §3.4; file 25
+Freeze the repair context: "continuation; original system message, arm prompt and all prior responses resent byte-identically" (or the declared alternative). Replace the feedback placeholder with a frozen per-stage grammar (stage ID, error class, truncated compiler or parser text, a fixed checker-rejection sentence with no values, row indices or traces, and no driver stdout). State that the null trace is never returned, or declare and disclose golden-trace feedback
+N4
+E6
+P §13.1, §14
+Report validity at the initial call and after k repairs (descriptive), in addition to the ITT endpoint
+N4c
+E7 (blocker for F18)
+P §3.3; file 21
+Add an assembly spec covering: metadata stripping, the block separator, the trailing newline, UTF-8 without BOM, the normalization algorithm used for hashing, placeholder escaping, and the message-role mapping
+N9
+E8
+P §14
+Add: "H2 inference is conditional on the frozen mutant population; mutants are fixed, not sampled"
+§3.1
+E9
+P §13.5
+Add: "Power simulation uses per-design validity estimates; the equal-weight estimand's variance is dominated by the lower-validity design"
+§3.2
+E10
+P §14, §15
+Add: "Slots are assigned to arms by a balanced within-design schedule generated from a frozen seed and committed before the first call"
+§3.2
+E11
+P §12
+Add an adjudication rule: ANOMALY_PIPELINE_OR_NONDETERMINISM with a harness or trace-integrity cause becomes INVALID_PAIR under precedence rule 1; with a checker cause it stays in T_i. Report both counts
+N6
+E12
+C §1, §2; Gap §5
+Qualify: "conditional own-driver exposure E_i is checker-independent; ITT J_exposure depends on the checker via the validity gate"
+N5
+E13
+P §17 F15
+Add the ledger identities in Section 2.2: per-artifact class sum `=
+M_d
+E14
+P §13.4; F17
+Define "stream" and the scope of k_null. Exclude corpus pairs that violate paired-input rules from Q_ds, with a count. Treat panel nondeterminism as an error event. Add stricter-than-mask and nondeterministic known-answer checkers
+N12
+E15
+P §13.4 "Blinding"; §16
+Replace the owner-blinding sentence with the ordering rule in Section 5.1. Freeze the directed suite before the confirmatory mutant manifest is generated or viewed
+N8
+E16
+P §17 F16
+Add the permitted-change list, R_max, the stop rule ("infeasible, reported; floor not relaxed") and pilot/confirmatory seed separation
+N14
+E17
+P §3.1, §3.4
+State who authors the human baseline. That person must not have accessed the evaluator pack (RTL, mask, mutants, panel results); if no such person exists, label the baseline "evaluator-informed"
+N7
+E18
+File 24; P §9
+Add the columns mask_variant, spec_version_sha256, author_packet_block_id and clause_appears_in_blocks. Add the rule that each clause appears in one block, or that duplication is identical across arms. Use LF line endings
+N11
+E19
+C §1 line 15; P §3.4 bullet 2
+Change "feedback" and "feedback content … identical" to "feedback policy (triggers, grammar, truncation) identical". Optionally replace "observation mask" in the model-visible text with "evaluator-only materials"
+§6.2, N10
+E20
+C §15 items 2 and 4; Gap header and §10; P §18 line 437 and §19
+Record this audit's verdict (PASS WITH CORRECTIONS) and the limited feasibility scope; keep "LLM calls prohibited until E1–E3, E5 and E7 re-audited"
+§6.2
+E21
+P header; C §16; files 16 and 23
+Confirm the owner, the author line and the approver identity, consistent with the TEEP application
+N17
+E22
+P §4, §15
+Decide the FSM in or out before F16. If it is out, say so. If it is in, the estimand is a three-design average
+N13
+7.2 Unresolved TO FREEZE values
+These are honestly open parameters, not defects.
+Designs and evaluator materials
+• Confirmatory design set (FSM in or out) and design weights (equal proposed).
+• FIFO and UART cycle-exact specifications with clause IDs, port manifests, reset and legal-input rules, and their payload partition into blocks.
+• Mask rows, don't-care windows and the strict-mask variant, with independent sign-off.
+• Mutant population: MCY and Yosys versions, mutation modes, eligible set, BMC depth N, solver limits and exclusion rules.
+Execution
+• Cycle cap, safe-idle vectors, watchdog formula and timeout.
+Panel
+• Panel corpus: the stream definition, k_null (20 proposed), the directed scenarios, seeds and trace hashes.
+Pilot and sample size
+• n_pilot, V_min, R_max, the final n, and the exposure/detection power grid.
+Prompts, model and repair
+• Provider and model version, generation route, tokenizer ID and version, temperature, top-p and token limits.
+• Message-role mapping and the SHA-256 of the assembled prompts, system message and repair template.
+• The response-schema format and the parser.
+• Repair settings: k (2 proposed), the context policy and the feedback grammar.
+Human baseline
+• Time box (120 minutes proposed) and the author's identity.
+Analysis
+• Statistics code, bootstrap resamples and seeds, the randomization schedule and the release tag.
+People and provenance
+• The owner's legal name, contributor roles and approver identity.
+• Source-PDF binaries, their SHA-256 values and page references for every externally cited full-text claim.
+7.3 Bottom line
+PASS WITH CORRECTIONS. Non-confirmatory, hand-built feasibility engineering (FIFO harness and F1–F15, plus F17 with known-answer checkers only) may begin once the owner accepts this audit.
+No LLM call of any kind, including F16, until E1, E2, E3, E5 and E7 are applied and re-audited. Confirmatory generation stays prohibited until every Protocol §18 item is sealed.

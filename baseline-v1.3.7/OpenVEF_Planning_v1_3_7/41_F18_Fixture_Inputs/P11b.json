@@ -1,0 +1,19 @@
+{
+  "fixture_id": "P11b",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "Syntactically truncated JSON without provider truncation status.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "provider_finish_reason": "stop",
+    "raw_response_utf8": "{\"schema_version\":\"1.0\""
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "PARSE_SCHEMA",
+    "error_class": "SCHEMA_REJECT",
+    "diagnostic": "SCHEMA_REJECT|pointer=/"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "fixture_id": "R05",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Driver vector has wrong width",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "events": [
+      {
+        "kind": "driver_vector",
+        "reason": "WRONG_WIDTH"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "DRIVER_VECTOR",
+    "error_class": "DRIVER_VECTOR_INVALID",
+    "diagnostic": "DRIVER_VECTOR_INVALID|reason=WRONG_WIDTH"
+  }
+}

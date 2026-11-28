@@ -1,0 +1,512 @@
+OpenVEF v0.8 Audit
+Nov 22, 2026 · @Conductors
+A. Verdict: FAIL for the LLM-call gate (narrow and text-level); the rest of the pack is sound
+This audit's job, per 32_v0.8_Status_and_Gates.md, is to decide whether N1, N2, N3, N4 and N9 are now fixed concretely enough to unlock F16. You set the rule: no pass unless every one of them is concretely testable in the files.
+• N1 and N2 meet that bar.
+• N3, N4 and N9 do not, yet. The v0.8 files are a large improvement, but each still has a few requirements that are contradictory across documents, are hidden from the model, or cannot be implemented deterministically from the text.
+None of these needs a methodological redesign. All are fixable by editing the existing files. They are also not "honestly TO FREEZE" parameters: each is a missing or conflicting rule, not a missing value.
+Everything outside the prompt layer is accepted, with minor corrections listed in Section C:
+• metric wording;
+• N6 adjudication;
+• the F15 identities;
+• the H2 statements;
+• panel streams;
+• F16 re-pilot rules;
+• human baseline, FSM and CSV;
+• status claims and checksums.
+I made no LLM calls and wrote no project code. I did run the pack's own JSON Schema with the installed jsonschema validator and wrote a small Python check that re-parses and renders the templates. Both are part of this audit, not implementation.
+B. Blocker table
+ID
+v0.7 requirement
+v0.8 status
+Residual defect (blocks LLM calls until fixed)
+N1
+No model-visible block IDs or arm cues
+RESOLVED
+None. The F18 regex needs a token-boundary definition (minor, C9)
+N2
+Order-free instructions
+RESOLVED
+None blocking. One residual two-item list in the system message (minor, C10)
+N3
+Machine-readable output, exact entry points, parser
+PARTLY RESOLVED
+N3-a: the import allow-list and the checker return object exist only in the non-model-visible parser contract, so validity would penalize rules the model never saw. N3-b: Protocol §10 says checker diagnostics are "optional"; file 30 makes diagnostics mandatory and malformed diagnostics a checker error. N3-c: "wrong entry-point signatures" is undefined at the source level (AST/inspect rule). N3-d: the clause-ID rule cannot be tested and contradicts itself for unspecified items
+N4
+Deterministic repair conversation; bounded feedback
+PARTLY RESOLVED
+N4-a: the stage → trigger map does not cover checker crash or invalid return on null, checker double-run disagreement, import-policy violation, watchdog timeout, RTL-vs-null failure, or illegal or incomplete driver vectors. N4-b: files 25, 21 and the Protocol disagree on PARSE_SCHEMA content. N4-c: no precedence rule when several stages fail, and the redaction, truncation and escaping order is unspecified
+N9
+Deterministic assembly and canonicalization
+PARTLY RESOLVED
+N9-a: file 31 governs only the arm templates; extracting and rendering the system and repair bodies from file 25 is unspecified, so their bytes and hashes are not reproducible. N9-b: the payload-escape rule renders a heading-identical line visible to the model, which conflicts with the duplicate-heading rejection. N9-c: the sidecar lacks the schema SHA-256 and byte length that file 31 requires it to record
+N-F17
+Freeze ordering
+Correction (not an LLM blocker)
+The authorized feasibility scope includes F17, but freeze ordering forbids generating confirmatory mutant or panel traces before the whole authoring packet is frozen. State that feasibility F17 uses only the hand-built FIFO control mutants (C11)
+D. What work is authorized after owner acceptance
+Nothing is authorized yet. Files 16 and 23 record that owner acceptance of the v0.8 items (A1–A11) has not been given.
+Once the owner records acceptance, only the v0.7-audit scope opens, unchanged:
+1.  Author the FIFO cycle-exact specification with clause IDs and the mask-traceability rows.
+2.  Build the hand-built FIFO harness, recorder, paired runner, classifier and ledger.
+3.  Run F1–F15.
+4.  Run F17 with hand-built known-answer checkers on the hand-built FIFO control mutants only (Charter §6.1), not on a confirmatory MCY manifest (see C11).
+The parser and assembler may also be built and hand-tested against hand-written JSON responses, since this involves no model call and is needed for F18. Treat that as part of the hand-built scope only if the owner explicitly includes it in the acceptance record.
+E. Is any LLM call permitted?
+No. No LLM call of any kind, including F16, any "smoke test" call and any provider-format probe, until:
+• N3-a to N3-d, N4-a to N4-c and N9-a to N9-c are corrected;
+• a further independent re-audit confirms each is concretely testable;
+• the owner has recorded acceptance of A1–A11.
+Confirmatory generation remains prohibited until every Protocol §18 item is sealed.
+1. Line-by-line verification of N1, N2, N3, N4 and N9
+1.1 What I tested programmatically
+I wrote a parser following file 31's stripping and rendering rules and ran it on files 19, 20, 29 and 33 (the 25 checks are noted below).
+Test
+ORG-A
+ORG-B
+Result
+UTF-8, no BOM, LF only (no CR)
+yes
+yes
+Pass
+Lines 1–3 metadata, line 4 blank (strip rule matches the file)
+yes
+yes
+Pass; the metadata lines are identical across arms
+Nine headings, each in the sidecar inventory; no unknown or duplicate heading
+yes
+yes
+Pass
+Block order equals 33_...Sidecar arm_orders
+B0…B8
+B0 B2 B5 B1 B6 B3 B7 B4 B8
+Pass
+Every block body byte-identical across arms
+—
+—
+Pass
+Rendered prompt (headings + LF + body; blocks joined by two LFs; one trailing LF) with schema inserted byte-exactly
+4,404 bytes
+4,404 bytes
+Pass (equal length, permutation only)
+B0–B8, matched as a substring and at word boundaries, in rendered text
+none
+none
+Pass
+ORG-A/ORG-B/ORG or ASSEMBLER in rendered text
+none
+none
+Pass
+"observation mask" or "reference model" anywhere in model-visible text (files 19, 20, 25)
+none
+none
+Pass (N10 also fixed)
+Schema file ends with LF; parses as JSON; valid Draft 2020-12 meta-schema
+yes
+—
+Pass. 2,543 bytes; SHA-256 15f87551…202997
+Placeholders remaining after schema insertion
+the 7 payload placeholders
+same 7
+Expected: payloads are TO FREEZE
+1.2 N1: block IDs and arm cues — RESOLVED
+• Headings are names only ([Task instruction] … [Response schema]). The IDs live only in 33_Prompt_Assembly_Sidecar_v0.8.json, which is marked model_visible: false.
+• File 31 requires rejecting model-visible text that contains arm labels, B0…B8 or metadata. That is a concrete, testable F18 check.
+• Minor: say how the match is done. A plain substring match on B1 would also hard-fail an otherwise valid design payload that happens to contain, say, a signal or state name B1. Use a word-boundary regex \bB[0-8]\b and require payload authors to avoid such tokens (C9).
+• The visible schema contains the project name (OpenVEF … Response Schema v1.0, $id https://openvef.org/…). This is identical in both arms, so it is not a confound. It does tell the model it is inside a named evaluation framework, and the $id points to a domain the project may not control. Consider a neutral urn: ID (nit).
+1.3 N2: order-free instructions — RESOLVED
+• B0 now says "Follow every section of the authoring packet exactly". The repair body says "Continue to obey every section of the authoring packet and the response schema". Neither lists blocks in any arm's order.
+• The remaining ordered mentions are congruent with both arms:
+    ◦ "driver … checker": B5 precedes B7 in both;
+    ◦ "specification … trace's recorded inputs": B1 precedes B6 in both;
+    ◦ "response schema below": B8 is last in both.
+• Minor (C10): the system body says to "Treat the design specification and interface contract as authoritative". Specification-then-interface is ORG-A's sequence; ORG-B puts the port manifest and driver API before the specification. This is weak, but it is the same kind of cue N2 removed. Replace it with "Treat the authoring packet as authoritative".
+1.4 N3: strict output and entry points — PARTLY RESOLVED
+What now meets the bar:
+• one JSON object, no fences or prose;
+• additionalProperties:false throughout;
+• constant schema_version, language, language_version, filenames and signature strings;
+• dependencies with maxItems:0;
+• a structured assumptions array;
+• duplicate-key rejection;
+• no permissive recovery;
+• the schema is inserted byte-exactly in both arms.
+I validated a minimal conforming response: no errors.
+Residual defects:
+• N3-a: the hidden rules are not shown to the model. The model-visible text contains no import allow-list. File 30's 11-module stdlib list excludes, for example, __future__, copy, abc, operator, heapq and bisect, which a Python 3.11 author would routinely use. The model also never sees the checker return object ({verdict, diagnostics[{code, message, cycle, clause_id}]}). Both appear only in file 30, which is not model-visible.
+    ◦ Unless the B5/B7 payloads restate them, validity will measure compliance with rules the model never saw.
+    ◦ This is testable only if F18 is required to check that B5 and B7 state the allow-list, the driver sentinel and the checker return shape byte-identically to file 30. No such requirement exists yet.
+• N3-b: Protocol §10 contradicts file 30. §10 says the checker returns PASS or FAIL "plus optional structured diagnostics". File 30 says the object "must contain exactly verdict and diagnostics", and that an invalid diagnostic is a checker error. A checker returning {"verdict":"PASS"} is therefore valid under §10 and a checker error under file 30. That changes V_cd, X_i (CHECKER_ERROR_AFTER) and detection.
+• N3-c: signature checking is undefined. The schema forces the model to echo signature strings. My spacing test (dict[str,str] without a space) fails the schema, which adds formatting noise to validity; that is symmetric across arms but should be disclosed. Separately, file 30 says to reject "wrong entry-point signatures" without saying how the source is checked. A source can echo the right constant and define step(self, i, o), or omit annotations. Freeze an AST and inspect rule covering:
+    ◦ a module-level create_driver with one positional parameter;
+    ◦ a class Driver with a step method taking two positional parameters after self;
+    ◦ a module-level check_trace taking two;
+    ◦ whether annotations are required or ignored.
+• N3-d: the clause-ID rule is untestable and self-contradictory. B8 says each assumption "must cite an author-visible clause ID" and, for unspecified items, "record that fact in the assumptions array". An unspecified item has no clause to cite. Neither the schema (minLength:1; my test with NOT-A-CLAUSE passes) nor file 30 checks the ID against the packet's clause list. Choose one:
+    ◦ (i) the parser validates clause_id ∈ the frozen clause list, plus a reserved value such as UNSPECIFIED for gaps; or
+    ◦ (ii) the assumptions are descriptive and never affect validity.
+  Then state that choice in B8.
+1.5 N4: repair conversation and feedback — PARTLY RESOLVED
+What now meets the bar:
+• same-conversation continuation;
+• the full message array resent byte-identically (system, arm prompt, all assistant replies, all earlier repair messages), with no editing or truncation;
+• exactly one feedback JSON object with three fixed keys;
+• fixed stage/error pairs;
+• a 2,048-byte cap;
+• exception class name only;
+• a fixed null-rejection sentence;
+• an explicit ban on rows, row indices, values, waveforms, stdout/stderr and mutant data;
+• oracle-guided-repair disclosure, with initial-call and post-repair validity reported separately.
+The golden-output leak from v0.7 is closed.
+Residual defects:
+• N4-a: the trigger → stage map is incomplete. The four stages cover parse/schema, compile, driver runtime exception and checker FAIL on null. Protocol §7 and §13.1 also make the following failures invalidate a slot, with no stage assigned. For each, the pack must say either which stage and diagnostic it uses, or that it is terminal with no repair. Without that, F16 cannot be run deterministically.
+    ◦ checker crash or invalid return object on the null trace;
+    ◦ the two null-trace checker runs disagreeing (nondeterminism);
+    ◦ a static import-policy violation;
+    ◦ a wall-clock watchdog timeout (no exception class exists for this);
+    ◦ an RTL-vs-null control failure;
+    ◦ a driver returning an incomplete, extra-key or illegal input vector.
+• N4-b: three documents disagree on PARSE_SCHEMA content.
+    ◦ File 21 says "parser/schema reject code; no output values".
+    ◦ The Protocol (§3.4) says "the redacted parser/compiler diagnostic … cap of 2,048".
+    ◦ File 25 caps "Compiler/parser text" at 2,048 bytes.
+  Pick one. I recommend a fixed reject code plus the JSON-pointer path of the first schema error. Raw validator messages can quote large spans of the model's own output and vary by library version.
+• N4-c: the order of operations is unspecified. Freeze:
+    ◦ (i) precedence when several stages fail (first failing stage in pipeline order, driver before checker);
+    ◦ (ii) the order redact → truncate → JSON-escape;
+    ◦ (iii) whether the 2,048 bytes are counted before or after escaping, and truncation on a UTF-8 code-point boundary with or without a fixed marker;
+    ◦ (iv) the redaction rule as an explicit list. "Absolute paths and any trace/output-value excerpts" is not mechanical.
+1.6 N9: assembly and canonicalization — PARTLY RESOLVED
+What now meets the bar:
+• encoding;
+• metadata stripping (it matches the files);
+• block parsing;
+• rendering (my renderer reproduced equal-length arms);
+• byte-exact schema insertion;
+• the placeholder hard-error rule;
+• the role map (system / user / assistant / user);
+• the 7-step canonicalization;
+• the archive and hash list.
+Residual defects:
+• N9-a: file 25 is outside the spec. File 31 never says how the system and repair bodies are extracted from file 25.
+    ◦ It does not say whether text runs strictly between the --- BEGIN/END MODEL-VISIBLE … --- lines.
+    ◦ Both bodies begin and end with a blank line (I checked), and no rule says whether these are trimmed.
+    ◦ Nor does it say whether the repair message keeps the [VALIDATION_FEEDBACK_JSON] line and the two-space JSON indentation.
+  The system and repair hashes, which F18 compares, are therefore not reproducible from the text. Add a file-25 section to file 31 with the same precision as the template rules.
+• N9-b: the escape rule defeats itself. "Prefix that line with a backslash during parsing and remove only that escape backslash at render time" means the model sees a payload line identical to a real heading. That makes the prompt structure ambiguous to the model, and it would trip any duplicate-heading check run on the assembled prompt. Make a heading-identical payload line a hard error at packet freeze instead.
+• N9-c: the sidecar is incomplete. File 31 requires the schema SHA-256 and inserted byte length to be recorded in the sidecar. The sidecar has neither. The schema is already drafted, so record 15f875519027ff8b82d1a99fefe24ef6b3c4b6daf0cace351dc14b5a50202997 and 2,543 bytes now, and add the payload-hash fields.
+2. Schema and parser consistency with Protocol §5, §10, §13, F16 and F18
+Field or rule (files 29/30)
+Protocol counterpart
+Consistent?
+Finding
+create_driver(seed: int) -> Driver
+§5.1 "receives … its seeded state"; harness seeds random
+Yes, loosely
+§5.1 should name the factory and say whether the harness also seeds global random (two entropy routes). Delete "and NumPy (if available)": NumPy is not on the allow-list
+step(cycle_index, outputs_after_edge: dict[str,str]) -> dict[str,str] | str
+§5.1 complete input dict or COMPLETE; §5.2 outputs_after_edge_n
+Yes
+The four-state value encoding (0/1/X/Z strings, bit order, width) and the first-call semantics (cycle_index at reset release) must be in the B5 payload. File 30 has no rule validating returned vectors: key set = input ports, width, legal characters, X/Z on inputs. See N4-a
+COMPLETE sentinel
+§5.1, §5.3
+Yes
+—
+Driver must not own the clock, create coroutines or access handles
+§5.1
+Yes
+It must also be model-visible (B5 payload); currently it is only in files 30 and 02
+check_trace(trace, metadata) -> dict
+§10 "isolated pure function/process"
+Yes
+Run in a separate process, as F1 requires. The metadata content is undefined: state what it contains and that it excludes the driver seed and the stimulus list. Otherwise the stimulus-literal prohibition is unenforceable
+Return {verdict, diagnostics[]}, malformed diagnostics = checker error
+§10 "plus optional structured diagnostics"
+No (N3-b)
+Contradiction; it changes V_cd, CHECKER_ERROR_*, X_i and S_i. Recommended: diagnostics required but may be []; only verdict validity decides PASS/FAIL; a malformed diagnostic is logged and does not turn a verdict into an error. Otherwise disclose that format strictness drives checker-error rates
+Allow-list of 11 stdlib modules; dependencies empty
+§16 sandbox; §5.1 entropy ban
+Consistent, but hidden (N3-a)
+Must be stated in a model-visible block. Reconsider omitting __future__, copy, abc and operator; harmless modules excluded only add noise to validity
+assumptions[].clause_id
+§9 traceability; B8 text
+Untestable (N3-d)
+See §1.4
+Const signature strings in the schema
+F18 "exact entry points"
+Testable but redundant
+The echo test checks formatting, not code. The real check must be AST/inspect (N3-c)
+dependencies.items properties
+—
+Dead schema
+Unreachable because of maxItems:0. Harmless; keep for v1.x
+No maxLength on sources
+§3.5 token limits TO FREEZE
+Acceptable
+A max-token truncation becomes a PARSE_SCHEMA failure. Say so, and report truncations separately in the funnel
+Rule 7: any schema/parser/API failure counts against validity
+§13.1
+Yes
+—
+Stage IDs / error classes
+§7 and §13.1 failure list; F16 pipeline
+Incomplete (N4-a)
+Six failure types have no stage or terminal rule
+"Parser/schema strict and hand-tested"
+F18 pass criterion
+Not yet testable
+"Hand-tested" needs a frozen fixture list (below) with an expected outcome for each item
+Minimum frozen parser fixture set for F18
+Each fixture is hand-written JSON or text, needing no model, with a pre-declared expected outcome:
+• a valid object;
+• a Markdown-fenced object;
+• a prose prefix or suffix;
+• trailing garbage;
+• a duplicate key;
+• an extra key;
+• a missing key;
+• a wrong constant;
+• a BOM;
+• invalid UTF-8;
+• truncated JSON;
+• a whitespace-only source;
+• import os;
+• from __future__ import annotations;
+• a correct echo string with a wrong source signature;
+• a missing create_driver;
+• a step returning a partial vector;
+• a checker returning {"verdict":"PASS"} without diagnostics;
+• a checker returning "PASS" as a bare string;
+• an assumption citing an unknown clause.
+Each must map to exactly one stage, error class and diagnostic, or to a declared terminal-invalid outcome. When every fixture in this set passes, N3 and N4 become concretely testable.
+3. Metrics, hypotheses, panel and F16
+3.1 Metric and hypothesis edits (v0.7 E6, E8–E13)
+Item
+Where in v0.8
+Status
+E_i vs. J_exposure (N5)
+P §2 "Conditional diagnostics"; C §2, §4, §12
+Pass. Conditional E_i is checker-independent; ITT J_exposure is checker-dependent via validity. Gap assessment §4 still lists J_exposure without the qualifier (nit, C14)
+N6 integrity adjudication
+P §12 (new paragraph)
+Pass. A harness or trace-integrity cause becomes INVALID_PAIR under rule 1; a checker cause stays in T_i; an unknown cause becomes INVALID_PAIR; both counts are reported; arm-blind. Treating an unknown cause as INVALID_PAIR is ITT-conservative (it contributes 0 successes)
+F15 ledger identities
+P F15 row plus a separate list
+Pass. All five identities are present, including panel sums per stream
+H2 fixed mutants
+P §2 (H2 paragraph)
+Pass
+Balanced within-design randomization
+P §2; §14 bullet; §18 checklist
+Pass. The seed and schedule are committed before the first call
+Per-design validity in power
+P §13.5
+Pass
+Initial-call vs. post-repair validity
+P §3.4; file 25
+Pass in text. Add it to the §13.1 funnel definition so it is a named reported quantity (nit)
+3.2 Panel (v0.7 N8 and N12)
+Item
+Status
+Note
+Stream definition
+Pass
+REACTIVE_RANDOM and DIRECTED are analyzed separately; k_null counts reactive-random seeds only; B_ds counts RTL and null traces separately
+Invalid corpus-pair exclusion
+Pass
+Excluded from Q_ds at freeze and reported by stream and design
+Benign-trace nondeterminism
+Pass
+Two separate-process runs per benign trace; disagreement is PANEL_ERROR
+Mutant-trace nondeterminism
+Correction
+PANEL_ERROR_EVENT covers "inconsistent verdicts on repeated evaluation", but nothing says mutant traces are evaluated twice. State whether they are run once or twice. Also state whether a PANEL_ERROR_EVENT on a mutant trace demotes a PANEL_COMPATIBLE stream label or only counts as a non-detection event
+Known-answer controls
+Pass
+Stricter-than-mask (→ PANEL_STRICTER_THAN_MASK_EVENT, not detection) and nondeterministic (→ PANEL_ERROR) controls added to F17 and the §15 table
+Freeze ordering / blinding
+Pass in principle; one conflict
+The rule is realistic: the packet, prompts, schema, feedback policy, mask and analysis plan are hashed before any confirmatory mutant manifest; the directed suite is frozen before the manifest is viewed; LLM checkers never see mutant traces before analysis freeze. Conflict (C11): the gate text authorizes F17 now, which would require mutant traces before the packet (including the UART specification and the prompts) is frozen. Fix: feasibility F17 runs on the hand-built FIFO control mutants (Charter §6.1); F17 on the confirmatory manifest runs only after the packet freeze
+3.3 F16 (v0.7 N14)
+Requirement
+Status
+Per-arm floor, now per arm × design stratum
+Pass. Consistent across P F16, the §15 table, C §15 item 6 and register A11
+Permitted changes (parser, schema, API, envelope, repair grammar, payload wording; symmetric) / prohibited (block order, arm definitions, arm-specific changes)
+Pass
+R_max (2 proposed, TO FREEZE) with fresh seeds
+Pass. Clarify that this allows up to three pilots in total (initial + 2)
+Stop rule: infeasible; no dropping a design; no reweighting; no relaxing the floor
+Pass. This is stronger than my v0.7 wording and correctly closes the drop-a-design route
+Pilot and confirmatory seeds and slots disjoint
+Pass
+Mutant-blind; validity-only power input
+Pass (unchanged)
+Executable as written
+No. It depends on N4-a (the stage map) and N3 (the parser)
+One interaction to state: "payload-wording" changes after a pilot are permitted. Under the freeze-ordering rule, any such change after the confirmatory mutant manifest exists forces regeneration. Requiring F16 and all re-pilots to finish before the packet freeze keeps this cheap.
+4. Remaining v0.7 items, status claims and pack hygiene
+4.1 Remaining v0.7 edits (E17–E22)
+Item
+Status
+Note
+Human-baseline independence (N7)
+Pass
+P §1 (H1/H2 block) and register A10: the author must not have accessed the evaluator pack, otherwise the baseline is labelled "evaluator-informed". The author's identity is TO FREEZE
+FSM (N13)
+Pass
+Excluded consistently in P §4 and the §15 table, C §6.2 and the benchmark table, Gap §9 and register A8. Adding it requires an owner decision and a new estimand before F16
+Mask CSV columns and clause-to-block rule (N11)
+Pass
+All four columns added, LF endings (checked), and the rule is in file 31 and checklist 21. Nit: define the value format for clause_appears_in_blocks (for example, a ;-separated list of block headings, since IDs are now assembler-only)
+Feedback-policy wording (E19)
+Partly
+Fixed in P §3.2 and §3.4. Not fixed in Charter §1 (line 15 still says "… authoring information, feedback, model and settings are held constant"). See C13
+Mask terminology (N10)
+Pass
+No model-visible "observation mask" (checked). The owner-facing documents correctly still use it
+Stale audit status (E20)
+Mostly pass
+C §15 items 2 and 4, Gap header and §10, P §18 release gate and §19 are updated. Residual: file 22 is titled "v0.1" and still says "this v0.7 provenance record" and "This v0.7 pass" (nit)
+Owner and approver (N17)
+Honestly open; flag stands
+The Charter and Protocol headers, and file 23, still read "Ayush (full legal-name form to be confirmed)". Register 16 correctly lists owner, contributor roles and approver identity as TO FREEZE and ties them to "the actual TEEP application". This must be settled before any faculty or TEEP use. I am not inferring who the owner is
+4.2 Status and overclaiming checks
+Claim check
+Result
+Does any current document claim F1–F18 passed?
+No. File 32 says "NOT RUN / NOT PASSED"; checklist 21 says "F18 is NOT PASSED"; P §19, C §15 and files 03 and 29 repeat it
+Does any current document imply LLM calls are authorized?
+No. Every gate statement (C status note, P header and §18, README, 16, 23, 29, 32) blocks all LLM calls, including F16, pending re-audit. File 32 additionally requires the v0.8 owner decisions to be recorded. That is correct and slightly stricter than the others; make them all say it (C15)
+Does any current document claim owner acceptance of the v0.8 items?
+No. Files 16, 23 and 29 explicitly say the A1–A11 items are proposed and not owner-approved
+Literature and PDF verification overstated?
+No. File 22 keeps every source-PDF SHA-256 as NOT CAPTURED and states that review-file hashes are not substitutes. Its note that the v0.7 auditor inspected no PDFs is accurate. File 03 repeats it. The DVBench and CovR "opened PDF text" entries are the pack author's own access claims; I have not verified them and did not access any primary source in this audit
+Review-record hashes in file 22
+I recomputed them: a79a4d68… = file 10 and 9561e129… = file 04. They are correctly labelled as review-file hashes
+4.3 Cross-references, versions, filenames and checksums
+• Checksums. 27_SHA256SUMS.txt lists 55 files across the current and archive_v0.7 directories. sha256sum -c reports every entry OK. The manifest excludes only itself, and no file is missing from it.
+• Cross-references. Every NN_*.md|txt|json|csv filename cited in the current documents exists in the pack or in archive_v0.7.
+• Duplicate file number (C16). 29_Claude_v0.7_Audit_Resolution_v0.8.md and 34_OpenVEF_Response_Schema_v1.0.json share the number 29. P §3.3 ("files 29–31"), the P §15 table ("files 29–30") and checklist 21 ("file 29") are therefore ambiguous. Renumber the schema, for example to 34_…, and update the sidecar's schema_file, file 31, P and 21. Note that this is itself a schema-location change that F18 would re-hash.
+• README coverage (C17). The README's "current controlling documents" omits 12 (gap assessment, now titled v0.8), 17 (addendum, still v0.7 but current), 22 (provenance log) and 32 (status and gates). Earlier READMEs listed 12 and 17 as current; say whether they still are.
+• Version strings. These are internally coherent:
+    ◦ Protocol and Charter: v0.8;
+    ◦ schema: v1.0 (schema_version const "1.0");
+    ◦ parser contract and assembly spec: v0.8;
+    ◦ template metadata line and sidecar: 0.8.
+  Add one line to file 31 stating that the schema version is independent of the pack version.
+C. Exact section and file corrections
+Rows C1–C8 and C18 must be applied and re-audited before any LLM call. C9–C17 can go in the same revision.
+#
+File / section
+Correction
+Closes
+C1
+Files 19 and 20, B8 fixed text (identical in both arms); P §5.1, §10; checklist 21
+Make the hidden rules model-visible: the exact import allow-list; "no third-party packages"; the checker return object {"verdict": "PASS"|"FAIL", "diagnostics": […]} with its field types; the driver bans (no clock or coroutine ownership, no handles). Add an F18 check that this text and file 30 agree byte-for-byte. Optionally extend the allow-list with __future__, copy, abc and operator
+N3-a
+C2
+P §10 sentence 3; file 30 "Language and entry points"
+Reconcile the checker return rule in one place. Recommended: diagnostics is required but may be []; only a missing or invalid verdict, an extra top-level key or a crash is a checker error; a malformed diagnostic item is logged and not classified as an error. If the stricter rule is kept, say so in §10 and disclose it
+N3-b
+C3
+File 30 "Parser and execution rules", new rule 4a
+Define the source-level entry-point check as an AST and inspect rule: required names, parameter counts and kinds, step bound on Driver, whether annotations are required or ignored, and no module-level side effects beyond definitions and imports
+N3-c
+C4
+Files 19 and 20, B8 sentences 4–5; file 30
+Either validate clause_id ∈ the frozen packet clause list with a reserved UNSPECIFIED value for gaps (and say which), or declare that assumptions are descriptive and never affect validity
+N3-d
+C5
+P §3.4 "Frozen repair context"; file 25 control rules; file 30
+Add a complete failure → (stage, error class, diagnostic) or TERMINAL table covering: checker crash or invalid return on null; null-run checker disagreement; static import violation; watchdog timeout (fixed string, for example WatchdogTimeout); RTL-vs-null failure; incomplete, extra-key or illegal driver vector; max-token truncation. Add a rule that unmapped failures are terminal-invalid
+N4-a
+C6
+P §3.4; file 25; checklist 21 "Repair-feedback whitelist"
+Make the PARSE_SCHEMA diagnostic content identical in all three. Recommended: a fixed reject code plus the JSON pointer of the first validation error, with no raw validator text
+N4-b
+C7
+P §3.4; file 25
+Freeze the order of operations and the redaction rule: first-failing-stage precedence (parse → schema → import → compile driver → compile checker → RTL-vs-null → null execution → checker run 1 → checker run 2); redact → truncate (at a UTF-8 boundary, with a fixed truncation marker) → JSON-escape; the cap counted on pre-escape bytes; an enumerated redaction list
+N4-c
+C8
+File 31, new section "Common system and repair messages"; file 31 "Payload insertion"; file 33
+(a) Define extraction from file 25: text strictly between the BEGIN and END lines; leading and trailing blank lines removed; LF; one trailing LF or none (state which); the exact rendering of the feedback JSON (key order, two-space indent, whether [VALIDATION_FEEDBACK_JSON] is kept). (b) Replace the backslash-escape rule with "a payload line equal to a reserved heading is a hard error at packet freeze". (c) Add schema_sha256 = 15f875519027ff8b82d1a99fefe24ef6b3c4b6daf0cace351dc14b5a50202997, schema_bytes = 2543 and payload-hash fields to the sidecar
+N9-a, N9-b, N9-c
+C18
+Checklist 21; P F18 row
+Add the frozen parser and feedback fixture list (Section 2) with an expected outcome for each item. F18 cannot record "strict and hand-tested" without it
+N3, N4
+C9
+File 31 "Source-file format" last bullet
+Specify the forbidden-token match (\bB[0-8]\b, ORG-?[AB], metadata markers) and bar payload authors from using B0–B8 as identifiers
+N1 (minor)
+C10
+File 25, system body sentence 2
+"Treat the design specification and interface contract as authoritative" → "Treat the authoring packet as authoritative"
+N2 (minor)
+C11
+P §17 intro, §18 release gate; C §15 item 4; README; files 16, 23, 29 and 32
+Add: "Feasibility F17 uses only the hand-built FIFO control mutants (Charter §6.1). F17 on the confirmatory MCY manifest runs only after the authoring-packet freeze." Also state that F16 and all re-pilots finish before that freeze
+Freeze-order conflict
+C12
+P §13.4 "Streams and corpus validity"
+State whether mutant traces are evaluated once or twice, and whether a PANEL_ERROR_EVENT on a mutant trace changes the stream's partition label
+Panel
+C13
+C §1 line 15; Gap §4 (J_exposure bullet)
+"feedback … held constant" → "feedback policy (triggers, grammar, whitelist, cap) held constant". Add "checker-dependent via the validity gate" to the Gap §4 J_exposure bullet
+E19, N5 residue
+C14
+P §5.1; P §10
+Delete "and NumPy (if available)". Name the create_driver(seed) factory and say whether the harness also seeds global random. Require B5 to define the value encoding and first-call semantics, and add a parser rule validating returned vectors. Define the metadata contents and exclude the driver seed and stimulus
+§5 / §10 consistency
+C15
+P header and §18; C status note; README; files 16, 23 and 29
+Use file 32's stricter wording everywhere: no LLM call until the re-audit passes and the v0.8 owner decisions (A1–A11) are recorded
+Gate consistency
+C16
+Rename 34_OpenVEF_Response_Schema_v1.0.json (for example, to 34_…); update P §3.3 and the §15 table, file 21, file 31 and the sidecar schema_file; regenerate 27_SHA256SUMS.txt
+Removes the duplicate number 29
+Cross-refs
+C17
+README; file 22; file 24 notes; P §13.1; P F16
+List 12, 17, 22 and 32 as current (or historical) in the README. Retitle file 22 and remove "this v0.7 pass". Define the format of clause_appears_in_blocks. Name the initial-call vs. post-repair validity in the §13.1 funnel. Say R_max=2 means at most three pilots. Optional: replace the schema $id domain with a urn:
+Hygiene
+One correction to my own Section 4.1: the human-baseline independence rule is in P §2 (line 42), not §1. The §3.1 conditions table and the §3.4 feedback policy do not repeat it; add a cross-reference there too.
+F. Unresolved TO FREEZE parameters
+These are honest open values, not defects.
+Designs and specifications
+• The confirmatory design set (FIFO + UART proposed, FSM out) and its equal weights; the owner must confirm before F16.
+• FIFO and UART cycle-exact specifications with clause IDs, port manifests, reset and legal-input rules, and the payload-to-block allocation.
+Mask and mutants
+• Mask rows, don't-care windows, the strict-mask variant, the reviewers and their signatures.
+• Mutant population: MCY/Yosys versions, mutation modes, eligible set, BMC depth, solver limits and exclusion rules.
+Execution envelope
+• Cycle cap, safe-idle vectors, watchdog formula and timeout.
+Runtime and parser
+• Python 3.11 patch version, container image digest and the JSON-Schema and parser library versions.
+Driver and checker interface
+• The value encoding for driver inputs and outputs, and the first-call semantics.
+• The contents of the checker metadata argument.
+Model and provider
+• Provider, model and version; generation route; tokenizer ID and version.
+• Temperature, top-p and max-token limits.
+• The provider's actual system-role handling.
+• The SHA-256 of the assembled system, ORG-A, ORG-B and repair messages, and per-arm token counts.
+Repair
+• k = 2 repairs.
+• The enumerated redaction list and truncation marker (once C7 defines the rule).
+• The parser and feedback fixture expectations (once C18 defines the set).
+Pilot and panel
+• n_pilot, V_min per arm × design, R_max = 2, the final n and the exposure/detection power grid.
+• k_null = 20 reactive-random seeds, the directed scenarios, corpus seeds and benign trace hashes.
+Analysis
+• Statistics code, bootstrap resamples and seeds, the balanced randomization seed and schedule, and the release tag.
+People
+• The human-baseline author and time box (120 minutes proposed).
+• The owner's legal name, contributor roles and approver identity, matching the TEEP application.
+Provenance
+• Source-PDF binaries, their SHA-256 values and page references for every full-text claim cited externally.
+Bottom line
+N1 and N2 are fixed and testable. Close N3, N4 and N9 with C1–C8 and C18, record the owner's A1–A11 decisions, and re-audit; at that point F16 becomes eligible. Until the owner's acceptance is recorded, nothing is authorized, including the hand-built work.

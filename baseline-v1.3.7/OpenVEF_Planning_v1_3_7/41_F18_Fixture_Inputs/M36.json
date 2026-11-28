@@ -1,0 +1,23 @@
+{
+  "fixture_id": "M36",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "description": "SyntaxError with absent/null offset uses column=1",
+  "fixture_class": "parser_unit_vector",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "source_file": "driver.py",
+    "syntax_error": {
+      "lineno": 4,
+      "offset": null
+    }
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "SOURCE_AST",
+    "error_class": "SOURCE_SYNTAX_REJECT",
+    "diagnostic": "SOURCE_SYNTAX_REJECT|file=driver.py|line=4|column=1"
+  }
+}

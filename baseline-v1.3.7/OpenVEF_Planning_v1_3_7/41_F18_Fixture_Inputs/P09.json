@@ -1,0 +1,18 @@
+{
+  "fixture_id": "P09",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "UTF-8 BOM before otherwise-valid response.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "raw_response_base64": "77u/eyJzY2hlbWFfdmVyc2lvbiI6ICIxLjAiLCAibGFuZ3VhZ2UiOiAicHl0aG9uIiwgImxhbmd1YWdlX3ZlcnNpb24iOiAiMy4xMSIsICJkcml2ZXIiOiB7ImZpbGVuYW1lIjogImRyaXZlci5weSIsICJmYWN0b3J5IjogImNyZWF0ZV9kcml2ZXIoc2VlZDogaW50KSAtPiBEcml2ZXIiLCAiY2xhc3NfbmFtZSI6ICJEcml2ZXIiLCAibWV0aG9kIjogInN0ZXAoY3ljbGVfaW5kZXg6IGludCwgb3V0cHV0c19hZnRlcl9lZGdlOiBkaWN0W3N0ciwgc3RyXSkgLT4gZGljdFtzdHIsIHN0cl0gfCBzdHIiLCAic291cmNlIjogImltcG9ydCByYW5kb21cblxuZGVmIGNyZWF0ZV9kcml2ZXIoc2VlZCk6XG4gICAgZHJpdmVyID0gRHJpdmVyKClcbiAgICBkcml2ZXIucm5nID0gcmFuZG9tLlJhbmRvbShzZWVkKVxuICAgIHJldHVybiBkcml2ZXJcblxuY2xhc3MgRHJpdmVyOlxuICAgIGRlZiBzdGVwKHNlbGYsIGN5Y2xlX2luZGV4LCBvdXRwdXRzX2FmdGVyX2VkZ2UpOlxuICAgICAgICByZXR1cm4gXCJDT01QTEVURVwiXG4ifSwgImNoZWNrZXIiOiB7ImZpbGVuYW1lIjogImNoZWNrZXIucHkiLCAiZW50cnlfcG9pbnQiOiAiY2hlY2tfdHJhY2UodHJhY2U6IGRpY3Rbc3RyLCBvYmplY3RdLCBtZXRhZGF0YTogZGljdFtzdHIsIG9iamVjdF0pIC0+IGRpY3Rbc3RyLCBvYmplY3RdIiwgInNvdXJjZSI6ICJkZWYgY2hlY2tfdHJhY2UodHJhY2UsIG1ldGFkYXRhKTpcbiAgICByZXR1cm4ge1widmVyZGljdFwiOiBcIlBBU1NcIiwgXCJkaWFnbm9zdGljc1wiOiBbXX1cbiJ9LCAiZGVwZW5kZW5jaWVzIjogW10sICJhc3N1bXB0aW9ucyI6IFtdfQ=="
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "PARSE_SCHEMA",
+    "error_class": "SCHEMA_REJECT",
+    "diagnostic": "SCHEMA_REJECT|pointer=/"
+  }
+}

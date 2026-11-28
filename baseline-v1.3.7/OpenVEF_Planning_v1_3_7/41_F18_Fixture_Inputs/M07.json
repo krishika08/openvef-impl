@@ -1,0 +1,36 @@
+{
+  "fixture_id": "M07",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "re.compile is explicitly permitted",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "import re\nimport random\n\ndef create_driver(seed):\n    pattern = re.compile(\"x\")\n    driver = Driver()\n    driver.rng = random.Random(seed)\n    return driver\n\nclass Driver:\n    def step(self, cycle_index, outputs_after_edge):\n        return \"COMPLETE\"\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "def check_trace(trace, metadata):\n    return {\"verdict\": \"PASS\", \"diagnostics\": []}\n"
+      },
+      "dependencies": [],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "ACCEPT",
+    "stage_id": null,
+    "error_class": null,
+    "diagnostic": null
+  }
+}

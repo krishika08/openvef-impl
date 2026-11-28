@@ -1,0 +1,263 @@
+{
+  "sidecar_version": "1.3.7-candidate, not audited",
+  "model_visible": false,
+  "purpose": "Maps semantic block IDs to identical visible headings and pre-specified block orders. This file and all IDs are assembler-only and must never be sent to the model.",
+  "encoding": "UTF-8 without BOM",
+  "line_endings": "LF",
+  "block_inventory": [
+    {
+      "id": "B0",
+      "heading": "[Task instruction]",
+      "payload_key": null
+    },
+    {
+      "id": "B1",
+      "heading": "[Design specification]",
+      "payload_key": "design_specification"
+    },
+    {
+      "id": "B2",
+      "heading": "[Port manifest]",
+      "payload_key": "port_manifest"
+    },
+    {
+      "id": "B3",
+      "heading": "[Reset and legal-input rules]",
+      "payload_key": "reset_and_legal_input_rules"
+    },
+    {
+      "id": "B4",
+      "heading": "[Execution envelope]",
+      "payload_key": "execution_envelope"
+    },
+    {
+      "id": "B5",
+      "heading": "[Driver API]",
+      "payload_key": "driver_api"
+    },
+    {
+      "id": "B6",
+      "heading": "[Trace schema]",
+      "payload_key": "trace_schema"
+    },
+    {
+      "id": "B7",
+      "heading": "[Checker contract]",
+      "payload_key": "checker_contract"
+    },
+    {
+      "id": "B8",
+      "heading": "[Response schema]",
+      "payload_key": "response_schema_v1_0"
+    }
+  ],
+  "arm_orders": {
+    "ORG-A": [
+      "B0",
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8"
+    ],
+    "ORG-B": [
+      "B0",
+      "B2",
+      "B5",
+      "B1",
+      "B6",
+      "B3",
+      "B7",
+      "B4",
+      "B8"
+    ]
+  },
+  "fixed_blocks": [
+    "B0",
+    "B8"
+  ],
+  "schema_file": "34_OpenVEF_Response_Schema_v1.0.json",
+  "schema_placeholder": "{{OPENVEF_RESPONSE_SCHEMA_JSON}}",
+  "template_files": {
+    "ORG-A": "19_ORG_A_Prompt_Template.txt",
+    "ORG-B": "20_ORG_B_Prompt_Template.txt"
+  },
+  "validation": {
+    "all_headings_identical_across_arms": "REQUIRED",
+    "all_block_bodies_identical_before_ordering": "REQUIRED",
+    "block_ids_never_model_visible": "REQUIRED",
+    "arm_labels_never_model_visible": "REQUIRED",
+    "unknown_duplicate_or_missing_headings_rejected": "REQUIRED",
+    "no_reserved_heading_payload_lines": "REQUIRED",
+    "model_visible_contract_matches_parser_contract": "REQUIRED",
+    "driver_and_checker_ast_rules_model_visible": "REQUIRED",
+    "visible_clause_ids_equal_manifest_clause_ids": "REQUIRED",
+    "ascii_identifier_rule_visible_in_B8": "REQUIRED",
+    "non_ascii_token_scan_precedes_import_classification": "REQUIRED",
+    "fixed_B5_text_followed_by_two_LF_before_design_lead_in": "REQUIRED",
+    "feedback_no_redaction_grammar_truncate_escape_order": "REQUIRED",
+    "entry_point_reason_symbol_precedence_matches_normative_table": "REQUIRED",
+    "midrun_halt_signature_and_recovery_policy_tested": "REQUIRED",
+    "entry_point_global_category_sort_key": "(category, file_order, lineno, col_offset, end_lineno, end_col_offset)",
+    "entry_point_category_pass_global_not_per_file": "REQUIRED",
+    "b5_helper_function_scope_matches_parser": "REQUIRED",
+    "b7_helper_function_scope_matches_parser": "REQUIRED",
+    "entry_point_category_pass_is_global_across_files": "REQUIRED",
+    "ascii_identifier_scans_name_and_identifier_relevant_errortoken": "REQUIRED",
+    "unicode_string_comment_exemption": "REQUIRED",
+    "character_column_vs_utf8_byte_column_distinction": "REQUIRED",
+    "shared_item_revision_invalidates_all_arm_x_design_slots": "REQUIRED",
+    "partial_confirmatory_ledgers_archived_and_disclosed_on_new_preregistration": "REQUIRED",
+    "design_membership_estimand_weight_change_requires_new_preregistration": "REQUIRED",
+    "halt_signature_component_values_enumerated": "REQUIRED",
+    "nested_async_function_definitions_rejected_at_ast_signature": "REQUIRED",
+    "async_definition_category_rank": "6",
+    "lifecycle_error_class_and_diagnostic_domains_closed": "REQUIRED",
+    "lifecycle_required_action_literals_match_M48_M50_M53_M54_M58": "REQUIRED",
+    "file25_contains_all_three_protocol_34_policy_bullets": "REQUIRED",
+    "charter_section16_uses_current_protocol_reference": "REQUIRED",
+    "async_comprehension_expressions_rejected_at_ast_signature": "REQUIRED",
+    "async_comprehension_category_rank": "7",
+    "async_comprehension_detects_await_anywhere_in_ast_subtree": "REQUIRED",
+    "async_comprehension_symbol_uses_definition_ancestors": "REQUIRED",
+    "standalone_async_statements_in_sync_functions_compile_error": "REQUIRED",
+    "fixture_M70_await_genexp": "REQUIRED"
+  },
+  "schema_sha256": "6fb5d282b09540949f21ee134b522841c3345031cb3e118a83bdffc18b4e7c34",
+  "schema_bytes": 2529,
+  "schema_version": "1.0",
+  "payload_hashes": {
+    "design_specification": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "port_manifest": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "reset_and_legal_input_rules": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "execution_envelope": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "driver_api": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "trace_schema": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "checker_contract": {
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    }
+  },
+  "common_messages": {
+    "source_file": "25_Common_System_and_Repair_Prompt_Templates.txt",
+    "system": {
+      "begin_marker": "--- BEGIN MODEL-VISIBLE SYSTEM-MESSAGE BODY ---",
+      "end_marker": "--- END MODEL-VISIBLE SYSTEM-MESSAGE BODY ---",
+      "sha256": "98020d4f9cf818968f15e4a7c0a5adc3633694aa98c5cbfe170b0904aee3c7a4",
+      "bytes": 602,
+      "role": "system",
+      "status": "TO_FREEZE"
+    },
+    "repair": {
+      "begin_marker": "--- BEGIN MODEL-VISIBLE REPAIR-MESSAGE BODY ---",
+      "end_marker": "--- END MODEL-VISIBLE REPAIR-MESSAGE BODY ---",
+      "sha256": "f11d574f4e5afb223a096b74f039ecb6a222d6ed6dc5bcf7f115dc5922c2620d",
+      "bytes": 621,
+      "role": "user",
+      "sha256_dynamic_template": "f11d574f4e5afb223a096b74f039ecb6a222d6ed6dc5bcf7f115dc5922c2620d",
+      "status": "TO_FREEZE"
+    }
+  },
+  "payload_manifest_file": "38_Authoring_Packet_Manifest_Template_v1.3.7-candidate.json",
+  "manifest_spec_version_sha256": "TO_FREEZE",
+  "clause_id_regex": "^[A-Z]{2,6}-[0-9]{3}$",
+  "visible_clause_id_sources": [
+    "design_specification",
+    "port_manifest",
+    "reset_and_legal_input_rules",
+    "execution_envelope",
+    "driver_api",
+    "trace_schema",
+    "checker_contract"
+  ],
+  "fixed_contract_paragraphs_citable": false,
+  "prompt_template_stage": {
+    "ORG-A": {
+      "sha256": "960b6cc9877f731e46f4c53aa755e4974bcae567ae0451bda833344876c7db7d",
+      "bytes": 13377,
+      "status": "TEMPLATE_STAGE_ONLY_DESIGN_PAYLOADS_UNRESOLVED"
+    },
+    "ORG-B": {
+      "sha256": "ec5d391f3c2fe8c9ed91e857dc0e5d3b18e1e8db9050aae4d66561d53edc432f",
+      "bytes": 13377,
+      "status": "TEMPLATE_STAGE_ONLY_DESIGN_PAYLOADS_UNRESOLVED"
+    }
+  },
+  "manifest_spec_version_sha256_field": "spec_version_sha256",
+  "spec_version_sha256": "TO_FREEZE",
+  "manifest_spec_version_sha256_equality_rule": "sidecar.spec_version_sha256 must equal manifest.spec_version_sha256 byte-for-byte after both are frozen",
+  "prompt_template_stage_note": "Hashes cover the template-stage prompts after exact schema-byte insertion and before the seven design-specific payloads are frozen. They are not final prompt hashes.",
+  "clause_id_search_regex": "(?<![A-Za-z0-9_-])[A-Z]{2,6}-[0-9]{3}(?![A-Za-z0-9_-])",
+  "clause_id_near_match_regex": "(?<![A-Za-z0-9_-])[A-Za-z]{2,6}-[0-9]{1,3}(?![A-Za-z0-9_-])",
+  "superseded_prompt_template_stage_hashes": {
+    "v1.1": {
+      "ORG-A": {
+        "sha256": "de1b8d40246da369c14bd7a5ddf9fa70576636ce1bfe88d8b766bb2c6408b3be",
+        "bytes": 12004
+      },
+      "ORG-B": {
+        "sha256": "4c55f29705795b400991328fef888efc9284df92385dda6db2cb4696cee7fd56",
+        "bytes": 12004
+      }
+    },
+    "v1.2": {
+      "ORG-A": {
+        "sha256": "0546e8d238494961570f8df0715ee9961e9720aefa016336853a35931789a252",
+        "bytes": 12187
+      },
+      "ORG-B": {
+        "sha256": "363fcf2d34de08afaeef6a683ec9affb2c2158d4aa23b79032baab3adcdb603d",
+        "bytes": 12187
+      }
+    },
+    "v1.3": {
+      "ORG-A": {
+        "sha256": "a028311e4378421706024e7f4b13ffc313d03be98c58a20a416b9a4c4b46c012",
+        "bytes": 12957
+      },
+      "ORG-B": {
+        "sha256": "fc88102d3f74f0c79cef4549df19d3dae32a91f859d10c72e21947fffef72c6e",
+        "bytes": 12957
+      }
+    },
+    "v1.3.1": {
+      "ORG-A": {
+        "sha256": "b63be015dbf5c8c4dd6ab518d092fd523dc113dd430a4e4826c551f8de8fe7af",
+        "bytes": 13481
+      },
+      "ORG-B": {
+        "sha256": "cdfcc0acb306337247acd0b0c68df42c375a480e328fc41ecc7b334391c349d8",
+        "bytes": 13481
+      }
+    }
+  },
+  "hash_status_note": "v1.1, v1.2, v1.3 and v1.3.1 prompt-template-stage hashes are superseded historical values. The current template-stage values were first computed in v1.3.2 and are carried forward unchanged from v1.3.3 through v1.3.6; model-visible prompt text changed in v1.3.2, then no model-visible prompt template, schema or common-message bytes changed in v1.3.3–v1.3.6. Final prompt hashes still require the seven frozen design payloads."
+}

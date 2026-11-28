@@ -1,0 +1,36 @@
+{
+  "fixture_id": "M67",
+  "fixture_version": "1.3.3",
+  "scope": "missing-case",
+  "description": "An async checker entry-point binding is rejected by the required-symbol pass as WRONG_ENTRY_POINT_KIND.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "import random\n\ndef create_driver(seed):\n    driver = Driver()\n    driver.rng = random.Random(seed)\n    return driver\n\nclass Driver:\n    def step(self, cycle_index, outputs_after_edge):\n        return \"COMPLETE\"\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "async def check_trace(trace, metadata):\n    return {\"verdict\": \"PASS\", \"diagnostics\": []}\n"
+      },
+      "dependencies": [],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "AST_SIGNATURE",
+    "error_class": "ENTRY_POINT_REJECT",
+    "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=check_trace|reason=WRONG_ENTRY_POINT_KIND"
+  }
+}

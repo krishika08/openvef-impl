@@ -1,0 +1,26 @@
+{
+  "fixture_id": "M26",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "Driver vector contains an extra key",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "driver_return": {
+      "data": "0",
+      "valid": "1",
+      "extra": "0"
+    },
+    "expected_keys": [
+      "data",
+      "valid"
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "DRIVER_VECTOR",
+    "error_class": "DRIVER_VECTOR_INVALID",
+    "diagnostic": "DRIVER_VECTOR_INVALID|reason=EXTRA_KEYS"
+  }
+}

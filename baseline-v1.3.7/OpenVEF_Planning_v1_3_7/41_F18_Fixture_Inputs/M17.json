@@ -1,0 +1,32 @@
+{
+  "fixture_id": "M17",
+  "fixture_version": "1.2",
+  "scope": "missing-case",
+  "description": "Grammar-exempt JSON-escaping primitive unit vector only; the non-grammar diagnostic is used to test escaping and UTF-8 serialization in isolation, not production feedback acceptance.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "feedback_object": {
+      "stage_id": "CHECKER_NULL",
+      "error_class": "CHECKER_RUNTIME_ERROR",
+      "diagnostic": "quote \" newline\naccent é"
+    },
+    "encoding": "UTF-8",
+    "ensure_ascii": false,
+    "indent": 2,
+    "line_endings": "LF",
+    "terminal_newline": true,
+    "test_scope": "JSON_ESCAPING_PRIMITIVE_ONLY_GRAMMAR_BYPASSED",
+    "grammar_exempt_for_primitive_test": true
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "FEEDBACK_SERIALIZER",
+    "error_class": "JSON_SERIALIZATION",
+    "diagnostic_utf8": "{\n  \"stage_id\": \"CHECKER_NULL\",\n  \"error_class\": \"CHECKER_RUNTIME_ERROR\",\n  \"diagnostic\": \"quote \\\" newline\\naccent é\"\n}\n",
+    "diagnostic_sha256": "226a87deb777b94556d262a0e45e669ced8c80f5cf8ec1bc3d691e9d4570423f",
+    "diagnostic_bytes": 122
+  },
+  "fixture_class": "serializer_primitive_unit_vector_grammar_exempt"
+}

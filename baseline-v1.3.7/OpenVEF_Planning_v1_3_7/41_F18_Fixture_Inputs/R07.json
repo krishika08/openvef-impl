@@ -1,0 +1,20 @@
+{
+  "fixture_id": "R07",
+  "fixture_version": "1.1",
+  "scope": "repair",
+  "description": "Design-level baseline has masked output divergence under identical inputs",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "design_preflight": {
+      "rtl_null_masked_divergence": true
+    }
+  },
+  "expected": {
+    "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "RTL_NULL_CONTROL_FAILURE",
+    "diagnostic": "RTL_NULL_CONTROL_FAILURE|reason=MASKED_OUTPUT_DIVERGENCE"
+  }
+}

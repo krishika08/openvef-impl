@@ -1,0 +1,19 @@
+{
+  "fixture_id": "M29",
+  "fixture_version": "1.0",
+  "scope": "missing-case",
+  "description": "AST node order tie uses file order driver.py before checker.py",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "driver_source": "import os\n",
+    "checker_source": "import sys\n"
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "IMPORT_POLICY",
+    "error_class": "IMPORT_POLICY_REJECT",
+    "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "fixture_id": "M54",
+  "fixture_version": "1.3.7-candidate, not audited",
+  "scope": "missing-case",
+  "fixture_class": "lifecycle_unit_vector",
+  "description": "The halt-signature tuple uses only the enumerated stable component values and excludes volatile execution metadata.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "domain_validation": "HALT_SIGNATURE_COMPONENT_ENUMERATION"
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "HALT_SIGNATURE_SCHEMA",
+    "diagnostic": "HALT_SIGNATURE_SCHEMA|reason=COMPONENT_VALUES_ENUMERATED",
+    "required_action": "enforce_design_id_halt_code_evaluator_component_stable_error_class_stable_diagnostic_code_domains_and_reason_to_component_mapping; exclude timestamps_process_ids_attempts_hosts_and_trace_row_indices",
+    "design_id_values": [
+      "FIFO",
+      "UART"
+    ],
+    "halt_code_values": [
+      "SIMULATOR_ERROR",
+      "TRACE_INTEGRITY_FAILURE",
+      "RTL_NULL_CONTROL_FAILURE"
+    ],
+    "evaluator_component_values": [
+      "SIMULATOR",
+      "REPLAY_VERIFIER",
+      "RECORDER",
+      "TRACE_ALIGNMENT_CHECKER",
+      "TRACE_SERIALIZER",
+      "RTL_NULL_COMPARATOR"
+    ],
+    "stable_error_class_rule": "simple_exception_class_for_SIMULATOR_ERROR_else_NONE",
+    "stable_diagnostic_code_rule": "exact_halt_code_token"
+  }
+}

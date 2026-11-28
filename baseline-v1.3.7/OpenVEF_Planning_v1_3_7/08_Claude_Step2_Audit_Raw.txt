@@ -1,0 +1,337 @@
+OpenVEF Step 2 Audit: Functional Qualification and Mutation Analysis
+Nov 22, 2026 · @Conductors
+1. Overall verdict: PASS WITH CORRECTIONS
+The note's central position is right and well hedged. Functional qualification, activation/propagation/detection (A/P/D) and stimulus-versus-checker diagnosis are prior art, and OpenVEF does not invent them. Most bibliographic facts check out. Six corrections are needed:
+1.  The 2014 IEEE Transactions on Computers (TC) paper is not functional qualification in the note's own sense. It defines a mutant as killed when the outputs differ from the fault-free run (Sec. 3.2 of the university-repository manuscript). It does not require a testbench failure. The note groups it with work that requires a failing test.
+2.  The literature uses two different meanings of "propagation". The DATE 2009 paper, the Certess brief and Große et al. say propagation to an observable point such as the outputs. A Certitude user paper (DVCon) classifies a fault as non-propagated when it does not reach a checker. Under the second meaning, a fault that reaches an output no checker examines is non-propagated in Certitude terms but PND in OpenVEF. The note's mapping ("NP merges non-activation and non-propagation") holds only under the first meaning, and it also leaves out raw divergences that fall outside the mask.
+3.  The note understates Huang et al. (2015). Its checker "completeness" term is killed mutants divided by mutants whose coverage fluctuated. That is a checker-side share among exposed mutants, a direct precedent for OpenVEF's secondary checker_gap. Its "alive + fluctuated = checker insufficient" row is the analogue of PND.
+4.  Stuck-at fault grading is never discussed. The audit brief asks whether it is distinguished from design-bug mutation. OpenVEF's Yosys/MCY netlist signal mutants (inversions and constant drives on netlist signals) are structurally closer to manufacturing fault models than to design-bug mutation. That needs saying.
+5.  Three Huang numbers could not be located. The final values 0.91 (random), 0.92 (directed), and the CPU's 0.48 → 0.91 over ten iterations were not found in the text I could access (Section 3 explains what I accessed). Verify them in Tables 2–4 before citing them.
+6.  The DATE 2009 paper has vendor co-authors. Two of its five authors were Certess employees, and its experiments use Certitude. It is peer-reviewed, but it is not independent of the vendor. The note treats it as purely academic.
+What I read. I read the extracted text of three sources: DATE 2009 (full proceedings PDF), the TC 2014 accepted manuscript, and Huang et al. (journal HTML, with equations and table cells not rendered). For the rest I had abstracts, metadata, first-page excerpts or search-index excerpts only. Section 3 gives the exact access level per source, and confidence is lowered wherever access was partial. No visual page images were inspected for any source.
+2. Claim-by-claim review
+Status key: Correct; Nuance (true, but needs qualification); Incorrect; Not located (could not be confirmed from accessible text); Omission. "Note §" refers to the note's numbering. Source locations are the paper's own section, equation and table numbers. No page numbers are given where the accessible text had none printed.
+A. Terminology and concepts
+#
+Note claim (§)
+Status
+Correction
+Primary citation and location
+A1
+Functional qualification (FQ) counts a mutant as detected only when the verification environment reports a failure; an unchecked output change is not enough (§1, §2)
+Correct
+None
+DATE 2009, Sec. I: traditional mutation analysis kills on output difference; FQ kills only if a test case fails
+A2
+In basic mutation analysis, an output difference can count as a kill (§2)
+Correct
+Name it as strong mutation in software-testing terms; weak mutation kills on infected internal state
+DATE 2009 Sec. I; TC 2014 Sec. 3.2 uses exactly this rule
+A3
+Activation, propagation and detection are distinct stages (§1, §3)
+Correct
+None
+DATE 2009 Sec. III; Große et al. 2016, Sec. I; Huang 2015 abstract
+A4
+Propagation means the effect "reaches an observation point" (§3 table)
+Nuance
+State that sources disagree on the observation point. DATE 2009 and the Certess brief say an observable point such as the outputs. A Certitude user paper defines non-propagated as activated but not propagated to a checker. State which meaning OpenVEF uses (masked top-level outputs)
+DATE 2009 Sec. III; DVCon practitioner paper "Who's Watching the Watchmen", fault-classification table (non-peer-reviewed)
+A5
+FIFO example: if full differs and the checker never checks it, the fault is "exposed but not detected" (§3)
+Nuance
+True under OpenVEF's definitions (PND). Under the "propagated to a checker" definition, the same case is non-propagated. Add one sentence saying so
+As A4
+A6
+Mutation score = killed non-equivalent / all non-equivalent (§2)
+Nuance
+This is the textbook definition, but the cited hardware papers do not always follow it. TC 2014 defines a score excluding equivalents (Sec. 3.2), yet its Table 6 coverage appears to divide by all applied mutants (e.g. 101/138 for OSCI LT). Say that reported scores often use all generated mutants
+TC 2014 Sec. 3.2, Table 6
+A7
+Equivalence is hard or undecidable to decide automatically; a bounded pass is not unbounded equivalence (§2)
+Correct
+Add a primary citation. TC 2014 Sec. 3.2 states the undecidability; the software origin is Budd & Angluin (1982), from my knowledge, not verified here
+TC 2014 Sec. 3.2
+A8
+Selective mutation: a subset of operators is used, so scores are fault-model relative (§5, §7.2.6)
+Correct; source weak
+The note sources this only to the vendor brief. DATE 2009 (peer-reviewed) states that selective mutation keeps mutant count linear, at about 1.4 mutants per line. Cite that as well. In software, "selective mutation" also means operator selection (Offutt et al.); keep the two senses apart
+DATE 2009 Sec. II-B
+A9
+First-order syntactic mutants may miss multi-line bugs and missing functionality (§7.2.7)
+Correct; uncited
+Add a citation. This is the competent-programmer / coupling-effect assumption from software mutation analysis (DeMillo et al. 1978; Offutt 1992; from my knowledge, not verified here)
+—
+A10
+Stuck-at fault grading versus design-bug mutation (audit question)
+Omission
+The note never mentions manufacturing fault grading. It should separate the two: (a) stuck-at/bit-flip faults graded at primary outputs against a golden response, with no checker; (b) design-error mutation judged by the testbench's verdict. Then place OpenVEF's netlist signal mutants, whose inversion and constant-drive modes resemble (a), relative to both. OpenVEF's "masked divergence" is a fault-simulation-style detection; its checker verdict is the FQ part
+—
+B. Source-specific claims
+#
+Note claim (§)
+Status
+Correction
+Primary citation and location
+B1
+Devadas et al. 1996 tag variables to track whether effects of executed assignments can reach outputs; this is observability coverage, not checker qualification (§1, §4)
+Correct (abstract level)
+None. Abstract: the metric computes whether effects of errors activated by stimuli can be observed at circuit outputs
+Devadas, Ghosh & Keutzer, ICCAD 1996, pp. 418–425, abstract
+B2
+OCCOM (DAC 1998) gives an efficient computation of observability-based coverage (§4)
+Correct
+Add the journal version: IEEE TCAD 20(8):1003–1015, 2001
+DAC 1998, pp. 152–157 (metadata)
+B3
+DATE 2009 distinguishes output change from test failure, discusses checks of internal or external behaviour, and proposes an EFSM-based TLM mutation model (§3, §6.1)
+Correct
+Add: (i) it extends the authors' DATE 2008 TLM mutation model and the FSM transition-fault model; (ii) two co-authors (Hampton, Letombe) were at Certess, and experiments use Certitude
+DATE 2009, Sec. I, II-A, III; author block
+B4
+TC 2014 belongs to the FQ lineage; methodology steps 1–5; minimal mutant set reducing redundancy (§1, §6.2, §8)
+Steps correct; framing incorrect
+Steps 1–5 are confirmed (EFSMs Sec. 4; transition-fault extension Sec. 5; six design-error classes Sec. 6; error-to-fault mapping Sec. 7; automatic injection by primitive replacement Sec. 8). But a mutant is killed on output difference (stdout trace), not test failure (Sec. 3.2). Describe it as mutation analysis for testbench qualification, not FQ. The "minimal set" is an aim the paper does not prove (Sec. 1, Sec. 7.2); say "reduces redundancy". It extends DATE 2008 and MTV 2009, not DATE 2009 (Sec. 2). It uses its own framework, not Certitude
+TC 2014 manuscript, Secs. 1–8
+B5
+Huang 2015: three components (stimulus, coverage model, checkers) (§6.3)
+Correct
+None
+Huang et al. 2015, Sec. 1
+B6
+Four coverage/checker combinations, with the stable + survived case explicitly ambiguous and left as future work (§6.3 table)
+Correct
+None
+Sec. 3.1, Table 1; Secs. 3.2–3.3
+B7
+Composite metric with weights 0.2 / 0.4 / 0.4 and threshold 0.9 (§6.3)
+Correct
+Weights and threshold are verbatim in Sec. 4.1. Their mapping to components is inferred from the text (coverage and checker weighted above stimulus), because the symbols were not rendered in the accessible copy
+Sec. 3.4, Eq. (1); Sec. 4.1
+B8
+Stimulus component = compactness × "coverage integrity" (§6.3)
+Nuance
+The accessible text calls the second factor completeness (covered coverpoints / total coverpoints). "Integrity" is the paper's word for the coverage model and checkers in its contributions list
+Sec. 3.4, Eq. (2)
+B9
+Checker component = compactness × effectiveness on fluctuating-coverage mutants (§6.3)
+Correct, under-used
+Eq. (4) is fired checkers / total checkers × killed fluctuated mutants / total fluctuated mutants. The second factor is a checker-side detection share among exposed mutants. Say so in §7: it is a direct precedent for OpenVEF's secondary checker metric
+Sec. 3.4, Eq. (4)
+B10
+ICM: 623 mutants, 64 coverpoints, 16 checkers (§6.3)
+Correct
+None
+Sec. 4.1
+B11
+Random stimulus: 0.51 → 0.91 over 9 iterations (§6.3)
+Partly located
+9 iterations (Sec. 4.2) and the starting 0.51 (Table 2, iteration 0) are confirmed. The final 0.91 was not located
+Sec. 4.2; Table 2
+B12
+Directed stimulus: 0.51 → 0.92 over 6 iterations (§6.3)
+Partly located
+6 iterations confirmed (Sec. 4.3); the values were not located
+Sec. 4.3; Table 3
+B13
+CPU: 0.48 → 0.91 over 10 iterations (§6.3)
+Not located
+Sec. 4.5 gives 20 constrained-random tests and about 7 hours of simulation. The iteration count and values were not in accessible text. Mark as unverified
+Sec. 4.5; Table 4
+B14
+Huang's results are under its own composite metric and not comparable (§6.3, §7.1)
+Correct
+Also add: mutants come from self-built scripts, operators are not enumerated, and equivalent mutants are not discussed (only dead code)
+Sec. 4.1; Sec. 3.1
+B15
+Huang identifies that coverage emphasises activation and ignores propagation and detection (§4)
+Correct
+None
+Abstract
+B16
+Certitude launched by Certess in May 2007 (§5)
+Correct
+Confirmed by the Certess press release dated 7 May 2007. The cited EDN article was not accessed
+Certess press release, 7 May 2007 (Design & Reuse)
+B17
+Hampton brief: detection may occur via internal checks even when the fault does not reach a primary output; lists operator types and selective mutation (§5)
+Partly located
+The A/P/D definition in the brief was confirmed. The internal-check and operator-list claims were not located in accessible excerpts. DATE 2009 supports the internal-check point, so cite that
+Hampton, 2 Mar 2009 (Design & Reuse reprint of edadesignline.com)
+B18
+Synopsys TQA: "verification improvement" and "metric" modes; weaknesses in stimuli, observability, checkers, assertions and plan (§5)
+Correct
+None. The former Certitude URL on synopsys.com now serves TQA text, which supports "now represented in TQA"
+Synopsys TQA product page and datasheet
+B19
+Große et al. 2016 is adjacent work on software-test qualification for IP integration (§9)
+Correct
+Add pages 606–613
+ICCD 2016 (metadata; first-page excerpt)
+C. OpenVEF mapping
+#
+Note claim (§)
+Status
+Correction
+C1
+NP merges non-activation and non-propagation because internal activation is not instrumented (§3, §7.1)
+Incomplete
+Under the v0.4 partition, NP is no masked divergence plus a checker PASS, so it also contains pairs with raw divergence outside the mask, and effects that would appear only after the cycle cap. Rewrite as: NP = not activated, or not propagated to top-level outputs, or propagated only to unmasked outputs or cycles, or beyond the run window
+C2
+PND/(NP+PND) is a checker-side share among misses, not a mutation score (§7.1)
+Correct
+None
+C3
+OpenVEF's top-level mask is narrower than FQ's internal-check capability (§3, §7)
+Correct
+Also note that OpenVEF's mask is fixed by the specification and independent of the checker. Certitude-style propagation depends on the testbench's own checkers. That is a real methodological difference, not only a narrowing
+C4
+Do not compare numerically with Certitude, Huang or Verify the Verifier (§7.1)
+Correct
+None
+C5
+Hidden mismatches with legacy FQ (audit question)
+Omission
+See Section 5 of this audit. Briefly: suite-level versus artifact-level verdicts; fault dropping in commercial FQ; coverage-fluctuation proxy versus output divergence; RTL-source versus netlist mutants; online testbench verdicts versus an offline checker
+3. Bibliography corrections and source access
+Ref
+Source type
+What I could access
+Bibliographic correction
+1. Devadas, Ghosh & Keutzer 1996
+Peer-reviewed (ICCAD)
+Abstract, metadata, first-page excerpt. Not full text
+Add pages 418–425 and conference dates 10–14 Nov 1996. Affiliations on the paper: MIT, Mitsubishi, Synopsys. The DOI 10.1109/ICCAD.1996.569832 was not independently confirmed. The note's "full PDF via UC Irvine copy" cannot be checked by me
+2. Fallah, Devadas & Keutzer 1998
+Peer-reviewed (DAC)
+Metadata and abstract
+Confirmed: pp. 152–157, DOI 10.1145/277044.277078. Add the journal version: IEEE TCAD 20(8):1003–1015, Aug 2001, DOI 10.1109/43.936381
+3. Bombieri, Fummi, Pravadelli, Hampton & Letombe 2009
+Peer-reviewed (DATE), vendor co-authored
+Full text of the proceedings PDF (extracted; no printed page numbers)
+Mark Hampton and Florian Letombe as Certess. Proceedings page numbers and DOI not given in the note and not verified here; take them from IEEE Xplore
+4. Bombieri, Fummi, Guarnieri & Pravadelli 2014
+Peer-reviewed journal (TC)
+Full text of the university-repository manuscript (likely pre-publication; section numbers may differ from the published version)
+Confirmed: 63(5):1248–1261, May 2014. State that the text read was the repository manuscript
+5. Huang, Zhu, Yan & Yan 2015
+Peer-reviewed open-access journal (VLSI Design)
+Journal HTML text; equations and most table cells not rendered; some cells from search excerpts
+Confirmed: Article ID 256474, DOI 10.1155/2015/256474, published May 2015. The Wiley record lists it as Volume 2015, Issue 1. One library record's "p. 2–10" is not a reliable page range; cite by article ID
+6. Hampton 2009
+Vendor/industry (Certess CTO)
+Excerpts of a Design & Reuse reprint
+The accessible copy credits edadesignline.com, 2 Mar 2009, not EE Times. Cite the outlet as shown on the copy actually read. The brief makes vendor priority claims ("first technology") that must not be repeated as fact
+7. EDN 2007
+Trade press
+Not accessed
+The launch date is independently confirmed by the Certess press release of 7 May 2007. Cite that, or mark EDN as unchecked
+8. Synopsys TQA
+Product page
+Product page and datasheet excerpts
+Add an access date. Commercial description only
+9. Große, Le, Hassan & Drechsler 2016
+Peer-reviewed (ICCD)
+Metadata and first-page excerpt
+Add pages 606–613. Sources disagree on location and dates (Scottsdale, 2–5 Oct vs Phoenix, 3–5 Oct); use the IEEE record. The accessible PDF is hosted at uni-bremen.de; the note's jku.at URL was not checked
+Sources the note should add for terminology (not yet cited):
+• DVCon paper "Who's Watching the Watchmen" by a Certitude user. It is the clearest public statement I found of Certitude's four classes: non-activated, non-propagated (not reaching a checker), non-detected, detected. It also mentions fault dropping and test ordering. It is a practitioner paper, not peer-reviewed research.
+• Synopsys/Certitude user documentation. Not publicly accessible. The note should not describe Certitude internals beyond what public sources state.
+Corrections to confidence statements in the note itself (§9):
+• Ref 3: "full text indexed and reviewed" is consistent with what I could access.
+• Ref 4: "university repository PDF text reviewed" is consistent.
+• Ref 1: a claim of full-text access to a 1996 ICCAD paper should state the host and access date. I could not see the full text.
+4. Important omissions and additional prior art
+The access column says how far I got with each item:
+• Seen: I located the title, abstract or excerpt this session.
+• Known: cited from my own knowledge and not checked this session. Verify before citing.
+Hardware testbench qualification (most important gaps)
+Work
+Why it matters to OpenVEF
+Access
+Lisherness & Cheng, "Coverage discounting: a generalized approach for testbench qualification" (IEEE, 2011)
+Adds checker sensitivity to functional coverage by discounting coverpoints tied to surviving mutants. A direct precedent for separating stimulus sufficiency from checker sufficiency
+Seen (abstract)
+Lisherness, Lesperance & Cheng, "Mutation analysis with coverage discounting", DATE 2013, pp. 31–34
+Automates discounting with a commercial mutation tool. Notes that most functional and code coverage evaluate only activation
+Seen (excerpt)
+Lisherness & Cheng, ASP-DAC 2012 (overview of observability-enhanced coverage, mutation analysis and coverage discounting)
+A compact secondary source for the whole lineage
+Seen (abstract)
+Lin, Wang, Chang, Chen et al., "A probabilistic analysis method for functional qualification under mutation analysis", DATE 2012 (National Tsing Hua University)
+Error Propagation Analysis estimates which mutants will propagate before simulation. Directly relevant to the propagation stage, and a Taiwan group, which is useful context for TEEP
+Seen (first page)
+Bombieri, Fummi & Pravadelli, DATE 2008 and MTV 2009 (pp. 32–37)
+The actual precursors that TC 2014 extends
+Seen (dblp)
+Serrestou, Beroulle & Robach, "Functional verification of RTL designs driven by mutation testing metrics"
+Early RTL (VHDL) mutation-driven verification qualification
+Seen (title/abstract); year to confirm
+Hassan, Große, Le et al., "Testbench qualification for SystemC-AMS TDF models", DATE 2018
+Shows the same group extending qualification; places Große 2016 in context
+Seen (first page)
+DVCon "Who's Watching the Watchmen" (Certitude user)
+Public statement of Certitude's four-class taxonomy, fault dropping and test ordering
+Seen (excerpt)
+Software-testing foundations the note relies on but does not cite
+Work
+Why it matters
+Access
+Voas, PIE analysis (1992); Ammann & Offutt RIP, extended to RIPR (reachability, infection, propagation, revealability); Li & Offutt, "Test oracle strategies for model-based testing", TSE 2017
+RIPR's "revealability" (the oracle must observe the incorrect state) is the exact software analogue of OpenVEF's propagated-not-detected distinction. Weak, firm and strong mutation map onto it
+Seen (secondary descriptions)
+Schuler & Zeller, "Assessing oracle quality with checked coverage", ICST 2011; extended in STVR 23(7):531–551, 2013
+Measures whether executed code influences an oracle: a checker-quality metric distinct from coverage
+Seen
+"Covered Is Not Checked" (arXiv 2610.33708, 2026)
+Software study classifying surviving mutants as not activated versus activated-but-undetected across projects. A recent, close empirical analogue of the NP/PND split
+Seen (search excerpt only; not read)
+Budd & Angluin 1982 (equivalence undecidable); Offutt et al. selective mutation (1993/1996); DeMillo, Lipton & Sayward 1978; Offutt 1992 coupling effect
+Primary sources for the note's §2 and §7.2 claims
+Known
+Fault-model literature (needed for OpenVEF's netlist mutants)
+• Stuck-at fault simulation and fault grading. These are graded by primary-output difference against a golden response, with no checker. Observability/controllability measures such as SCOAP (Goldstein 1979) belong here too (Known). OpenVEF's "masked divergence" step is fault simulation in this sense. Only the checker step is functional qualification.
+• Yosys mutate and MCY documentation. The note should cite the fault modes actually generated on the pinned version. Inversion is confirmed from earlier work; constant-drive and controlled-inversion modes need checking on the pinned version. That pins down how close the population is to stuck-at and bit-flip faults.
+LLM-era work that would weaken a novelty claim if missed (Step 3 scope, flagged now)
+Work
+Overlap
+Access
+SecTB-RTL, "Trust, but Validate the Instrument" (arXiv 2609.19844)
+AI-generated RTL verification plans (stimuli and checks), 31 tasks and 124 authored security-regression mutants, matched information across model arms, and a planned prompt-effect estimate. The authors abandoned that estimate after only 9 of 1,857 accepted responses passed their semantic validator. Closest design analogue to OpenVEF found so far, and a direct warning about instrument validation
+Seen (abstract and excerpts)
+GateTruth (arXiv 2608.12635)
+Mutation testing of LLM-benchmark RTL testbenches; separates simulation kills from compile and formal kills in its denominator
+Seen (excerpts)
+AutoBench / CorrectBench
+Evaluate LLM-generated testbenches against LLM-generated RTL mutants (AutoBench's second criterion)
+Seen (secondary description)
+5. OpenVEF-specific implications
+Nothing here changes the research question, hypotheses, primary metric or statistics. The changes are definitional, a few reporting additions, and one extra validation check.
+Hidden mismatches between the legacy literature and OpenVEF
+These are my inferences from the sources above, not statements made by them.
+1.  Suite verdict versus artifact verdict. In FQ, a fault is detected if any test in the suite fails. Non-activated means no test activates it. OpenVEF classifies each artifact–mutant pair separately. Legacy percentages are suite-level and cannot be compared with per-artifact shares.
+2.  Fault dropping. Commercial FQ stops simulating a fault once one test detects it, and orders tests to do so sooner (DVCon practitioner paper). Per-test outcomes are therefore not recorded, so legacy results cannot be re-analysed at the test level.
+3.  The propagation boundary depends on the checker in Certitude but not in OpenVEF. In OpenVEF it is a frozen specification mask. A missing check on a top-level output is non-propagated in Certitude terms but PND in OpenVEF. OpenVEF's checker share will therefore read higher than a Certitude-style "non-detected" share for the same testbench. This is a definitional effect, not a finding.
+4.  Exposure proxy. Huang et al. use coverage-result fluctuation as the exposure condition. OpenVEF uses masked output divergence. The two structures are analogous, but they do not measure the same thing.
+5.  Fault model. The FQ literature mutates RTL or SystemC source with design-error operators. OpenVEF mutates synthesised netlist signals. Its exposure step is fault simulation, and only the checker step is qualification.
+6.  Online versus offline verdicts. Legacy testbenches fail online (assertions, scoreboards, $error). OpenVEF's offline checker over a captured trace is cleaner for attribution, but a checker that would have caught the bug online through a check the trace format does not support is scored as PND. The trace contract (all top-level ports, every cycle) makes this small for top-level-only checkers. It is still worth one sentence among the threats.
+Exact changes recommended
+Document and location (v0.4)
+Change
+Charter §4 terminology mapping ("OpenVEF NP merges functional qualification's non-activated and non-propagated cases…")
+Replace with: "NP combines (i) no activation, (ii) no propagation to top-level outputs, (iii) propagation only to outputs or cycles outside the frozen mask, and (iv) effects that would appear only after the cycle cap. OpenVEF's propagation boundary is the specification mask and is independent of the artifact's checker. Under Certitude-style classification, where propagation is judged at the checker, some OpenVEF PND outcomes would be labelled non-propagated."
+Charter §4 / Protocol prior-art note
+Add Huang et al. (2015) Eq. (4) as the precedent for checker_gap: "checker_gap is analogous to Huang et al.'s checker completeness, with masked output divergence replacing coverage fluctuation as the exposure condition." Add coverage discounting (Lisherness & Cheng) and RIPR as related decompositions
+Charter §12 / Protocol §11.1 (fault population)
+Add: "Yosys/MCY signal mutants are structural netlist faults (inversions and constant drives, per the modes confirmed on the pinned version). They resemble fault-simulation fault models more than design-error mutation. The masked-divergence step is fault simulation against the null netlist; only the checker verdict is functional qualification."
+Protocol §13 (metrics), reporting only
+Report NP pairs split descriptively by whether any raw divergence occurred (outside the mask). This needs no new outcome class, and the raw-divergence index is already archived. It separates "stimulus did not excite" from "excited only unspecified behaviour" and protects the interpretation of H1
+Charter §18 / Protocol §17 (threats)
+Add mismatches 1–3 and 6 above as comparability threats
+Feasibility gate (v0.4 F-controls)
+Add one check, based on the SecTB-RTL incident: before confirmatory generation, run a small, non-confirmatory set of real LLM generations through the full pipeline. Confirm that the prompt's output contract matches the harness API and that the artifact-validity rate is high enough to reach the planned per-design sample sizes. This validates the instrument; it is not data
+Note 06 §9 references
+Apply the bibliography corrections in Section 3 of this audit; add the sources in Section 4 that are marked Seen
+6. Revised prior-art boundary paragraph
+Proposed replacement for the note's §8 and the Charter's prior-art statement:
+Decomposing fault detection into activation, propagation and detection is established in both software testing (PIE; RIP/RIPR, including oracle revealability) and hardware verification. Observability-based coverage (Devadas et al., ICCAD 1996; OCCOM, DAC 1998 / TCAD 2001) addressed propagation to outputs. Functional qualification (Certitude, launched 2007; Bombieri et al., DATE 2009) counts a fault as detected only when the verification environment fails. Academic testbench-qualification work has separately assessed stimulus and checker sufficiency: Huang et al. (VLSI Design 2015), whose checker-completeness term is a checker-side share among exposed mutants, and coverage discounting (Lisherness and Cheng). OpenVEF therefore claims none of these ideas, and does not claim stimulus-versus-checker attribution itself; Verify the Verifier (2026) applies a comparable split to human-written UVM regressions. OpenVEF's proposed contribution is an empirical measurement under a specific design: newly LLM-generated driver/checker artifacts as the unit of analysis, a controlled comparison of prompt structure with matched information, propagation judged against a checker-independent specification mask, and Yosys/MCY netlist signal mutants (a structural fault population) evaluated by paired execution against a null netlist. Each element has precedents. Whether their combination is distinct is still open pending the LLM-era review, which must include mutation-based evaluations of LLM-generated testbenches such as AutoBench, GateTruth and SecTB-RTL. Results are defined relative to this fault population and mask, and are not comparable numerically with suite-level functional-qualification scores.

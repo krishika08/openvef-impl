@@ -11,8 +11,10 @@ implemented is reported NOT_IMPLEMENTED -- never PASS.
 Usage (evidence, D-002a):  runner/run_f18_container.sh <run_class> [f18 [<pack>]]
 Usage (development only):  python3.11 -I runner/run_f18.py <pack_root> <evidence_dir> <run_class> [--pack <pack>]
 
-D-024: <pack> is `v1.3.6` (default, the baseline) or `v1.3.7-candidate` (proposals/v1.3.7/pack, v1.3.7 CANDIDATE,
-not audited). The pack selects the pinned index hash and the adapter table; v1.3.6 behaviour is unchanged.
+D-024, D-035: <pack> is `v1.3.7` (default since D-035: the adopted pack, baseline-v1.3.7/OpenVEF_Planning_v1_3_7,
+byte-identical to the audited candidate), `v1.3.6` (the v1.3.6 baseline, still selectable) or `v1.3.7-candidate`
+(proposals/v1.3.7/pack, kept so earlier runs can be reproduced). The pack selects the pinned index hash and the adapter
+table; v1.3.6 behaviour is unchanged.
 """
 from __future__ import annotations
 
@@ -405,6 +407,11 @@ PACKS = {
                          # D-027: the OWNER-DECIDED rules (OD-n) each candidate adapter rests on
                          "owner_decided": adapters_v137.OWNER_DECIDED},
 }
+# D-035 item 4: the adopted v1.3.7 pack is the default. Same bytes, manifest, index and adapter table as the candidate
+# (document audit #7 CLEARED that candidate); only the label differs. v1.3.6 and v1.3.7-candidate stay selectable.
+PACKS["v1.3.7"] = {**PACKS["v1.3.7-candidate"],
+                   "label": "v1.3.7 ADOPTED (D-035; document audit #7 CLEARED; L555 (3) gate met; not F18 acceptance)"}
+DEFAULT_PACK = "v1.3.7"
 ADAPTER_TABLE = ADAPTERS  # set by main() from --pack
 OWNER_SPECIFIED_ROWS: dict = {}  # D-026: adapter name -> OS item; set by main() from --pack (empty for v1.3.6)
 OPEN_SHAPES: tuple = ()  # D-026: (required, optional, OS item, reason) the owners left unspecified
@@ -525,7 +532,7 @@ def verify_pack_manifest(root: Path, manifest: str, pinned: str) -> int:
 
 def parse_args(argv: list[str]) -> tuple[Path, Path, str, str]:
     args = list(argv[1:])
-    pack = "v1.3.6"
+    pack = DEFAULT_PACK  # D-035 item 4
     if "--pack" in args:
         i = args.index("--pack")
         pack = args[i + 1]
@@ -582,7 +589,7 @@ def main() -> int:
         "command": [sys.executable, *sys.argv],
         "sandbox": SANDBOX,
     }
-    if pack_info["label"]:  # D-024: v1.3.6 records are unchanged; a candidate run says what it ran
+    if pack_info["label"]:  # D-024: v1.3.6 records are unchanged; a v1.3.7 run says what it ran (D-035)
         meta["pack"] = pack
         meta["pack_label"] = pack_info["label"]
         meta["pack_manifest_sha256"] = sha256_file(root / pack_info["manifest"])

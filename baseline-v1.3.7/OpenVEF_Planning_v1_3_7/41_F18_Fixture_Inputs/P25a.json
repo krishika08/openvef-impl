@@ -1,0 +1,36 @@
+{
+  "fixture_id": "P25a",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "Python syntax error in driver.py.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "x = )\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "def check_trace(trace, metadata):\n    return {\"verdict\": \"PASS\", \"diagnostics\": []}\n"
+      },
+      "dependencies": [],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "SOURCE_AST",
+    "error_class": "SOURCE_SYNTAX_REJECT",
+    "diagnostic": "SOURCE_SYNTAX_REJECT|file=driver.py|line=1|column=5"
+  }
+}

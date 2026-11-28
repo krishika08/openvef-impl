@@ -1,0 +1,30 @@
+{
+  "fixture_id": "R03",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Import violation and compile error; import precedes compilation",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "events": [
+      {
+        "kind": "compile_error",
+        "file": "driver.py",
+        "line": 2
+      },
+      {
+        "kind": "import_not_allowed",
+        "file": "driver.py",
+        "line": 1,
+        "module": "os"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "IMPORT_POLICY",
+    "error_class": "IMPORT_POLICY_REJECT",
+    "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "fixture_id": "R10",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Checker null-run verdicts disagree PASS then FAIL",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "checker_runs": [
+      {
+        "verdict": "PASS"
+      },
+      {
+        "verdict": "FAIL"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "TERMINAL_INVALID_NO_REPAIR",
+    "stage_id": "TERMINAL",
+    "error_class": "CHECKER_NONDETERMINISM",
+    "diagnostic": "CHECKER_NONDETERMINISM|reason=RUN_DISAGREEMENT"
+  }
+}

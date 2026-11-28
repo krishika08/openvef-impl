@@ -1,0 +1,25 @@
+{
+  "fixture_id": "R09",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Both checker null runs return FAIL",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "checker_runs": [
+      {
+        "verdict": "FAIL"
+      },
+      {
+        "verdict": "FAIL"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "CHECKER_NULL_REJECT",
+    "error_class": "CHECKER_NULL_REJECT",
+    "diagnostic": "The checker returned FAIL on a legal null-netlist trace."
+  }
+}

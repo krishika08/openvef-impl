@@ -1,0 +1,1932 @@
+{
+  "fixture_index_version": "1.3.7-candidate, not audited",
+  "mandatory": true,
+  "execution_status": "Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved",
+  "fixture_count": 144,
+  "fixtures": [
+    {
+      "fixture_id": "M01",
+      "path": "41_F18_Fixture_Inputs/M01.json",
+      "scope": "missing-case",
+      "sha256": "99e9f988e3dcac2d16e1dac38376c7ad9826dd0502c3ca5a1c2a4b11f186094a",
+      "bytes": 1431,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.__init__|reason=FORBIDDEN_METHOD"
+      }
+    },
+    {
+      "fixture_id": "M02",
+      "path": "41_F18_Fixture_Inputs/M02.json",
+      "scope": "missing-case",
+      "sha256": "6967dc2f7d15929472fd82b4b0b9195cc8032ad994b7e09df217ade2b703032c",
+      "bytes": 1458,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=Helper|reason=CLASS_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "M03",
+      "path": "41_F18_Fixture_Inputs/M03.json",
+      "scope": "missing-case",
+      "sha256": "e4f8f767cc767932755e34cf99cf74dca0c88beb128e1c29045f2e419d5a26b5",
+      "bytes": 1287,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "DECORATOR_REJECT|file=driver.py|symbol=Driver"
+      }
+    },
+    {
+      "fixture_id": "M04a",
+      "path": "41_F18_Fixture_Inputs/M04a.json",
+      "scope": "missing-case",
+      "sha256": "d691d2d4fea1ec238d6b08f53d6a374f7f33a78e87914290b1b9072efe40402d",
+      "bytes": 1396,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "MODULE_STATEMENT_REJECT|file=driver.py|line=1|reason=NON_LITERAL_CONSTANT"
+      }
+    },
+    {
+      "fixture_id": "M04b",
+      "path": "41_F18_Fixture_Inputs/M04b.json",
+      "scope": "missing-case",
+      "sha256": "54fda5154f0c6bae4367c4de88c2e86e4ca322f8e32d4e7dc3c4669c3d6dff99",
+      "bytes": 1421,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "MODULE_STATEMENT_REJECT|file=driver.py|line=1|reason=MODULE_CONTROL_FLOW"
+      }
+    },
+    {
+      "fixture_id": "M05",
+      "path": "41_F18_Fixture_Inputs/M05.json",
+      "scope": "missing-case",
+      "sha256": "9ac11caa00b6d95a7ded51dab257ac96b43155f51c39b008a4b0a94bba8db06f",
+      "bytes": 1384,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=PARAMETER_KIND"
+      }
+    },
+    {
+      "fixture_id": "M06",
+      "path": "41_F18_Fixture_Inputs/M06.json",
+      "scope": "missing-case",
+      "sha256": "ff2321ec8ca41f085aa75fb7bb35edf6ac9d755072db239c992c61cda541d942",
+      "bytes": 1380,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=RETURN_TYPE"
+      }
+    },
+    {
+      "fixture_id": "M07",
+      "path": "41_F18_Fixture_Inputs/M07.json",
+      "scope": "missing-case",
+      "sha256": "17a6a807baa6984525a3442f8e0e512b33abea2ae21f4250b18e061d76f22a31",
+      "bytes": 1325,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "M08a",
+      "path": "41_F18_Fixture_Inputs/M08a.json",
+      "scope": "missing-case",
+      "sha256": "96df06af550b1761637ec576da54a0b04099dc70d6809abd972f3178ff5e3749",
+      "bytes": 1414,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=FROM_IMPORT_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "M08b",
+      "path": "41_F18_Fixture_Inputs/M08b.json",
+      "scope": "missing-case",
+      "sha256": "17abdf851dca2b4959d18faaff47c5d0d4b7452e4a4d52c8d0834fdf6090bbb6",
+      "bytes": 1399,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=SUBMODULE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "M09",
+      "path": "41_F18_Fixture_Inputs/M09.json",
+      "scope": "missing-case",
+      "sha256": "f64abd4581b42d58d92392608ef3b6e2cabcc1cc11fb6ba5d98219853529cd46",
+      "bytes": 1318,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "GLOBAL_RANDOM_USE|name=random.random"
+      }
+    },
+    {
+      "fixture_id": "M10",
+      "path": "41_F18_Fixture_Inputs/M10.json",
+      "scope": "missing-case",
+      "sha256": "8d4e41541a06414ae01630050a826298e1cfbffa38662ea166cf6420de0a0e8f",
+      "bytes": 1436,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_TIMEOUT",
+        "diagnostic": "CHECKER_TIMEOUT|phase=null_check"
+      }
+    },
+    {
+      "fixture_id": "M11",
+      "path": "41_F18_Fixture_Inputs/M11.json",
+      "scope": "missing-case",
+      "sha256": "03112d8b4510cc689c22076102be5ca164a01da703cec21f77e28a09cd58367d",
+      "bytes": 1626,
+      "expected": {
+        "disposition": "TERMINAL_INVALID_NO_REPAIR",
+        "stage_id": "TERMINAL",
+        "error_class": "CHECKER_NONDETERMINISM",
+        "diagnostic": "CHECKER_NONDETERMINISM|reason=RUN_DISAGREEMENT"
+      }
+    },
+    {
+      "fixture_id": "M12",
+      "path": "41_F18_Fixture_Inputs/M12.json",
+      "scope": "missing-case",
+      "sha256": "4817510c4e4103618486063840d0c53e85e20c326490f1e7585bb10b9a21f90d",
+      "bytes": 1558,
+      "expected": {
+        "disposition": "ACCEPT_WITH_WARNING",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": "DIAGNOSTIC_FORMAT_WARNING"
+      }
+    },
+    {
+      "fixture_id": "M13",
+      "path": "41_F18_Fixture_Inputs/M13.json",
+      "scope": "missing-case",
+      "sha256": "3dfbec8a68017df45c7a731e69d3c8a8dba65941cd1ceb539a81e9db7a046707",
+      "bytes": 725,
+      "expected": {
+        "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "EVALUATOR_INFRASTRUCTURE_FAILURE",
+        "diagnostic": "SIMULATOR_ERROR|target=null|class=RuntimeError"
+      }
+    },
+    {
+      "fixture_id": "M14",
+      "path": "41_F18_Fixture_Inputs/M14.json",
+      "scope": "missing-case",
+      "sha256": "4c60af2ae57994822e17dd9471bb79fdcb35b213f0760e541c8e891d340d7f78",
+      "bytes": 3368,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "FEEDBACK_SERIALIZER",
+        "error_class": "TRUNCATION",
+        "contains_marker": true,
+        "valid_utf8": true,
+        "output_diagnostic_bytes": 2047,
+        "marker_utf8_bytes": 14
+      }
+    },
+    {
+      "fixture_id": "M15",
+      "path": "41_F18_Fixture_Inputs/M15.json",
+      "scope": "missing-case",
+      "sha256": "3fea54746dcf77d92bc5e4d9fe3302244b2632975c785b43c75335850810efa8",
+      "bytes": 679,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "FEEDBACK_SERIALIZER",
+        "error_class": "FEEDBACK_SERIALIZER_REJECT",
+        "diagnostic": "FEEDBACK_SERIALIZER_REJECT|reason=NON_NORMATIVE_DIAGNOSTIC"
+      }
+    },
+    {
+      "fixture_id": "M16",
+      "path": "41_F18_Fixture_Inputs/M16.json",
+      "scope": "missing-case",
+      "sha256": "b9872466e0156263479c3a35045133ded60b6dca6f406e7443c9b0e9b49550cc",
+      "bytes": 433,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_EMPTY",
+        "diagnostic": "SOURCE_EMPTY|file=driver.py"
+      }
+    },
+    {
+      "fixture_id": "M17",
+      "path": "41_F18_Fixture_Inputs/M17.json",
+      "scope": "missing-case",
+      "sha256": "bcbf043ea70e14b621e314ff2fcb07a7a96764fb69cabe88e35aa54d3d019800",
+      "bytes": 1252,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "FEEDBACK_SERIALIZER",
+        "error_class": "JSON_SERIALIZATION",
+        "diagnostic_utf8": "{\n  \"stage_id\": \"CHECKER_NULL\",\n  \"error_class\": \"CHECKER_RUNTIME_ERROR\",\n  \"diagnostic\": \"quote \\\" newline\\naccent é\"\n}\n",
+        "diagnostic_sha256": "226a87deb777b94556d262a0e45e669ced8c80f5cf8ec1bc3d691e9d4570423f",
+        "diagnostic_bytes": 122
+      }
+    },
+    {
+      "fixture_id": "M18",
+      "path": "41_F18_Fixture_Inputs/M18.json",
+      "scope": "missing-case",
+      "sha256": "33621299619ca42405488afd76a002aa83d2348f5e6abb00714c1afc01e9786a",
+      "bytes": 571,
+      "expected": {
+        "disposition": "F18_REJECT",
+        "stage_id": "F18",
+        "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+        "diagnostic": "PACKET_FREEZE_REJECT|reason=RESERVED_HEADING_LINE"
+      }
+    },
+    {
+      "fixture_id": "M19",
+      "path": "41_F18_Fixture_Inputs/M19.json",
+      "scope": "missing-case",
+      "sha256": "c90021b5fa38ef7ef9c79d7505b1f8576c56962a213c072fe25abc7042dd1f14",
+      "bytes": 499,
+      "expected": {
+        "disposition": "F18_REJECT",
+        "stage_id": "F18",
+        "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+        "diagnostic": "ASSEMBLY_REJECT|reason=UNRESOLVED_PLACEHOLDER"
+      }
+    },
+    {
+      "fixture_id": "M20",
+      "path": "41_F18_Fixture_Inputs/M20.json",
+      "scope": "missing-case",
+      "sha256": "0d2068f5eef3c0d4c477b061f2ae47f4250d6084525ff8ba88303d122101f868",
+      "bytes": 598,
+      "expected": {
+        "disposition": "F18_REJECT",
+        "stage_id": "F18",
+        "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+        "diagnostic": "F18_REJECT|reason=VISIBLE_CLAUSE_ID_SET_MISMATCH"
+      }
+    },
+    {
+      "fixture_id": "M21",
+      "path": "41_F18_Fixture_Inputs/M21.json",
+      "scope": "missing-case",
+      "sha256": "96591d06f9d949bdf1fa32154e672e29c874c519b2d974938bc6ec7926d3b10c",
+      "bytes": 1378,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=IMPORT_ALIAS"
+      }
+    },
+    {
+      "fixture_id": "M22",
+      "path": "41_F18_Fixture_Inputs/M22.json",
+      "scope": "missing-case",
+      "sha256": "ada07173d02a686c7a07c74a48698d48aae14866a1be0ec4c17a9a5b22141dbc",
+      "bytes": 1325,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "GLOBAL_RANDOM_USE|name=random.SystemRandom"
+      }
+    },
+    {
+      "fixture_id": "M23",
+      "path": "41_F18_Fixture_Inputs/M23.json",
+      "scope": "missing-case",
+      "sha256": "5389a5dcec53dccebc82f149f0e98d8a623554095f3b24704eda46c0d56f2884",
+      "bytes": 1333,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "GLOBAL_RANDOM_USE|name=random.randint"
+      }
+    },
+    {
+      "fixture_id": "M24",
+      "path": "41_F18_Fixture_Inputs/M24.json",
+      "scope": "missing-case",
+      "sha256": "a10b4fff44c8d7eb7e1bed8925e63db8b23de0d6b9ed5047a58d5006a522a343",
+      "bytes": 1291,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=open"
+      }
+    },
+    {
+      "fixture_id": "M25",
+      "path": "41_F18_Fixture_Inputs/M25.json",
+      "scope": "missing-case",
+      "sha256": "b41511e63d452cebb1ebf1e756f3464022469fcfe96cdb1965c671c96dc35d70",
+      "bytes": 709,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.step|reason=RUNTIME_SIGNATURE"
+      }
+    },
+    {
+      "fixture_id": "M26",
+      "path": "41_F18_Fixture_Inputs/M26.json",
+      "scope": "missing-case",
+      "sha256": "9576cb280251fee7c3f56c8c7ffd6776e234d3d0918fdc255c126b18a1109fbd",
+      "bytes": 534,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_VECTOR",
+        "error_class": "DRIVER_VECTOR_INVALID",
+        "diagnostic": "DRIVER_VECTOR_INVALID|reason=EXTRA_KEYS"
+      }
+    },
+    {
+      "fixture_id": "M27",
+      "path": "41_F18_Fixture_Inputs/M27.json",
+      "scope": "missing-case",
+      "sha256": "b037404ddb874bd9a72e85f6ffe09a52d2b37d3f47f3e8e49a519884d0495508",
+      "bytes": 971,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_VECTOR",
+        "error_class": "DRIVER_VECTOR_INVALID",
+        "diagnostic": "DRIVER_VECTOR_INVALID|reason=ILLEGAL_PROTOCOL_STATE"
+      }
+    },
+    {
+      "fixture_id": "M28",
+      "path": "41_F18_Fixture_Inputs/M28.json",
+      "scope": "missing-case",
+      "sha256": "73ab61cfb282c94b6f1a1e063f5e9647d6c6de3d8fa568e3ad56b3f7033f1ed0",
+      "bytes": 585,
+      "expected": {
+        "disposition": "TERMINAL_INVALID_NO_REPAIR",
+        "stage_id": "TERMINAL",
+        "error_class": "DRIVER_NONDETERMINISM",
+        "diagnostic": "DRIVER_NONDETERMINISM|reason=NEXT_INPUT_DIVERGENCE"
+      }
+    },
+    {
+      "fixture_id": "M29",
+      "path": "41_F18_Fixture_Inputs/M29.json",
+      "scope": "missing-case",
+      "sha256": "8611ba6276128cd6f2b560a798f447c1350e22219dc5ec84ccd397060671e200",
+      "bytes": 477,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "M30",
+      "path": "41_F18_Fixture_Inputs/M30.json",
+      "scope": "missing-case",
+      "sha256": "278e37730c6cc5be4ad20fe1f239501cc3546a0466ecd2e8285019b1ae3ef671",
+      "bytes": 1356,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/dependencies"
+      }
+    },
+    {
+      "fixture_id": "M31",
+      "path": "41_F18_Fixture_Inputs/M31.json",
+      "scope": "missing-case",
+      "sha256": "6d59d0e4d3b5317585fb144805fc6b560d8d650049e76562f96a14d1e074c3a9",
+      "bytes": 1381,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RETURN_INVALID",
+        "diagnostic": "CHECKER_RETURN_INVALID|reason=TOP_LEVEL_KEYS"
+      }
+    },
+    {
+      "fixture_id": "M32",
+      "path": "41_F18_Fixture_Inputs/M32.json",
+      "scope": "missing-case",
+      "sha256": "01a2ca63228a9fa8bfe1307dc728ae818e345f7c2ba7828eabe7b900898a6867",
+      "bytes": 1365,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RETURN_INVALID",
+        "diagnostic": "CHECKER_RETURN_INVALID|reason=INVALID_VERDICT"
+      }
+    },
+    {
+      "fixture_id": "M33",
+      "path": "41_F18_Fixture_Inputs/M33.json",
+      "scope": "missing-case",
+      "sha256": "e388125090a836a75807ca3e9eebb3d44088ec1d01e0160396f48ba4aa159281",
+      "bytes": 1385,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RETURN_INVALID",
+        "diagnostic": "CHECKER_RETURN_INVALID|reason=DIAGNOSTICS_NOT_LIST"
+      }
+    },
+    {
+      "fixture_id": "M34",
+      "path": "41_F18_Fixture_Inputs/M34.json",
+      "scope": "missing-case",
+      "sha256": "f531813ce7e9b116d5f04c36315fba94191c66ada391695a4f58813658a973f8",
+      "bytes": 1336,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=__import__"
+      }
+    },
+    {
+      "fixture_id": "M35",
+      "path": "41_F18_Fixture_Inputs/M35.json",
+      "scope": "missing-case",
+      "sha256": "0a49f3b9e6eea77ae6c9940fae9c8837de6f06d06dbfc56d60351134304b2b19",
+      "bytes": 1397,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=2|column=5"
+      }
+    },
+    {
+      "fixture_id": "M36",
+      "path": "41_F18_Fixture_Inputs/M36.json",
+      "scope": "missing-case",
+      "sha256": "85dcb9e62990c0db3e084702e17202e0b98697929929fbba156e2e17ade75b65",
+      "bytes": 565,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_SYNTAX_REJECT",
+        "diagnostic": "SOURCE_SYNTAX_REJECT|file=driver.py|line=4|column=1"
+      }
+    },
+    {
+      "fixture_id": "M37",
+      "path": "41_F18_Fixture_Inputs/M37.json",
+      "scope": "missing-case",
+      "sha256": "3d3a1855eb0609de81ccc72349b9afdaf23768849ffb7a8546006253eb1b6300",
+      "bytes": 1753,
+      "expected": {
+        "disposition": "TERMINAL_INVALID_NO_REPAIR",
+        "stage_id": "TERMINAL",
+        "error_class": "DRIVER_NONDETERMINISM",
+        "diagnostic": "DRIVER_NONDETERMINISM|reason=NEXT_INPUT_DIVERGENCE"
+      }
+    },
+    {
+      "fixture_id": "M38",
+      "path": "41_F18_Fixture_Inputs/M38.json",
+      "scope": "missing-case",
+      "sha256": "69914837a551578b4445f9749b19a8654c66d4ac06ff791588f6126dd7abfe75",
+      "bytes": 1430,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "DECORATOR_REJECT|file=driver.py|symbol=helper"
+      }
+    },
+    {
+      "fixture_id": "M39",
+      "path": "41_F18_Fixture_Inputs/M39.json",
+      "scope": "missing-case",
+      "sha256": "15f444ccbb04fac2db86688b7192394cf78eeb2bf27d90d90e982aacf5da6019",
+      "bytes": 1507,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=helper.Nested|reason=NESTED_CLASS_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "M40",
+      "path": "41_F18_Fixture_Inputs/M40.json",
+      "scope": "missing-case",
+      "sha256": "36838665daf11a8b8cf111a068bf43ba9fedc00a83413f38c8dc43d15918e21e",
+      "bytes": 803,
+      "expected": {
+        "disposition": "F18_REJECT",
+        "stage_id": "F18",
+        "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+        "diagnostic": "F18_REJECT|reason=MALFORMED_CLAUSE_ID_TOKEN"
+      }
+    },
+    {
+      "fixture_id": "M41",
+      "path": "41_F18_Fixture_Inputs/M41.json",
+      "scope": "missing-case",
+      "sha256": "c2e42af7bf912c214f974d5ec371a0fe6845ee8f356d729226edf2db097723b7",
+      "bytes": 1651,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "MID_RUN_REEVALUATION",
+        "diagnostic": "RERUN_ALL_SCHEDULED_SLOTS_WITH_SAME_FROZEN_ARTIFACTS",
+        "discard_pre_halt_scores": true,
+        "rerun_slots": 10,
+        "reuse_same_artifact_bytes": true,
+        "new_confirmatory_generation_calls": 0
+      }
+    },
+    {
+      "fixture_id": "M42",
+      "path": "41_F18_Fixture_Inputs/M42.json",
+      "scope": "missing-case",
+      "sha256": "c86181f5e754d50a891def2cae82e194711a098e42419437c0d1985745d15d03",
+      "bytes": 1104,
+      "expected": {
+        "disposition": "DESIGN_ABORTED_NO_SLOTS_SCORED",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "DESIGN_HALT_REPEATED",
+        "diagnostic": "DESIGN_HALT_REPEATED|reason=EVALUATOR_FAILURE_REPRODUCED"
+      }
+    },
+    {
+      "fixture_id": "M43",
+      "path": "41_F18_Fixture_Inputs/M43.json",
+      "scope": "missing-case",
+      "sha256": "84af7b7331ecd14a4d22f09d6c81015cf6a61d12c89c9d4443f1988ddb25a339",
+      "bytes": 1450,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=2|column=19"
+      }
+    },
+    {
+      "fixture_id": "M44",
+      "path": "41_F18_Fixture_Inputs/M44.json",
+      "scope": "missing-case",
+      "sha256": "1c94281457cf4ef9c4def8a203d983a6df2e4420856dae2abe9aa28cbc3a00a7",
+      "bytes": 1438,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=driver.py|line=1|column=8"
+      }
+    },
+    {
+      "fixture_id": "M45",
+      "path": "41_F18_Fixture_Inputs/M45.json",
+      "scope": "missing-case",
+      "sha256": "9909a39f5b12c492f320129a3ce50296f626d31d5b5009af372a95879448028a",
+      "bytes": 1408,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=2|column=17"
+      }
+    },
+    {
+      "fixture_id": "M46",
+      "path": "41_F18_Fixture_Inputs/M46.json",
+      "scope": "missing-case",
+      "sha256": "23f0faa1d5d075db793c91b44f1257b7e7e2d233c9a3a5e762f4180db4ed1c2b",
+      "bytes": 1427,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=1|column=5"
+      }
+    },
+    {
+      "fixture_id": "M47",
+      "path": "41_F18_Fixture_Inputs/M47.json",
+      "scope": "missing-case",
+      "sha256": "4958c30a5d0fd2baa1b032a4104e20268a832e265a7107409a8772b9d9d7515f",
+      "bytes": 1135,
+      "expected": {
+        "disposition": "DESIGN_ABORTED_NO_SLOTS_SCORED",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "DESIGN_HALT_REPEATED",
+        "diagnostic": "DESIGN_HALT_REPEATED|reason=SECOND_HALT_AFTER_RECOVERY"
+      }
+    },
+    {
+      "fixture_id": "M48",
+      "path": "41_F18_Fixture_Inputs/M48.json",
+      "scope": "missing-case",
+      "sha256": "014b209d05f2b47358ee41ba0118d4e6b3117e3b953d4c69d98984dfd91f6360",
+      "bytes": 1137,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "EVALUATOR_REVISION_REQUIRED",
+        "diagnostic": "EVALUATOR_REVISION_REQUIRED|reason=FROZEN_EVALUATOR_CHANGED",
+        "required_action": "new_evaluator_hashes_then_F16_then_rerun_every_slot_in_affected_scope_with_same_frozen_artifact_bytes_no_new_confirmatory_generation",
+        "new_evaluator_version_hashes_required": true,
+        "f16_required": true,
+        "reuse_same_artifact_bytes": true,
+        "new_confirmatory_generation_calls": 0,
+        "rerun_scope_rule": "shared_evaluator_component_all_designs_and_all_arm_x_design_slots; design_specific_component_affected_design_in_both_arms"
+      }
+    },
+    {
+      "fixture_id": "M49",
+      "path": "41_F18_Fixture_Inputs/M49.json",
+      "scope": "missing-case",
+      "sha256": "3418215d25523f16329d474b367871e1d53f921d1c9c4b89a3c4434e04bc3fbc",
+      "bytes": 1358,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=MISSING_ENTRY_POINT"
+      }
+    },
+    {
+      "fixture_id": "M50",
+      "path": "41_F18_Fixture_Inputs/M50.json",
+      "scope": "missing-case",
+      "sha256": "b1f2c8a41fc7fd82fb4cc2779a8fb025fa27c1389b010c53b45ec4ba0ad42585",
+      "bytes": 1118,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "AUTHORING_REVISION_REQUIRED",
+        "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+        "required_action": "halt_study_invalidate_all_designs_and_all_arm_x_design_slots_archive_and_disclose_partial_confirmatory_ledgers_new_preregistration_refreeze_f16_and_fresh_confirmatory_generation",
+        "reuse_old_confirmatory_artifacts": false,
+        "new_confirmatory_generation_required": true,
+        "affected_slots": "all_designs_x_all_arms",
+        "archive_and_disclose_partial_ledgers": true,
+        "new_preregistration_required": true
+      }
+    },
+    {
+      "fixture_id": "M51",
+      "path": "41_F18_Fixture_Inputs/M51.json",
+      "scope": "missing-case",
+      "sha256": "75e1823f10361d8a48d473c9565f69d75d9f8abf949c053e395458d0e5e85662",
+      "bytes": 1598,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=nested_holder.Nested|reason=NESTED_CLASS_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "M52",
+      "path": "41_F18_Fixture_Inputs/M52.json",
+      "scope": "missing-case",
+      "sha256": "d8f2b19667cea0d822fdc34a337cd66bf7081b958034ac9823d7667ba027fe0d",
+      "bytes": 1608,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=nested_holder.Nested|reason=NESTED_CLASS_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "M53",
+      "path": "41_F18_Fixture_Inputs/M53.json",
+      "scope": "missing-case",
+      "sha256": "4a8e9aadf2da6f3bfe7efe16c17d3d4e6473f791e0d8bcac43fdffa0297e9e2d",
+      "bytes": 1055,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "AUTHORING_REVISION_REQUIRED",
+        "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+        "required_action": "archive_and_disclose_all_partial_confirmatory_ledgers_new_preregistration_refreeze_new_design_set_and_weights_F16_then_generate_fresh_slots",
+        "old_confirmatory_artifacts_reusable": false,
+        "new_preregistration_required": true,
+        "all_partial_ledgers_archived_and_disclosed": true,
+        "fresh_confirmatory_generation_required": true
+      }
+    },
+    {
+      "fixture_id": "M54",
+      "path": "41_F18_Fixture_Inputs/M54.json",
+      "scope": "missing-case",
+      "sha256": "c6dfe1caff678f305fa8a855f49c04c209c7a494df91917415c083b482405890",
+      "bytes": 1378,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "HALT_SIGNATURE_SCHEMA",
+        "diagnostic": "HALT_SIGNATURE_SCHEMA|reason=COMPONENT_VALUES_ENUMERATED",
+        "required_action": "enforce_design_id_halt_code_evaluator_component_stable_error_class_stable_diagnostic_code_domains_and_reason_to_component_mapping; exclude timestamps_process_ids_attempts_hosts_and_trace_row_indices",
+        "design_id_values": [
+          "FIFO",
+          "UART"
+        ],
+        "halt_code_values": [
+          "SIMULATOR_ERROR",
+          "TRACE_INTEGRITY_FAILURE",
+          "RTL_NULL_CONTROL_FAILURE"
+        ],
+        "evaluator_component_values": [
+          "SIMULATOR",
+          "REPLAY_VERIFIER",
+          "RECORDER",
+          "TRACE_ALIGNMENT_CHECKER",
+          "TRACE_SERIALIZER",
+          "RTL_NULL_COMPARATOR"
+        ],
+        "stable_error_class_rule": "simple_exception_class_for_SIMULATOR_ERROR_else_NONE",
+        "stable_diagnostic_code_rule": "exact_halt_code_token"
+      }
+    },
+    {
+      "fixture_id": "M55",
+      "path": "41_F18_Fixture_Inputs/M55.json",
+      "scope": "missing-case",
+      "sha256": "7b4a0a6c69e27b5cc3975b022be0e92942e896ef6c08ebfba9ec94f033602224",
+      "bytes": 1477,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=driver.py|line=1|column=1"
+      }
+    },
+    {
+      "fixture_id": "M56",
+      "path": "41_F18_Fixture_Inputs/M56.json",
+      "scope": "missing-case",
+      "sha256": "c2eb39b280d55771b6a2bb4367d8e3072c92f4b76a942406b2b399d19ff1da9f",
+      "bytes": 1475,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=2|column=5"
+      }
+    },
+    {
+      "fixture_id": "M57",
+      "path": "41_F18_Fixture_Inputs/M57.json",
+      "scope": "missing-case",
+      "sha256": "0eeea0757258a03820a906ec11ee4502ba99c39c968eabcfca2bd4a8a5205bdf",
+      "bytes": 1468,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "M58",
+      "path": "41_F18_Fixture_Inputs/M58.json",
+      "scope": "missing-case",
+      "sha256": "286078c4cb10d04846a1c7ea6036f3682cb1397850df36496907e7d0e3cba6f4",
+      "bytes": 1166,
+      "expected": {
+        "disposition": "CONTROL_EXPECTATION",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "AUTHORING_REVISION_REQUIRED",
+        "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+        "affected_scope": "affected_design_in_both_arms",
+        "unaffected_design_scope": "not_invalidated_when_membership_estimand_and_weights_are_unchanged",
+        "required_action": "halt_affected_design_invalidate_both_arm_slots_refreeze_design_specific_materials_archive_partial_ledgers_generate_fresh_confirmatory_slots_for_affected_design",
+        "reuse_old_artifacts_for_affected_design": false,
+        "new_study_preregistration_required_if_design_membership_estimand_or_weights_change": true
+      }
+    },
+    {
+      "fixture_id": "M59",
+      "path": "41_F18_Fixture_Inputs/M59.json",
+      "scope": "missing-case",
+      "sha256": "ca6fa49301334891f34e6b309b369fe0cd610f2f76e04e11cd88e45dad5ab1b0",
+      "bytes": 1605,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=helper.nested_async|reason=ASYNC_DEFINITION"
+      }
+    },
+    {
+      "fixture_id": "M60",
+      "path": "41_F18_Fixture_Inputs/M60.json",
+      "scope": "missing-case",
+      "sha256": "c9be1e4419a2b3eb64595d28abd65327bc4a025d7ba9f08cf365558fd9bf0622",
+      "bytes": 1592,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=WRONG_ENTRY_POINT_KIND"
+      }
+    },
+    {
+      "fixture_id": "M61",
+      "path": "41_F18_Fixture_Inputs/M61.json",
+      "scope": "missing-case",
+      "sha256": "2882f0d3f0b1b6cbe1a3069ccaa17df78475cfef6c9acc5870aa87d75c7456f7",
+      "bytes": 1558,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.step|reason=WRONG_ENTRY_POINT_KIND"
+      }
+    },
+    {
+      "fixture_id": "M62",
+      "path": "41_F18_Fixture_Inputs/M62.json",
+      "scope": "missing-case",
+      "sha256": "601adcc3743ccf48de7b1b02a1b2d3002532383acb72b3a0fdb3b777dd67ce51",
+      "bytes": 1559,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=driver.py|line=1|column=1"
+      }
+    },
+    {
+      "fixture_id": "M63",
+      "path": "41_F18_Fixture_Inputs/M63.json",
+      "scope": "missing-case",
+      "sha256": "9f61a5824c23d4621f05b1a2913953b95bdc800850aa2a326ed057bb8b07f0b6",
+      "bytes": 1653,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=driver.py|line=1|column=5"
+      }
+    },
+    {
+      "fixture_id": "M64",
+      "path": "41_F18_Fixture_Inputs/M64.json",
+      "scope": "missing-case",
+      "sha256": "fcaf149ddfcdd97a10fd9df264e7996543e61f1a0e88d317166b8402e65ceaf2",
+      "bytes": 1650,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "NON_ASCII_IDENTIFIER|file=checker.py|line=2|column=15"
+      }
+    },
+    {
+      "fixture_id": "M65",
+      "path": "41_F18_Fixture_Inputs/M65.json",
+      "scope": "missing-case",
+      "sha256": "c9931f353fe7cdf689ee11da2151d02e5b664881011478f68747fbea4702b3bf",
+      "bytes": 1583,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=helper|reason=ASYNC_COMPREHENSION"
+      }
+    },
+    {
+      "fixture_id": "M66",
+      "path": "41_F18_Fixture_Inputs/M66.json",
+      "scope": "missing-case",
+      "sha256": "1f316d6ae621f63f3e0685366e01f56c625817f51291bd1c3288410d8f01c453",
+      "bytes": 1536,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=check_trace|reason=ASYNC_COMPREHENSION"
+      }
+    },
+    {
+      "fixture_id": "M67",
+      "path": "41_F18_Fixture_Inputs/M67.json",
+      "scope": "missing-case",
+      "sha256": "30779da765645ac1698a83d3822a259337b974b068dac2a4dbbff51d8b40982e",
+      "bytes": 1466,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=check_trace|reason=WRONG_ENTRY_POINT_KIND"
+      }
+    },
+    {
+      "fixture_id": "M68",
+      "path": "41_F18_Fixture_Inputs/M68.json",
+      "scope": "missing-case",
+      "sha256": "97e9abeb6da12417137e23a2a431c9a775fec1ad4c4ffa88a6cfcc7dbf72ba39",
+      "bytes": 1543,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.extra|reason=FORBIDDEN_METHOD"
+      }
+    },
+    {
+      "fixture_id": "M69",
+      "path": "41_F18_Fixture_Inputs/M69.json",
+      "scope": "missing-case",
+      "sha256": "61b24a521f7bb74c0aa0bf503666dca3cbee8635e9edaf9a1c26337f577ae0ca",
+      "bytes": 1500,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "DECORATOR_REJECT|file=driver.py|symbol=helper"
+      }
+    },
+    {
+      "fixture_id": "M70",
+      "path": "41_F18_Fixture_Inputs/M70.json",
+      "scope": "missing-case",
+      "sha256": "c98751fd29b9f3193c1f04bebfc5da2bb16721aaf350a9baa8809ed89424c431",
+      "bytes": 1562,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=helper|reason=ASYNC_COMPREHENSION"
+      }
+    },
+    {
+      "fixture_id": "P01",
+      "path": "41_F18_Fixture_Inputs/P01.json",
+      "scope": "parser",
+      "sha256": "1b06a55cea98e2bd8b8571c9511d0df25cb4ddab5fdbb996735a14506c50eaf6",
+      "bytes": 1232,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "P02",
+      "path": "41_F18_Fixture_Inputs/P02.json",
+      "scope": "parser",
+      "sha256": "bfb218c9ebc093a2ea19ff680ce862d2962fad0e2710bbb628f86c9e9a41c9ca",
+      "bytes": 1283,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P03",
+      "path": "41_F18_Fixture_Inputs/P03.json",
+      "scope": "parser",
+      "sha256": "5e96c30fdfbf2c0b2580ac5a96b8190c2912f1fe47a1d8adb0986de052a08657",
+      "bytes": 1312,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P04",
+      "path": "41_F18_Fixture_Inputs/P04.json",
+      "scope": "parser",
+      "sha256": "7a80c72cbcf1a856696e61058ba6510df9fbfade890cca0cfef807d8c330cf4e",
+      "bytes": 1289,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P05",
+      "path": "41_F18_Fixture_Inputs/P05.json",
+      "scope": "parser",
+      "sha256": "85794fbde656acb3c1ba18382b68ed6b1ab0c1b4bdab63064cb3b0a647f35848",
+      "bytes": 435,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P06a",
+      "path": "41_F18_Fixture_Inputs/P06a.json",
+      "scope": "parser",
+      "sha256": "18ce39d22ff7fc64d0db3f0f847cb113da8d2116e483065924ffe883e48305da",
+      "bytes": 1293,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P06b",
+      "path": "41_F18_Fixture_Inputs/P06b.json",
+      "scope": "parser",
+      "sha256": "ad394613789ff9bb97002f24a1a06d85e98974b614a6bb14368216beb8377e0b",
+      "bytes": 1308,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/driver"
+      }
+    },
+    {
+      "fixture_id": "P07",
+      "path": "41_F18_Fixture_Inputs/P07.json",
+      "scope": "parser",
+      "sha256": "ebc1f81f7db3ea3471ed6ba037c707ad1f2bb89b776cce1d259d315142d42b64",
+      "bytes": 994,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P08a",
+      "path": "41_F18_Fixture_Inputs/P08a.json",
+      "scope": "parser",
+      "sha256": "6a32b2383a39c02b64ad347f4597517344ac2f93d1e4917086e73a02cc49d5a9",
+      "bytes": 1317,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/schema_version"
+      }
+    },
+    {
+      "fixture_id": "P08b",
+      "path": "41_F18_Fixture_Inputs/P08b.json",
+      "scope": "parser",
+      "sha256": "3bca7658f0086e668932d934c249307a2ec79627f807790fcdf8fb6121d34435",
+      "bytes": 1347,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/language"
+      }
+    },
+    {
+      "fixture_id": "P08c",
+      "path": "41_F18_Fixture_Inputs/P08c.json",
+      "scope": "parser",
+      "sha256": "3f9a068a9e4d28688e3dc8777a4d64b64d025c7d9ec42415db3f2ef11defa5a1",
+      "bytes": 1365,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/language_version"
+      }
+    },
+    {
+      "fixture_id": "P08d",
+      "path": "41_F18_Fixture_Inputs/P08d.json",
+      "scope": "parser",
+      "sha256": "87e1282dedbeecf11fc6a982df3c63ebb900d3652b7ff808799a8e91fd20b3c0",
+      "bytes": 1438,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/dependencies"
+      }
+    },
+    {
+      "fixture_id": "P09",
+      "path": "41_F18_Fixture_Inputs/P09.json",
+      "scope": "parser",
+      "sha256": "d1a69cf7865c2bd703ccfa317c2a89ad7e90f63db0b6c3859a4bf227d33ae903",
+      "bytes": 1479,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P10",
+      "path": "41_F18_Fixture_Inputs/P10.json",
+      "scope": "parser",
+      "sha256": "8e24bfbcc0a96926c5f566b5666882bb2c94bda4ca00b814b3d230842eefac67",
+      "bytes": 417,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P11a",
+      "path": "41_F18_Fixture_Inputs/P11a.json",
+      "scope": "parser",
+      "sha256": "f9034d4f587deac8a252b0e88be23e7e5fe963de4af667b932c71b3cab47bb27",
+      "bytes": 478,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "OUTPUT_TRUNCATED",
+        "diagnostic": "OUTPUT_TRUNCATED"
+      }
+    },
+    {
+      "fixture_id": "P11b",
+      "path": "41_F18_Fixture_Inputs/P11b.json",
+      "scope": "parser",
+      "sha256": "28259ae16bf5a720517aaf2f2a5873bf334a9b227735c8eff2c3c5480a8fa486",
+      "bytes": 481,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/"
+      }
+    },
+    {
+      "fixture_id": "P12a",
+      "path": "41_F18_Fixture_Inputs/P12a.json",
+      "scope": "parser",
+      "sha256": "3c91eadd3d71b654423fb3846f484bfa06d424faa5329940d7ac1f9d09f4e8f3",
+      "bytes": 1128,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_EMPTY",
+        "diagnostic": "SOURCE_EMPTY|file=driver.py"
+      }
+    },
+    {
+      "fixture_id": "P12b",
+      "path": "41_F18_Fixture_Inputs/P12b.json",
+      "scope": "parser",
+      "sha256": "edb9d13a1e803ac41abda403a73696d7a2f2df8df1b26c3d5f9dd2e49a563241",
+      "bytes": 1261,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_EMPTY",
+        "diagnostic": "SOURCE_EMPTY|file=checker.py"
+      }
+    },
+    {
+      "fixture_id": "P13",
+      "path": "41_F18_Fixture_Inputs/P13.json",
+      "scope": "parser",
+      "sha256": "da1573076a14d5d8d2de68751587c5aed4439120a893f66d2ebf4b8e70370a67",
+      "bytes": 1333,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "P14",
+      "path": "41_F18_Fixture_Inputs/P14.json",
+      "scope": "parser",
+      "sha256": "32e2e071e3213796c6b6879e6f8a895547d8053920ed4519335668e7e519b922",
+      "bytes": 1307,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "P15",
+      "path": "41_F18_Fixture_Inputs/P15.json",
+      "scope": "parser",
+      "sha256": "b270990bd8bf9c8250595c9a93dd88b3f60bb980b91d5b73ce3450324d2015ea",
+      "bytes": 1372,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=Driver.step|reason=PARAMETER_NAMES"
+      }
+    },
+    {
+      "fixture_id": "P16",
+      "path": "41_F18_Fixture_Inputs/P16.json",
+      "scope": "parser",
+      "sha256": "be0d86169410bb29ce7be732aa16b2a494b795a9c0b9158f564472a3b4fa7eec",
+      "bytes": 1271,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=MISSING_ENTRY_POINT"
+      }
+    },
+    {
+      "fixture_id": "P17",
+      "path": "41_F18_Fixture_Inputs/P17.json",
+      "scope": "parser",
+      "sha256": "c0fb503bd8fffda01e5b77102db063964652a8a9d5533a303c96255554e06fd5",
+      "bytes": 1460,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_VECTOR",
+        "error_class": "DRIVER_VECTOR_INVALID",
+        "diagnostic": "DRIVER_VECTOR_INVALID|reason=MISSING_KEYS"
+      }
+    },
+    {
+      "fixture_id": "P18",
+      "path": "41_F18_Fixture_Inputs/P18.json",
+      "scope": "parser",
+      "sha256": "9f2a0ab135bfde52955f58238506dbfb305f9dbc4774de14516f492ce0b0047d",
+      "bytes": 1556,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RETURN_INVALID",
+        "diagnostic": "CHECKER_RETURN_INVALID|reason=MISSING_DIAGNOSTICS"
+      }
+    },
+    {
+      "fixture_id": "P19",
+      "path": "41_F18_Fixture_Inputs/P19.json",
+      "scope": "parser",
+      "sha256": "13d18a1081617df882e78e52c37c90740697ff5fbfaa0d58551fed742102c7a6",
+      "bytes": 1507,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RETURN_INVALID",
+        "diagnostic": "CHECKER_RETURN_INVALID|reason=NON_DICTIONARY"
+      }
+    },
+    {
+      "fixture_id": "P20",
+      "path": "41_F18_Fixture_Inputs/P20.json",
+      "scope": "parser",
+      "sha256": "6385e4f08a5b472421dc3aee23ce720ba6e4e34e7d341826e2f6c6a1fe070217",
+      "bytes": 1366,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/assumptions/0/clause_id"
+      }
+    },
+    {
+      "fixture_id": "P21",
+      "path": "41_F18_Fixture_Inputs/P21.json",
+      "scope": "parser",
+      "sha256": "aa830f5a22cf0634f9cd7255729b9be269efcb81a8c313ad5d68aa61b6bfb9d5",
+      "bytes": 1449,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "P22",
+      "path": "41_F18_Fixture_Inputs/P22.json",
+      "scope": "parser",
+      "sha256": "d75213db26563dc69f2646c846578cd87cfc975ac75e049d683db3756aed753d",
+      "bytes": 1722,
+      "expected": {
+        "disposition": "ACCEPT_WITH_WARNING",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": "DIAGNOSTIC_FORMAT_WARNING"
+      }
+    },
+    {
+      "fixture_id": "P23",
+      "path": "41_F18_Fixture_Inputs/P23.json",
+      "scope": "parser",
+      "sha256": "b6c2382c1d8fd12761875b778e0d22fb71a2108768c26eaaeb318618ae009d0f",
+      "bytes": 1396,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=SUBMODULE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P24a",
+      "path": "41_F18_Fixture_Inputs/P24a.json",
+      "scope": "parser",
+      "sha256": "9136221fe7dc50f159c73181d294aed0e2475ca7f37cf196bb964ce95811f96d",
+      "bytes": 1358,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=exec"
+      }
+    },
+    {
+      "fixture_id": "P24b",
+      "path": "41_F18_Fixture_Inputs/P24b.json",
+      "scope": "parser",
+      "sha256": "7cc10127c460a435daf0c4b5437642f6107fb6edbfd5440ff11c1cc1f326401d",
+      "bytes": 1358,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=eval"
+      }
+    },
+    {
+      "fixture_id": "P24c",
+      "path": "41_F18_Fixture_Inputs/P24c.json",
+      "scope": "parser",
+      "sha256": "71d80cb41d400e2bb3d51e24cb7ed8d20174aababcdefe92ab23b6091df81aa9",
+      "bytes": 1367,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=compile"
+      }
+    },
+    {
+      "fixture_id": "P24d",
+      "path": "41_F18_Fixture_Inputs/P24d.json",
+      "scope": "parser",
+      "sha256": "24acbb31d5cf29e1e0ba351afa71b27a09bc0c6d2e8411418872bb466c141ad6",
+      "bytes": 1358,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "PROHIBITED_BUILTIN|name=open"
+      }
+    },
+    {
+      "fixture_id": "P25a",
+      "path": "41_F18_Fixture_Inputs/P25a.json",
+      "scope": "parser",
+      "sha256": "39fa6d2255ba6c3aa3c1eab8cee1ec5760cb56500a3930806bfd5312b0dd84f7",
+      "bytes": 1134,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_SYNTAX_REJECT",
+        "diagnostic": "SOURCE_SYNTAX_REJECT|file=driver.py|line=1|column=5"
+      }
+    },
+    {
+      "fixture_id": "P25b",
+      "path": "41_F18_Fixture_Inputs/P25b.json",
+      "scope": "parser",
+      "sha256": "89bb18d5860a93bf60620e702f67e2c9b3e923a70f690279770e9fbe478013e4",
+      "bytes": 1267,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "SOURCE_AST",
+        "error_class": "SOURCE_SYNTAX_REJECT",
+        "diagnostic": "SOURCE_SYNTAX_REJECT|file=checker.py|line=1|column=5"
+      }
+    },
+    {
+      "fixture_id": "P26",
+      "path": "41_F18_Fixture_Inputs/P26.json",
+      "scope": "parser",
+      "sha256": "882dc30935549470ed8cb5970a1e6e991b69144c7f2f7b545c8629234059a084",
+      "bytes": 1370,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "ENTRY_POINT_REJECT|file=checker.py|symbol=check_trace|reason=PARAMETER_NAMES"
+      }
+    },
+    {
+      "fixture_id": "P27",
+      "path": "41_F18_Fixture_Inputs/P27.json",
+      "scope": "parser",
+      "sha256": "8301be49bea0d6c146c29e4c72b24ebde981a67488514c6990d11a4b81b05cb5",
+      "bytes": 1278,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "AST_SIGNATURE",
+        "error_class": "ENTRY_POINT_REJECT",
+        "diagnostic": "DECORATOR_REJECT|file=driver.py|symbol=Driver"
+      }
+    },
+    {
+      "fixture_id": "P28",
+      "path": "41_F18_Fixture_Inputs/P28.json",
+      "scope": "parser",
+      "sha256": "c930875f97e0bc796df559ad26f062056cf7b82e77c5a27606c192608ec3b462",
+      "bytes": 1385,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "MODULE_STATEMENT_REJECT|file=driver.py|line=1|reason=MODULE_EXECUTABLE"
+      }
+    },
+    {
+      "fixture_id": "P29a",
+      "path": "41_F18_Fixture_Inputs/P29a.json",
+      "scope": "parser",
+      "sha256": "eaf8624045c42f942dece52eed36e5b00d56ea1b899f4f9c7aa51c3ec8107aba",
+      "bytes": 1370,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=RELATIVE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P29b",
+      "path": "41_F18_Fixture_Inputs/P29b.json",
+      "scope": "parser",
+      "sha256": "ae0a601899fbe5393ab8258f1a7c0f6eaf7ecfddc593aefe02589f5b8ab4535e",
+      "bytes": 1360,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=STAR_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P30",
+      "path": "41_F18_Fixture_Inputs/P30.json",
+      "scope": "parser",
+      "sha256": "51221cf680ccdf93f9a142f89d833a2c4e5989ff7aca0a27768dfb4696adbe49",
+      "bytes": 1389,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=FUTURE_FEATURE"
+      }
+    },
+    {
+      "fixture_id": "P31",
+      "path": "41_F18_Fixture_Inputs/P31.json",
+      "scope": "parser",
+      "sha256": "8da11a2fdc3ec064d4d6e6f8721bf5517a6b99708e1725203aa65fa2a9d8e353",
+      "bytes": 1394,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=MULTIPLE_NAMES"
+      }
+    },
+    {
+      "fixture_id": "P32",
+      "path": "41_F18_Fixture_Inputs/P32.json",
+      "scope": "parser",
+      "sha256": "e4d200330ec4f40422ba60d59d7fc919a8c813e9365ab555b00a8c71a2c7f5bd",
+      "bytes": 1369,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "P33",
+      "path": "41_F18_Fixture_Inputs/P33.json",
+      "scope": "parser",
+      "sha256": "848f80bf407488ce11e913978bfb96e28e51fbf30c442ab8ce236d181dce9c58",
+      "bytes": 1381,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=IMPORT_ALIAS"
+      }
+    },
+    {
+      "fixture_id": "P34",
+      "path": "41_F18_Fixture_Inputs/P34.json",
+      "scope": "parser",
+      "sha256": "870547344be6b7cdba6445cfbca64f7f37883b213fa21bcecd2af013b6994572",
+      "bytes": 1444,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=IMPORT_ALIAS"
+      }
+    },
+    {
+      "fixture_id": "P35",
+      "path": "41_F18_Fixture_Inputs/P35.json",
+      "scope": "parser",
+      "sha256": "4adbb940cfd070ce7088f9162a80e87a579ab72b785a4033a2cba1dbdd2153c1",
+      "bytes": 1384,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "P36",
+      "path": "41_F18_Fixture_Inputs/P36.json",
+      "scope": "parser",
+      "sha256": "23e1ec875a4f6ea564bc96f44e97ab082a6990c99379ff909098cd29290296fa",
+      "bytes": 1428,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=FROM_IMPORT_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "P37",
+      "path": "41_F18_Fixture_Inputs/P37.json",
+      "scope": "parser",
+      "sha256": "e3fc777bf25070a9cda1bb0f2a64fef88ab185f764eb3be8f02eb665a201fc63",
+      "bytes": 1392,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=RELATIVE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P38",
+      "path": "41_F18_Fixture_Inputs/P38.json",
+      "scope": "parser",
+      "sha256": "ff89c85871d0d574865d17c6244a6f5379ab4dbe8c7c46cbcca36678e1e070be",
+      "bytes": 1396,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=STAR_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P39",
+      "path": "41_F18_Fixture_Inputs/P39.json",
+      "scope": "parser",
+      "sha256": "11e5b12de56f93ca02fd9a511cc635361784fc51bf257422b7fe34d197e18963",
+      "bytes": 1462,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=MULTIPLE_NAMES"
+      }
+    },
+    {
+      "fixture_id": "P40",
+      "path": "41_F18_Fixture_Inputs/P40.json",
+      "scope": "parser",
+      "sha256": "ca9e5c1bae3faecce51d3c1c769c04ab0f6286192ae9f191de3b5fcf8898631c",
+      "bytes": 1393,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=MULTIPLE_NAMES"
+      }
+    },
+    {
+      "fixture_id": "P41",
+      "path": "41_F18_Fixture_Inputs/P41.json",
+      "scope": "parser",
+      "sha256": "bcd438c8fc7ddc15814bf5ec096e69bf1d3db7019dddd9f95e023de50ea59b71",
+      "bytes": 1450,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=FROM_IMPORT_FORBIDDEN"
+      }
+    },
+    {
+      "fixture_id": "P42",
+      "path": "41_F18_Fixture_Inputs/P42.json",
+      "scope": "parser",
+      "sha256": "1ddd2e6da85e5bb29c89adbb148157b8834e11210d716867f994a9d6293f20b4",
+      "bytes": 1321,
+      "expected": {
+        "disposition": "ACCEPT",
+        "stage_id": null,
+        "error_class": null,
+        "diagnostic": null
+      }
+    },
+    {
+      "fixture_id": "P43",
+      "path": "41_F18_Fixture_Inputs/P43.json",
+      "scope": "parser",
+      "sha256": "743be7e69bce87c65eb81e9224f95ee88fcd5d487e2855192b2b81e04935e54e",
+      "bytes": 1382,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "P44",
+      "path": "41_F18_Fixture_Inputs/P44.json",
+      "scope": "parser",
+      "sha256": "dfbef8b68a264a0c3612ed9c3ae55cb40ddacbfe758e1b48bb1c13d9c05224b9",
+      "bytes": 1442,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=SUBMODULE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P45",
+      "path": "41_F18_Fixture_Inputs/P45.json",
+      "scope": "parser",
+      "sha256": "6a867b7a5ae6e772b4ece8a6ce28c7199bf11a3ec70980e5a1bcb10b9928dd91",
+      "bytes": 1420,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=FUTURE_FEATURE"
+      }
+    },
+    {
+      "fixture_id": "P46",
+      "path": "41_F18_Fixture_Inputs/P46.json",
+      "scope": "parser",
+      "sha256": "2bdd68fe6d864862009650f5c567da03c104da985a27b392f66f1282b129d9da",
+      "bytes": 1394,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "P47",
+      "path": "41_F18_Fixture_Inputs/P47.json",
+      "scope": "parser",
+      "sha256": "b88bf3663edc15b1b1e7b3011f8935942fb9f07604b93a0dcbdc3022eefc281e",
+      "bytes": 1405,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=RELATIVE_IMPORT"
+      }
+    },
+    {
+      "fixture_id": "P48",
+      "path": "41_F18_Fixture_Inputs/P48.json",
+      "scope": "parser",
+      "sha256": "e2b68fbd40a52f98251679e85eb911c230318977fc0f8ad6b715b052f39d876f",
+      "bytes": 1469,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_FORM_REJECT|file=driver.py|line=1|reason=MULTIPLE_NAMES"
+      }
+    },
+    {
+      "fixture_id": "R01",
+      "path": "41_F18_Fixture_Inputs/R01.json",
+      "scope": "repair",
+      "sha256": "5eb618e15779c478e5cacf6a9e8c994ba82caba37a028ee8c497c72836ae45a9",
+      "bytes": 480,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "COMPILE_DRIVER",
+        "error_class": "COMPILE_ERROR",
+        "diagnostic": "COMPILE_ERROR|file=driver.py|line=1"
+      }
+    },
+    {
+      "fixture_id": "R02",
+      "path": "41_F18_Fixture_Inputs/R02.json",
+      "scope": "repair",
+      "sha256": "ed9451b5a34d9899ffdbd2cd589b59971d7bd7e692fb8ef2603757bd95970694",
+      "bytes": 484,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "COMPILE_CHECKER",
+        "error_class": "COMPILE_ERROR",
+        "diagnostic": "COMPILE_ERROR|file=checker.py|line=1"
+      }
+    },
+    {
+      "fixture_id": "R03",
+      "path": "41_F18_Fixture_Inputs/R03.json",
+      "scope": "repair",
+      "sha256": "960f028465ab39ca0e73e043017254f394ab160792471f8e3fce164485447411",
+      "bytes": 643,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "IMPORT_POLICY",
+        "error_class": "IMPORT_POLICY_REJECT",
+        "diagnostic": "IMPORT_NOT_ALLOWED|module=os"
+      }
+    },
+    {
+      "fixture_id": "R04",
+      "path": "41_F18_Fixture_Inputs/R04.json",
+      "scope": "repair",
+      "sha256": "9df06ffcb52be291e22fe49e99aa5f659c286fd17ac4f2cb33e76749df8decc3",
+      "bytes": 526,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_RUNTIME",
+        "error_class": "RUNTIME_EXCEPTION",
+        "diagnostic": "RUNTIME_EXCEPTION|file=driver.py|phase=step|class=KeyError"
+      }
+    },
+    {
+      "fixture_id": "R05",
+      "path": "41_F18_Fixture_Inputs/R05.json",
+      "scope": "repair",
+      "sha256": "e309a0e35a89ae822d484cebfa7e8a0220412697f2508e93f8ca1c91b04fb217",
+      "bytes": 481,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_VECTOR",
+        "error_class": "DRIVER_VECTOR_INVALID",
+        "diagnostic": "DRIVER_VECTOR_INVALID|reason=WRONG_WIDTH"
+      }
+    },
+    {
+      "fixture_id": "R06",
+      "path": "41_F18_Fixture_Inputs/R06.json",
+      "scope": "repair",
+      "sha256": "7d7eed6f954a5c5f00cc2aeb88b2545395652cceae0f8bc6fd88f53d938c10f3",
+      "bytes": 435,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "DRIVER_WATCHDOG",
+        "error_class": "WATCHDOG_TIMEOUT",
+        "diagnostic": "WATCHDOG_TIMEOUT|phase=driver_step"
+      }
+    },
+    {
+      "fixture_id": "R07",
+      "path": "41_F18_Fixture_Inputs/R07.json",
+      "scope": "repair",
+      "sha256": "808399b3e697f1584a2a30e856c21ee97b8af1cae3d738402829e6666a23ad5c",
+      "bytes": 532,
+      "expected": {
+        "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "RTL_NULL_CONTROL_FAILURE",
+        "diagnostic": "RTL_NULL_CONTROL_FAILURE|reason=MASKED_OUTPUT_DIVERGENCE"
+      }
+    },
+    {
+      "fixture_id": "R08",
+      "path": "41_F18_Fixture_Inputs/R08.json",
+      "scope": "repair",
+      "sha256": "77010b4ac23c961d77084291492a272e03f42c20bbf3d7e033f6405cb512c2d4",
+      "bytes": 621,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL",
+        "error_class": "CHECKER_RUNTIME_ERROR",
+        "diagnostic": "CHECKER_RUNTIME_ERROR|class=KeyError"
+      }
+    },
+    {
+      "fixture_id": "R09",
+      "path": "41_F18_Fixture_Inputs/R09.json",
+      "scope": "repair",
+      "sha256": "1ab871560d71339d3b16e9bcac106587827a7a8663686320d79b9cfe0ed7e299",
+      "bytes": 516,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "CHECKER_NULL_REJECT",
+        "error_class": "CHECKER_NULL_REJECT",
+        "diagnostic": "The checker returned FAIL on a legal null-netlist trace."
+      }
+    },
+    {
+      "fixture_id": "R10",
+      "path": "41_F18_Fixture_Inputs/R10.json",
+      "scope": "repair",
+      "sha256": "fb30195950f89c7df4df3ec9218d4e5a78bbdb291cdbe779d149be7bec0135bc",
+      "bytes": 533,
+      "expected": {
+        "disposition": "TERMINAL_INVALID_NO_REPAIR",
+        "stage_id": "TERMINAL",
+        "error_class": "CHECKER_NONDETERMINISM",
+        "diagnostic": "CHECKER_NONDETERMINISM|reason=RUN_DISAGREEMENT"
+      }
+    },
+    {
+      "fixture_id": "R11",
+      "path": "41_F18_Fixture_Inputs/R11.json",
+      "scope": "repair",
+      "sha256": "a28e0b47e19ec1b5a62b26d19b01718728800a9763bb837368788c436f43b4d7",
+      "bytes": 597,
+      "expected": {
+        "disposition": "TERMINAL_INVALID_NO_REPAIR",
+        "stage_id": "TERMINAL",
+        "error_class": "CHECKER_NONDETERMINISM",
+        "diagnostic": "CHECKER_NONDETERMINISM|reason=RUN_DISAGREEMENT"
+      }
+    },
+    {
+      "fixture_id": "R12",
+      "path": "41_F18_Fixture_Inputs/R12.json",
+      "scope": "repair",
+      "sha256": "310e9b771ef7765b1281073928852e29f6117e335ada4a9f4f98d5fc0a385854",
+      "bytes": 519,
+      "expected": {
+        "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+        "stage_id": "DESIGN_HALT",
+        "error_class": "TRACE_INTEGRITY_FAILURE",
+        "diagnostic": "TRACE_INTEGRITY_FAILURE|reason=ROW_ALIGNMENT"
+      }
+    },
+    {
+      "fixture_id": "R13",
+      "path": "41_F18_Fixture_Inputs/R13.json",
+      "scope": "repair",
+      "sha256": "2253114f35e713a9881a46e106342423b7024edda551770007e126a795847159",
+      "bytes": 570,
+      "expected": {
+        "disposition": "REPAIR",
+        "stage_id": "PARSE_SCHEMA",
+        "error_class": "SCHEMA_REJECT",
+        "diagnostic": "SCHEMA_REJECT|pointer=/driver"
+      }
+    }
+  ],
+  "status": "Development-run evidence: fixture runs of a project implementation, recorded outside this pack, are development runs, not F18 acceptance; Formal F18 status: NOT RUN / NOT PASSED, since no authorized F18 acceptance run exists; Approval: no implementation is qualified or approved"
+}

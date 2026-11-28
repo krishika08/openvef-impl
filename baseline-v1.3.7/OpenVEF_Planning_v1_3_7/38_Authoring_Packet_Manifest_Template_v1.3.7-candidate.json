@@ -1,0 +1,73 @@
+{
+  "manifest_version": "1.3.3",
+  "status": "TO_FREEZE",
+  "design_id": "TO_FREEZE",
+  "spec_version_sha256": "TO_FREEZE",
+  "clause_ids": [],
+  "reserved_clause_id": "UNSPECIFIED",
+  "payloads": {
+    "design_specification": {
+      "block_heading": "[Design specification]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "port_manifest": {
+      "block_heading": "[Port manifest]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "reset_and_legal_input_rules": {
+      "block_heading": "[Reset and legal-input rules]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "execution_envelope": {
+      "block_heading": "[Execution envelope]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "driver_api": {
+      "block_heading": "[Driver API]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "trace_schema": {
+      "block_heading": "[Trace schema]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    },
+    "checker_contract": {
+      "block_heading": "[Checker contract]",
+      "sha256": null,
+      "bytes": null,
+      "status": "TO_FREEZE"
+    }
+  },
+  "clause_block_rule": "Each clause ID must appear in exactly one visible block unless an intentional duplication is declared in clause_appears_in_blocks; duplicated clause text must be byte-identical across arms.",
+  "clause_appears_in_blocks_format": "Semicolon-separated exact visible heading labels in lexical order.",
+  "clause_id_regex": "^[A-Z]{2,6}-[0-9]{3}$",
+  "visible_clause_id_sources": [
+    "design_specification",
+    "port_manifest",
+    "reset_and_legal_input_rules",
+    "execution_envelope",
+    "driver_api",
+    "trace_schema",
+    "checker_contract"
+  ],
+  "fixed_contract_paragraphs_citable": false,
+  "clause_ids_status": "TO_FREEZE: populate after FIFO/UART clause authoring; F18 requires visible regex matches to equal this array exactly.",
+  "clause_id_search_regex": "(?<![A-Za-z0-9_-])[A-Z]{2,6}-[0-9]{3}(?![A-Za-z0-9_-])",
+  "clause_id_near_match_regex": "(?<![A-Za-z0-9_-])[A-Za-z]{2,6}-[0-9]{1,3}(?![A-Za-z0-9_-])",
+  "clause_id_near_match_policy": "Any near-match token not also a full match of clause_id_regex is a packet-freeze error.",
+  "ascii_identifier_policy": "Python tokenize.NAME tokens are ASCII-only in author source; this is independent of design clause IDs.",
+  "notes": [
+    "Planning-pack v1.3.7-candidate (v1.3.6 corrective evidence/metadata release with the corrections in CHANGELOG-v1.3.7-candidate.md; not audited). Model-visible prompt templates, schema, system and repair messages are unchanged from v1.3.5; template-stage hashes carry forward. Current template-stage hashes were first computed in v1.3.2; model-visible text changed in v1.3.2 and has remained unchanged from v1.3.3 through v1.3.6. Template is not frozen; design payload hashes remain TO_FREEZE."
+  ]
+}

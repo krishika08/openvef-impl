@@ -1,0 +1,528 @@
+OpenVEF v1.0 Audit
+Nov 22, 2026 · @Conductors
+1. Overall verdict
+Gate
+Status
+Technical document gate V1–V7
+FAIL. V1 and V5 now pass. V2, V3, V4 and V7 are partial, and V6 fails: seven of the 90 mandatory fixtures contradict the normative rules, and eight more are ambiguous. All the defects are document-level fixes
+Owner-acceptance gate A1–A11
+NOT MET. A1–A11 are PROPOSED / NOT ACCEPTED in files 16, 23, 32 and the README. No signature or date is recorded. The strict-AST branch (v1.0 "D1") is labelled OWNER CHOICE REQUIRED
+Implementation / F18 execution
+NOT RUN / NOT PASSED. No parser, assembler or fixture execution is claimed anywhere, and I ran none
+Rationale. v1.0 is a large step forward:
+• AST rules. The strict AST policy is now fully stated to the model, byte-identically in both arms.
+• Diagnostics. The diagnostic grammar, enumerations, JSON-Pointer rule, failure map and evaluation order are repeated in file 25, essentially verbatim.
+• Assembly. Assembly reproduces exactly, and every hash I recomputed matches the sidecar.
+• Fixtures. All 90 fixtures are materialized, with correct hashes and no duplicates.
+The gate still cannot pass, for two kinds of reason:
+• Contradictory fixtures. Seven of the mandatory fixtures would make a correct parser fail F18: two have no create_driver, three put simulated run outcomes in the checker.source field, and three use error classes that are not in the map (M03 is counted in two of those groups).
+• Rules that still lack one deterministic answer:
+    ◦ which stage owns a module-level class or decorated function;
+    ◦ which IMPORT_FORM_REJECT reason wins when several apply;
+    ◦ non-ASCII identifiers inside an ASCII-only grammar;
+    ◦ what happens to slots when a design halts mid-run;
+    ◦ the clause-ID "near-match" rule.
+No LLM call of any kind is permitted.
+Scope of my checks. I made no LLM or provider calls and accessed no PDFs. I ran no project parser, assembler or harness. I did run bounded static scripts of my own:
+• hash and length recomputation;
+• extraction and rendering per file 31;
+• jsonschema validation of the fixture response objects, applying the declared pointer sort rule;
+• ast.parse on fixture sources (local Python 3.13, not the pinned 3.11);
+• index, hash and grammar consistency checks.
+These are audit checks. They are not F18 execution.
+2. Blocker table
+All nine blockers (B1–B9) block LLM calls.
+ID
+File / section
+Evidence
+Why it matters
+Exact correction
+B1 (V6)
+41_F18_Fixture_Inputs/M10.json, M11.json, M12.json
+response_object.checker.source is a JSON object ({"checker_runs":[…]}), not a string. Schema 34 requires a string. My validation gives SCHEMA_REJECT|pointer=/checker/source for all three, but they expect CHECKER_TIMEOUT, CHECKER_NONDETERMINISM and a warning
+A correct parser fails F18 on three mandatory fixtures
+Put a real checker source string in source, and move the simulated outcomes to a sibling input key null_runs (as P18, P19 and P22 already do). Re-hash and update the index
+B2 (V6/V4)
+M01.json, M03.json; P §3.4 evaluation order (4)
+Neither driver source defines create_driver. Order (4) checks symbols in the order create_driver, Driver, Driver.step, so the first failure is ENTRY_POINT_REJECT|file=driver.py|symbol=create_driver|reason=MISSING_ENTRY_POINT. M01 expects Driver.__init__/FORBIDDEN_METHOD and M03 expects DECORATOR_REJECT|…|symbol=Driver
+Contradictory expectations
+Add a valid create_driver (and import random if used) to both sources, so that only the intended defect remains
+B3 (V3)
+P §3.4 map row "Forbidden decorator …" and row "Disallowed import … prohibited built-in"; fixtures P27, M03, M34
+The map assigns error class ENTRY_POINT_REJECT (stage AST_SIGNATURE) and IMPORT_POLICY_REJECT (stage IMPORT_POLICY). P27 and M03 expect error class DECORATOR_REJECT; M34 expects PROHIBITED_BUILTIN
+The error_class key is sent to the model and compared by F18, so the two sources disagree on bytes
+Either set the fixture error_class to the map value, or add DECORATOR_REJECT and PROHIBITED_BUILTIN as error classes in the map (Protocol and file 25 together)
+B4 (V2/V4)
+File 30 §3 "Shared AST rules"; P §3.4 order (3) vs (4); MODULE_STATEMENT_REJECT.reason=NON_FUNCTION_DEFINITION; M02
+The shared module-level allow-list (imports, docstring, undecorated function defs, literal assignments) excludes class definitions and decorated functions. Read literally, it rejects even class Driver at step (3), IMPORT_POLICY. The map and M02 put class and decorator violations at step (4), AST_SIGNATURE. A module-level class Helper in checker.py therefore has two defensible outcomes
+Stage, diagnostic and repair text are not deterministic, and the literal rule contradicts B5
+Re-scope step (3) to statements other than ClassDef and FunctionDef (all class and decorator checks happen at step (4)), and define NON_FUNCTION_DEFINITION as "any other compound definition". Or move CLASS_FORBIDDEN and DECORATOR_REJECT to step (3). Pick one and align M02, M03 and P27
+B5 (V2/V3)
+File 30 §2 bullet 3; P §3.4 IMPORT_FORM_REJECT enumeration; P29a, P29b, P30
+(i) There is no priority order when several reasons apply: from . import x (RELATIVE vs FROM_IMPORT_FORBIDDEN), from math import * (STAR vs FROM…), from __future__ import division (FUTURE_FEATURE vs FROM…), import os.path (IMPORT_NOT_ALLOWED vs SUBMODULE), import os as o (NOT_ALLOWED vs ALIAS), from os import path (NOT_ALLOWED vs FROM…). Only from collections import abc is resolved explicitly. (ii) import math, json (several names in one Import) breaks "one exact root" but has no reason code
+Different conforming parsers emit different diagnostics
+Add a total precedence for each Import and ImportFrom node, for example: RELATIVE → STAR → FUTURE_FEATURE → IMPORT_NOT_ALLOWED (root) → FROM_IMPORT_FORBIDDEN → SUBMODULE → ALIAS. Add reason MULTIPLE_NAMES. Add fixtures for each pair
+B6 (V3)
+P §3.4 grammar ("values are ASCII"); OFFENDING_ROOT, SYMBOL, NAME
+Python 3 identifiers may be non-ASCII (import módulo, random.ñ, def é() with a decorator). These values are copied "as written", which breaks the ASCII rule, and no fallback exists. Separately, SyntaxError.offset can be None, and COLUMN has no fallback
+The output for a reachable input is undefined
+Add: "a non-ASCII identifier is replaced by the fixed token NON_ASCII_IDENTIFIER" (or reject it at step (3) with its own reason), and "COLUMN = 1 when the offset is absent or less than 1". Record that LINE and COLUMN follow the pinned CPython, so P25's column=5 must be re-confirmed on 3.11
+B7 (V4)
+P §3.4 DESIGN_HALT rows; §7, §7a
+The map halts the design on a masked RTL/null divergence under an artifact's own stimulus, on a simulator error, or on a trace-integrity fault during slot evaluation. Undefined: (a) the triggering slot's fate (re-run the same frozen artifact after the evaluator repair, without a new LLM call?); (b) whether already-scored slots of that design are re-validated; (c) whether an evaluator repair counts as a packet or manifest change that triggers the §13.4 refreeze and F16 cycle; (d) an artifact that reproduces a simulator crash after repair (loop)
+Slot accounting under ITT, and the freeze ordering, become non-deterministic mid-study
+Add §7b, "Mid-run design halt": the slot keeps its frozen artifact and is re-evaluated after the repair, with no new generation; all slots of that design are re-run on the repaired evaluator; an evaluator change after packet freeze follows the §13.4 refreeze rule; a reproduced crash after one evaluator repair is classified TERMINAL/… (name it)
+B8 (V6)
+File 36; fixture index; P §3.4
+(i) The dispositions ACCEPT_WITH_WARNING, CONTROL_EXPECTATION, F18_REJECT, DESIGN_HALT_NO_SLOT_SCORED and TERMINAL_INVALID_NO_REPAIR and the stages FEEDBACK_SERIALIZER and F18 are not defined in any normative document. (ii) PACKET_FREEZE_REJECT|RESERVED_HEADING_LINE, ASSEMBLY_REJECT|UNRESOLVED_PLACEHOLDER and F18_REJECT|VISIBLE_CLAUSE_ID_SET_MISMATCH (M18–M20) violate the CODE|key=value grammar and are defined nowhere. (iii) P22 and M12 express the same rule with different dispositions. (iv) M15's expectation depends on path regexes the pack never defines (and its input holds doubled backslashes)
+The expected strings are not derivable from the contract
+Add to file 36 §1 a normative disposition vocabulary and a separate "F18 assembly/manifest error codes" table (declared outside the model-feedback grammar). Unify P22 and M12. Define the three path regexes in P §3.4, or delete the redaction stage (the grammar already forbids paths) and drop M15
+B9 (V7)
+File 31 §3 bullet 2; file 38
+clause_id_regex is anchored (^…$), yet it is used to search payloads "with token boundaries" that are never defined. "A near-match or malformed clause-like token is a packet-freeze error" has no pattern
+The equality check is executable; the near-match rule is not
+Define the search form (?<![A-Za-z0-9_-])[A-Z]{2,6}-[0-9]{3}(?![A-Za-z0-9_-]) and the near-match pattern (for example [A-Za-z]{1,8}-?[0-9]{1,5} not fully matching), or delete the near-match sentence
+3. V1–V7 status
+Item
+Status
+Basis
+V1 strict AST visible
+PASS (as a document; branch not owner-accepted)
+File 30 §3.1 fixed texts (B5 2,986 B; B7 2,368 B; B8 2,374 B) are exact byte prefixes of the block bodies in both templates, each followed by exactly \n\n. They cover: no __init__; exactly one step; no helper or nested classes; no decorators or metaclass; base object only; checker.py defines no classes; module-level literal-only and no-control-flow rules; positional-or-keyword with no defaults for create_driver, step and check_trace. The allow-list drops abc, dataclasses and enum. The branch is "PROPOSED — OWNER CHOICE REQUIRED" (file 16 v1.0-D1; file 23; README; file 40)
+V2 imports and names
+PARTIAL
+Resolved: re.compile allowed and builtin compile banned by ast.Name; builtins.<name> banned; random.Random the only allowed attribute; random.SystemRandom and module-global calls banned; aliases and both collections.abc forms rejected. The sandbox random initialization is disclosed as a requirement for F18 to test (file 30 §6), not as verified. Open: B4 and B5. Static GLOBAL_RANDOM_USE can be bypassed by aliasing (r = random; r.random()) or by getattr; that residue reaches only the runtime DRIVER_NONDETERMINISM check. Disclose it
+V3 grammar and pointer
+PARTIAL
+The code block, enumerations, pointer rule, map, §7a, evaluation order and serialization are byte-identical between P §3.4 and file 25. Two text paragraphs differ slightly (Section 4). I recomputed every pointer for P06a–P08d and M30 under the declared sort rule; all match. Open: B3, B5, B6
+V4 precedence and halts
+PARTIAL
+The order matches the required sequence exactly (parse → static → compile driver → compile checker → RTL then null runs → paired comparison → checker run 1 → run 2 → adjudication), with driver.py before checker.py. Every v0.9 failure class now has a row. A design-level baseline failure goes to §7a preflight and is never a slot outcome. Open: B4 and B7
+V5 placeholders and assembly
+PASS
+Only {{UPPER_SNAKE}} placeholders occur, and the matcher \{\{[A-Z0-9_]+\}\} is in files 31 and 21. All hashes and lengths match the sidecar (Section 3). Payload hashes are honestly TO_FREEZE
+V6 fixture suite
+FAIL
+The suite is mandatory in files 30 §8, 21, 36 and P §3.4. Index count 90 = 90 files = 90 catalog IDs, with no duplicates and every SHA-256 and byte length correct. It is NOT RUN everywhere. Open: B1, B2, B3, B8, plus the ambiguous P29a, P29b and P30 (B5) and M02 (B4)
+V7 clause IDs
+PARTIAL
+Present: the anchored regex, an empty sorted list, reserved UNSPECIFIED, seven sources, fixed paragraphs non-citable, the set-equality rule, and the sidecar and manifest spec_version_sha256 equality rule (both TO_FREEZE). The actual check is not assessable because no payloads exist. Open: B9
+4. Fixture table (all 90 descriptors)
+Integrity checks, all of which pass:
+• the index declares 90 fixtures, and there are 90 descriptor files and 90 catalog rows;
+• there are no duplicate IDs;
+• every SHA-256 and byte length matches;
+• each descriptor's expected field equals its index entry;
+• every fixture is NOT RUN.
+Assessments:
+• DET — one deterministic outcome, consistent with the normative rules. For response-object fixtures I confirmed independently that no earlier stage fires.
+• AMB — more than one defensible outcome, or an expected string the normative contract does not define.
+• CON — contradicts a normative rule.
+• N/A — not assessable statically.
+Parser fixtures (P)
+ID
+Assessment
+Reason
+P01
+DET
+Schema-valid; static checks pass; ACCEPT
+P02, P03, P04, P05
+DET
+Envelope failures → SCHEMA_REJECT|pointer=/ (recomputed)
+P06a
+DET
+additionalProperties at root → / (recomputed)
+P06b
+DET
+Nested extra key → parent /driver (recomputed)
+P07
+DET
+Missing checker → required at root → / (recomputed)
+P08a, P08b, P08c
+DET
+const → /schema_version, /language, /language_version (recomputed; one error each)
+P08d
+DET
+maxItems → /dependencies (recomputed)
+P09, P10
+DET
+BOM and invalid UTF-8 → /
+P11a
+DET
+Provider truncation flag → OUTPUT_TRUNCATED. The field name must be pinned with the provider
+P11b
+DET
+→ SCHEMA_REJECT|pointer=/
+P12a, P12b
+DET
+SOURCE_EMPTY for each file
+P13
+DET
+IMPORT_NOT_ALLOWED|module=os
+P14
+DET
+ACCEPT
+P15
+DET
+Driver.step PARAMETER_NAMES
+P16
+DET
+create_driver MISSING_ENTRY_POINT
+P17
+DET
+Synthetic port manifest; MISSING_KEYS
+P18, P19
+DET
+Uses null_runs; reasons follow the file 30 §5 order
+P20
+DET, with a rule gap
+Literal /assumptions/0/clause_id is plausible, but the §1 pointer rule covers schema errors only. Add a clause-rejection pointer rule
+P21
+DET
+ACCEPT
+P22
+DET (vocabulary)
+ACCEPT_WITH_WARNING is not a normative disposition (B8)
+P23
+DET
+SUBMODULE_IMPORT, explicit in file 30
+P24a–d
+DET
+PROHIBITED_BUILTIN for exec, eval, compile, open
+P25a, P25b
+DET, runtime-dependent
+column=5 recomputed on CPython 3.13; must be re-confirmed on pinned 3.11 (B6)
+P26
+DET
+check_trace PARAMETER_NAMES
+P27
+CON
+error_class=DECORATOR_REJECT, but the map class is ENTRY_POINT_REJECT (B3)
+P28
+DET
+MODULE_EXECUTABLE at line 1
+P29a
+AMB
+RELATIVE vs FROM_IMPORT_FORBIDDEN (B5)
+P29b
+AMB
+STAR vs FROM_IMPORT_FORBIDDEN (B5)
+P30
+AMB
+FUTURE_FEATURE vs FROM_IMPORT_FORBIDDEN (B5)
+Repair fixtures (R)
+R01–R13 are all DET. They are synthetic event lists with literal grammar-valid diagnostics, consistent with the map and the evaluation order:
+• R03 and R13 check precedence.
+• R07 and R12 are design halts, consistent with §7 and §7a.
+• R10 and R11 are disagreements.
+Note: R07 models the §7a preflight case. No fixture covers the mid-run halt case (B7).
+Missing-case fixtures (M)
+ID
+Assessment
+Reason
+M01
+CON
+No create_driver; the first failure is MISSING_ENTRY_POINT (B2)
+M02
+AMB
+Module-level class: step (3) NON_FUNCTION_DEFINITION or step (4) CLASS_FORBIDDEN (B4)
+M03
+CON
+No create_driver (B2), and the error_class mismatches (B3)
+M04a, M04b
+DET
+NON_LITERAL_CONSTANT, MODULE_CONTROL_FLOW at line 1
+M05
+DET
+PARAMETER_KIND
+M06
+DET
+Runtime RETURN_TYPE at AST_SIGNATURE (step 7)
+M07
+DET
+re.compile accepted
+M08a
+DET
+FROM_IMPORT_FORBIDDEN, explicit in file 30
+M08b
+DET
+SUBMODULE_IMPORT, explicit in file 30
+M09, M22, M23
+DET
+GLOBAL_RANDOM_USE names
+M10, M11, M12
+CON
+checker.source is an object → schema reject first (B1). M12 also uses a non-normative disposition (B8)
+M13
+DET
+DESIGN_HALT simulator error (mid-run semantics undefined, B7)
+M14
+DET, weak
+Recomputed: 2,048 bytes, SHA-256 35d3ec0b…, matches. However, é starts exactly at the cut (byte 2,034), so the mid-code-point case is never exercised. Shift it one byte earlier
+M15
+AMB
+Path regexes are undefined; the input holds doubled backslashes (B8)
+M16
+DET
+driver.py first
+M17
+DET
+Recomputed serialization: SHA-256 226a87de…, matches. Mark it grammar-exempt, since its diagnostic holds non-ASCII and LF
+M18, M19, M20
+AMB
+Codes are outside the grammar and not defined normatively (B8). M20's logic is otherwise sound
+M21
+DET
+IMPORT_ALIAS (math is allowed, so alias is the only defect)
+M24
+DET
+builtins.open → PROHIBITED_BUILTIN|name=open
+M25
+DET
+RUNTIME_SIGNATURE
+M26, M27
+DET
+EXTRA_KEYS, ILLEGAL_PROTOCOL_STATE
+M28
+DET
+Terminal DRIVER_NONDETERMINISM
+M29
+DET
+driver.py precedes checker.py
+M30
+DET
+/dependencies (recomputed)
+M31, M32, M33
+DET
+TOP_LEVEL_KEYS, INVALID_VERDICT, DIAGNOSTICS_NOT_LIST, following the §5 order
+M34
+CON
+error_class=PROHIBITED_BUILTIN, but the map class is IMPORT_POLICY_REJECT (B3)
+Tally. 75 DET, 8 AMB, 7 CON.
+• AMB: P29a, P29b, P30, M02, M15, M18, M19, M20.
+• CON: P27, M01, M03, M10, M11, M12, M34.
+Fixtures still missing
+• a mid-run design halt (B7);
+• each IMPORT_FORM_REJECT priority pair, plus import math, json (B5);
+• a non-ASCII identifier and a SyntaxError with no offset (B6);
+• a decorated module-level helper function;
+• a class defined inside a function body;
+• a clause-ID near-match (B9).
+5. Recomputed hashes and assembly reproduction
+I re-implemented file 31 independently in a short audit script. It applies the metadata-strip, heading, rendering and two-LF join rules, inserts the schema bytes byte-exactly in place of {{OPENVEF_RESPONSE_SCHEMA_JSON}}, and leaves the seven design payload placeholders unresolved.
+Artifact
+Bytes (mine)
+SHA-256 (mine)
+Sidecar 33_…_v1.0.json
+Match
+Schema 34_OpenVEF_Response_Schema_v1.0.json
+2,529
+6fb5d282b09540949f21ee134b522841c3345031cb3e118a83bdffc18b4e7c34
+2,529 / same
+✓
+System message (file 25 extraction)
+602
+98020d4f9cf818968f15e4a7c0a5adc3633694aa98c5cbfe170b0904aee3c7a4
+602 / same
+✓
+Repair template (file 25 extraction)
+621
+f11d574f4e5afb223a096b74f039ecb6a222d6ed6dc5bcf7f115dc5922c2620d
+621 / same
+✓
+ORG-A template-stage prompt
+11,890
+7bf722e3151dca635f8b45998f5a330be2f16d9f76eb4a4989c52cc40e2817a0
+11,890 / same
+✓
+ORG-B template-stage prompt
+11,890
+b7f186dc9c82a8d18caadcc05d4ae56528f0171308f8ad95d28fb0e1fdc27d4e
+11,890 / same
+✓
+Further assembly checks
+• Arms. Nine headings, matching the sidecar orders (ORG-B: B0 B2 B5 B1 B6 B3 B7 B4 B8). Every block body is byte-identical across the arms, so the arms differ only in whole-block order.
+• Forbidden tokens. None in either prompt, the system message or the repair template: no \bB[0-8]\b, no ORG-?[AB], no ASSEMBLER.
+• Placeholders. The schema occurs once per arm. The only unresolved tokens are the seven {{…_FROM_FROZEN_AUTHORING_PACKET}} payloads, and all seven payload hashes are honestly TO_FREEZE in the sidecar and file 38.
+• Fixed text. B5 (2,986 B), B7 (2,368 B) and B8 (2,374 B) are exact prefixes of their blocks in both arms, each followed by exactly \n\n.
+• File 25 extraction. Marker lines are excluded, leading and trailing empty lines are trimmed, and there is one terminal LF.
+• Repair template substitution. Substituting a feedback object gives JSON byte-identical to json.dumps(obj, ensure_ascii=False, indent=2) + "\n", and the message ends with a single LF.
+• Roles. system → system; arm prompt → user; replies → assistant; repairs → appended user (file 31 §5; sidecar).
+• Specification-hash linkage. spec_version_sha256 and manifest_spec_version_sha256 (both TO_FREEZE) carry an explicit byte-equality rule against manifest field spec_version_sha256.
+Assembly-related findings
+• Sidecar overclaim (non-blocking). The validation block asserts true for checks no one has run, including visible_clause_ids_equal_manifest_clause_ids, model_visible_contract_matches_parser_contract and no_reserved_heading_payload_lines. No payloads exist and F18 is NOT RUN. Change these to "REQUIRED" (or null) until F18 records them.
+• R_max, payloads and final prompts cannot be checked until the payloads are frozen. The final assembled hashes are correctly deferred.
+6. Cross-document consistency matrix
+The matrix has one row per document and one column per rule.
+Columns:
+• Gate: A1–A11 are not accepted, nothing is authorized, and no LLM call is allowed until V1–V7 and the fixtures pass re-audit.
+• Strict AST: the strict-AST branch is stated as a proposal or owner choice.
+• AST rules: the strict-AST rule text itself.
+• Map and grammar: the failure map, diagnostic grammar and error classes.
+• Fixtures: the fixtures are mandatory and NOT RUN.
+• Clause IDs: the clause-ID rule.
+✓ = consistent; ✗ = conflict; — = not addressed (acceptable).
+Document
+Gate
+Strict AST
+AST rules
+Map and grammar
+Fixtures
+Clause IDs
+Protocol 02_…_v1.0
+✓ (header, §18, §19)
+—
+Refers to 30
+✓ source copy; ✗ vs fixtures P27, M03, M34 (B3)
+✓ §3.4 "mandatory"
+Refers to 30 and 31
+Charter 01_…_v1.0
+✓ (§15 items 2 and 4). ✗ Status note says the v0.8 audit returned PASS WITH CORRECTIONS; it returned FAIL for the LLM-call gate
+—
+—
+—
+—
+—
+Templates 19/20 (B5/B7/B8)
+—
+—
+✓ byte-equal to 30 §3.1
+—
+—
+✓ non-citable fixed paragraphs; UNSPECIFIED
+File 25 control rules
+—
+—
+—
+✓ code block, enumerations, pointer, map, order, serialization byte-identical to P; ✗ grammar intro and notation sentence reworded although labelled "identical" (nit)
+✓
+—
+Parser contract 30
+✓ status line
+✓ §2 rationale
+✓ complete; ✗ shared module-level rule excludes class Driver (B4)
+✓ §5 checker-return order; §7 defers to P
+✓ §8
+✓ §1; ✗ no pointer rule for clause rejection (P20)
+Assembly spec 31
+—
+—
+—
+—
+—
+✓ equality rule; ✗ undefined "token boundaries" and "near-match" (B9)
+Sidecar 33
+—
+—
+—
+—
+—
+✓ regex, sources, spec-hash equality; ✗ validation: true before F18 (overclaim)
+Manifest 38
+—
+—
+—
+—
+—
+✓ anchored regex, clause_ids: [], UNSPECIFIED, seven sources, non-citable
+Checklist 21
+✓
+—
+✓
+—
+✓ P01–P30, R01–R13, M01–M34; 90 descriptors; NOT RUN
+✓
+Fixture catalog 36
+✓ NOT RUN
+—
+—
+✗ disposition and stage vocabulary undefined; non-grammar F18 codes (B8)
+✓ 90 rows = index
+—
+Fixture index 41_…/fixture-index.json
+execution_status: NOT RUN
+—
+—
+✗ seven contradictory, eight ambiguous expectations
+✓ 90/90 hashes and lengths
+—
+Status 32
+✓
+—
+—
+—
+✓ "not executed"
+—
+Approval record 23
+✓ PENDING, NOT RECORDED, identities TO CONFIRM
+✓ "not owner-approved"
+—
+—
+—
+—
+Register 16
+✓
+✓ "PROPOSED — OWNER CHOICE REQUIRED". ✗ Label clash: v0.7-approved "D1–D7" and v1.0-proposed "D1–D15" share IDs in the same file
+—
+—
+—
+—
+README
+✓
+✓
+—
+—
+✓ "90 … NOT RUN / NOT PASSED"
+—
+Pack hygiene
+• ZIP integrity. unzip -t reports no errors.
+• Checksums. 27_SHA256SUMS.txt lists 168 entries and all verify. Not covered: the manifest itself (correct), plus archive_v0.7/27_SHA256SUMS.txt and archive_v0.8/27_SHA256SUMS.txt (the archived manifests are themselves unhashed; minor).
+• Archives. v0.9 is not archived (there is no archive_v0.9/). The superseded v0.9 Protocol, file 30, file 36 and others are therefore not in the pack, so a v0.9 → v1.0 diff can only be reconstructed through file 39.
+• Cross-references. Every NN_… filename cited in the current documents exists.
+• README. It lists all the controlling files.
+• File numbers. There are no duplicate numeric prefixes.
+• Version labels. These are coherent: Protocol, Charter, 16, 21, 22, 23, 30, 31, 32, 33, 36 and 38 are v1.0; the schema is v1.0, and its independence from the pack version is stated; file 17 keeps its historical v0.7 label, which is declared current in the README.
+Status claims (all correct)
+• No current document claims that F1–F18 or any fixture passed.
+• No document claims a provider was contacted.
+• Files 03, 40 and the README state that the v0.9 audit accessed no PDFs, and that provenance claims are not re-verified.
+• File 22 keeps every original-PDF SHA-256 as NOT CAPTURED.
+7. Work authorization (as recorded in the pack)
+Currently authorized: nothing. Files 23 and 32 and the README record that A1–A11 have not been accepted and that no signature, approval date or approver identity exists. I am not inferring acceptance from this ZIP or from this audit request.
+The pack's own rules for what comes next are as follows.
+After the owner records acceptance of A1–A11, only the hand-built FIFO scope opens:
+1.  FIFO specification and mask-traceability rows.
+2.  The hand-built harness and ledger.
+3.  F1–F15.
+4.  Parser and assembler tests against hand-written fixtures.
+5.  F17 on hand-built FIFO control mutants only.
+The strict-AST branch (v1.0 D1) also needs the owner's explicit choice. Item 4 would currently freeze the seven contradictory and eight ambiguous fixtures, so fix those first.
+LLM calls (F16, smoke tests, provider probes): prohibited. They stay prohibited until (i) V1–V7 and the full fixture set pass an independent re-audit, and (ii) A1–A11 acceptance is recorded. Neither condition is met.
+Confirmatory generation: prohibited until every Protocol §18 freeze item is complete and sealed.
+8. Exact-edit list
+Blocking (must land and be re-audited before any LLM call)
+1.  M10, M11, M12: make checker.source a real source string and move the simulated outcomes into input.null_runs. Re-hash, then update the index and file 27. (B1)
+2.  M01, M03: add a valid create_driver(seed) to each driver source. Re-hash. (B2)
+3.  P27, M03, M34: set error_class to the map values (ENTRY_POINT_REJECT, IMPORT_POLICY_REJECT), or add DECORATOR_REJECT and PROHIBITED_BUILTIN as error classes in both the P §3.4 map and file 25. (B3)
+4.  File 30 §3 "Shared AST rules" and P §3.4 order (3)/(4): state which stage owns module-level ClassDef and decorated FunctionDef nodes. Define NON_FUNCTION_DEFINITION exactly, and fix the shared allow-list so it does not exclude class Driver. Align M02. (B4)
+5.  File 30 §2 and P §3.4 enumerations: add a total reason precedence for Import and ImportFrom nodes and a MULTIPLE_NAMES reason. Add fixtures for each conflicting pair. Settle P29a, P29b and P30. (B5)
+6.  P §3.4 "Fixed diagnostic value enumerations" and file 25: add a fallback for non-ASCII identifiers (NON_ASCII_IDENTIFIER) and a COLUMN fallback of 1. Note that LINE and COLUMN depend on the pinned CPython version, and re-confirm P25 on 3.11. (B6)
+7.  New P §7b "Mid-run design halt": cover the triggering slot's re-evaluation without regeneration, re-running the design's scored slots, the §13.4 refreeze interaction, and a terminal class for a crash reproduced after repair. Add a fixture. (B7)
+8.  File 36 §1 (normative vocabulary): add the disposition and stage vocabulary and an F18 assembly/manifest error-code table outside the feedback grammar. Unify P22 and M12. Define the path regexes in P §3.4, or remove redaction and M15. (B8)
+9.  File 31 §3 bullet 2 and file 38: define the unanchored search form with explicit boundaries, and define or delete the "near-match" rule. (B9)
+Non-blocking
+10.  Charter §1 status note: "The v0.8 independent audit returned PASS WITH CORRECTIONS" → "The v0.7 audit returned PASS WITH CORRECTIONS; the v0.8 and v0.9 audits returned FAIL for the LLM-call gate."
+11.  Files 16, 23, 32, 40, README: rename the v1.0 correction IDs (for example to X1–X15) so they do not clash with the approved v0.7 decisions D1–D7.
+12.  Sidecar validation: replace true with "REQUIRED" until F18 records the result.
+13.  File 30 §1: add the pointer rule for clause-ID rejection (/assumptions/<n>/clause_id, first failing index).
+14.  File 25: make the grammar intro and the notation sentence verbatim copies of P §3.4, or drop the word "identical".
+15.  M14: move é to start at byte 2,033 so the cut splits a code point. Store diagnostic_bytes as an integer.
+16.  M17 and M14: mark them "serializer unit vectors; grammar-exempt".
+17.  File 30 §2: disclose that static GLOBAL_RANDOM_USE detection can be bypassed by aliasing or getattr, and that the residue is caught only by runtime DRIVER_NONDETERMINISM when divergence occurs.
+18.  Pack: add archive_v0.9/ with the superseded v0.9 documents, and hash the archived manifests in file 27.
+Claims not independently verified
+• Literature. I did not access any source PDF or primary literature in this audit. File 22's access claims (for example DVBench "opened PDF text, 75 pages" and the SecTB-RTL 1,860/1,857/9 funnel) remain the pack's own claims. Every original-PDF SHA-256 is NOT CAPTURED.
+• Runtime behaviour. CPython 3.11 SyntaxError line and column values, sandbox initialization of random, restricted-runtime import enforcement, and provider finish-reason fields are all unverified. Runtime and provider are TO FREEZE.
+• Not executed. No parser, assembler, harness, simulator or F1–F18 run, and no fixture execution. My scripts are audit checks only.
+• People and approvals. Owner, TEEP applicant, contributors and approver are not inferred; the pack records them as TO CONFIRM.
+• Clause-ID check. Not assessable until FIFO/UART payloads and clause_ids exist.

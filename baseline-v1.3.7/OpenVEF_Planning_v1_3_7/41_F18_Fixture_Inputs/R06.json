@@ -1,0 +1,22 @@
+{
+  "fixture_id": "R06",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Driver watchdog expires",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "events": [
+      {
+        "kind": "driver_watchdog"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "DRIVER_WATCHDOG",
+    "error_class": "WATCHDOG_TIMEOUT",
+    "diagnostic": "WATCHDOG_TIMEOUT|phase=driver_step"
+  }
+}

@@ -1,4 +1,5 @@
-"""Runner adapters that exist only under `--pack v1.3.7-candidate` (D-024; v1.3.7 CANDIDATE, not audited).
+"""Runner adapters that exist only under `--pack v1.3.7` (the adopted pack, default since D-035) and
+`--pack v1.3.7-candidate` (D-024; the same bytes, audited by document audit #7).
 
 Each input contract is cited to the candidate pack (proposals/v1.3.7/pack, corrections C2, C5, C9-C16, and the
 OWNER-DECIDED rules OD-1..OD-4 of correction cycle 2, D-027), so these rows are never in the v1.3.6 table: v1.3.6 has no text for these shapes (PD-02, PD-04, PD-06, PD-07, D-013).

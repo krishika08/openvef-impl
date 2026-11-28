@@ -1,0 +1,36 @@
+{
+  "fixture_id": "M51",
+  "fixture_version": "1.3",
+  "scope": "missing-case",
+  "description": "A nested class later in driver.py outranks an earlier decorated helper because global category rank precedes source position.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "response_object": {
+      "schema_version": "1.0",
+      "language": "python",
+      "language_version": "3.11",
+      "driver": {
+        "filename": "driver.py",
+        "factory": "create_driver(seed: int) -> Driver",
+        "class_name": "Driver",
+        "method": "step(cycle_index: int, outputs_after_edge: dict[str, str]) -> dict[str, str] | str",
+        "source": "import random\n\n@marker\ndef decorated_helper():\n    return None\n\ndef nested_holder():\n    class Nested:\n        pass\n\ndef create_driver(seed):\n    driver = Driver()\n    driver.rng = random.Random(seed)\n    return driver\n\nclass Driver:\n    def step(self, cycle_index, outputs_after_edge):\n        return \"COMPLETE\"\n"
+      },
+      "checker": {
+        "filename": "checker.py",
+        "entry_point": "check_trace(trace: dict[str, object], metadata: dict[str, object]) -> dict[str, object]",
+        "source": "def check_trace(trace, metadata):\n    return {\"verdict\": \"PASS\", \"diagnostics\": []}\n"
+      },
+      "dependencies": [],
+      "assumptions": []
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "AST_SIGNATURE",
+    "error_class": "ENTRY_POINT_REJECT",
+    "diagnostic": "ENTRY_POINT_REJECT|file=driver.py|symbol=nested_holder.Nested|reason=NESTED_CLASS_FORBIDDEN"
+  }
+}

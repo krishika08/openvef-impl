@@ -1,0 +1,60 @@
+# Independent audit instructions — OpenVEF v0.9
+
+You are conducting an independent, adversarial document audit of OpenVEF Planning Pack v0.9. Do not implement the project and do not make any LLM calls to test the prompts. Do not access source PDFs unless explicitly requested; report this limitation clearly. Use only the v0.9 pack, `29_Claude_v0.8_Audit_Raw.txt` and `35_Claude_v0.8_Audit_Resolution_v0.9.md` for cross-checking. Do not assume that text present in a document has been executed.
+
+## Primary decision
+
+Return one verdict:
+- PASS for the narrow LLM-call gate only if every requirement below is concrete, mutually consistent, model-visible where required, deterministic and testable from the frozen files;
+- PASS WITH CORRECTIONS if any remaining defect is a document-level fix that still blocks LLM calls;
+- FAIL if contradictions, missing rules or untestable requirements remain.
+
+No LLM call is permitted during this audit. Do not claim F18 passed merely because you inspect its proposed checklist or fixtures.
+
+## Required adversarial checks
+
+1. **N3 / C1–C4 / C18 — generation/execution contract**
+   - Compare the fixed driver/checker/import/return-object contract in model-visible B5/B7/B8 of both templates against file 30. Check whether all hidden execution rules are visible to the model.
+   - Verify no third-party or unlisted import route remains; test `__future__` handling.
+   - Audit checker return shape, required diagnostics list, empty diagnostics, malformed diagnostic item handling, invalid top-level return handling, PASS/FAIL semantics and null checker double-run.
+   - Audit AST and runtime `inspect` rules: function/class names, positional parameter names/counts/kinds, defaults, decorators, annotations, module-level statements/side effects, and exact return-vector validation.
+   - Check clause-ID manifest rules, `UNSPECIFIED` behavior and rejection of unknown IDs.
+   - Verify every parser fixture in file 36 has exactly one deterministic expected outcome; identify any ambiguous fixture or any expectation inconsistent with schema/parser/protocol.
+
+2. **N4 / C5–C7 — deterministic repair path**
+   - Enumerate every failure outcome named anywhere in the Charter, Protocol, parser contract, F16/F18 controls and schema. Confirm each maps to exactly one repair stage/error/diagnostic or terminal-invalid outcome.
+   - Verify stage precedence when multiple failures occur; confirm the two null checker runs and all combinations of PASS, FAIL, crash and malformed return have deterministic classification.
+   - Check feedback grammar, JSON key order, exact strings, redaction list, redaction/truncation/escape order, UTF-8 boundary behavior, marker inclusion and pre-escape cap.
+   - Cross-compare file 25, Protocol §3.4, file 30, file 21 and file 36 for identical feedback rules.
+
+3. **N9 / C8 — assembly**
+   - Reproduce extraction of the system and repair bodies from file 25 exactly using file 31. Check blank lines, terminal LF, markers, JSON indentation, placeholder substitution, provider roles and hashes.
+   - Verify no payload can collide with reserved headings; check there is no escape rule that reintroduces ambiguous heading lines.
+   - Recompute schema SHA-256 and byte length; verify file 33 records them and contains payload-hash/byte fields.
+   - Rebuild ORG-A and ORG-B rendering from file 31; verify only block order differs and all schema bytes match.
+
+4. **Other corrections C9–C17**
+   - Check exact ordinal-token regex and payload restriction; neutral system wording.
+   - Check F17 feasibility/confirmatory freeze separation and F16/re-pilot-before-confirmatory-manifest ordering.
+   - Check panel mutant trace repeat rule and whether error events alter benign compatibility labels.
+   - Check `J_exposure` terminology, RNG/vector/metadata contract, global-random/NumPy wording, all status gates, schema file-number uniqueness, README coverage, provenance title and source claims, CSV clause-block format, initial/post-repair validity and `R_max=2` meaning.
+   - Check owner, TEEP applicant, contributors and approver are not misrepresented. They may remain TO CONFIRM; do not infer their identities.
+
+5. **Owner acceptance and authorization**
+   - Verify A1–A11 are clearly marked not accepted unless a signed record is present.
+   - State exactly what work, if any, is authorized. Never infer acceptance from the existence of this pack.
+   - Confirm that no LLM calls (including F16, smoke tests or provider probes) are authorized until the v0.9 blockers pass re-audit and A1–A11 acceptance is recorded.
+
+## Output format
+
+Produce a written audit with:
+1. Verdict and one-paragraph rationale.
+2. Blocker table: ID, location, evidence, why it blocks, exact correction.
+3. A cross-document consistency matrix.
+4. Parser/repair fixture audit with each fixture ID and pass/fail/ambiguous result.
+5. Assembly reproduction results including computed hashes/byte lengths.
+6. Owner-acceptance and work-authorization status.
+7. Exact section-by-section corrections, if any.
+8. Explicit list of claims not independently verified (especially external literature and source-PDF access).
+
+Be adversarial. Do not give a pass because the documents sound plausible. A requirement is accepted only if the actual model-visible, parser, repair, assembly and control documents specify the same rule in a form that can be tested.

@@ -1,0 +1,30 @@
+{
+  "fixture_id": "M13",
+  "fixture_version": "1.2",
+  "scope": "missing-case",
+  "description": "Simulator error on null run",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "lifecycle": "MID_RUN",
+    "event": {
+      "kind": "simulator_error",
+      "target": "null",
+      "exception_class": "RuntimeError"
+    },
+    "slots": {
+      "scheduled": 10,
+      "previously_evaluated": 4,
+      "triggering_slot": 5,
+      "remaining": 5
+    },
+    "evaluator_repair_attempt": 1
+  },
+  "expected": {
+    "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "EVALUATOR_INFRASTRUCTURE_FAILURE",
+    "diagnostic": "SIMULATOR_ERROR|target=null|class=RuntimeError"
+  }
+}

@@ -1,0 +1,28 @@
+# Claude Independent Audit — OpenVEF v1.1
+
+You are an independent document and fixture auditor. Do not implement the project. Do not make any LLM/provider calls. Do not access source PDFs or claim literature re-verification.
+
+Audit the uploaded `OpenVEF_Planning_v1_1.zip` against the complete v1.0 audit record in `43_Claude_v1.0_Audit_Raw.txt`. Your decision is whether the v1.0 blockers B1–B9 have been corrected in a deterministic, testable way and whether any new contradictions remain. Do not treat the existence of this pack as owner acceptance; A1–A11 and X14 remain pending.
+
+## Mandatory checks
+
+1. Recompute all SHA-256 hashes and lengths in `27_SHA256SUMS.txt`, the fixture index, sidecar schema/system/repair/template hashes, and verify every cited filename exists.
+2. Validate the JSON Schema and each fixture response object as appropriate. Do not treat synthetic lifecycle/serializer fixture descriptors as actual model-response JSON.
+3. Inspect M10–M12: `checker.source` must be a string; simulated null outcomes must appear outside `response_object`.
+4. Inspect M01/M03: each must pass all earlier stages and fail only at the intended defect. Check P27/M03/M34 error_class, stage and diagnostic against the normative map.
+5. Audit stage ownership: module-policy step must defer ClassDef/FunctionDef; AST_SIGNATURE must own classes, decorators and nested classes. Confirm the model-visible B5/B7/B8 policy and parser contract match exactly.
+6. Recompute Import/ImportFrom priority for every explicit conflict in P29a/P29b/P30/P31–P43. Check multiple-name, root, submodule, alias, relative, star and future cases. Identify any remaining untested precedence pair.
+7. Check non-ASCII identifier diagnostics and SyntaxError column fallback; identify what must be re-confirmed under pinned CPython 3.11.
+8. Trace the full mid-run halt lifecycle: slot preservation, one evaluator repair, full design-wide rerun using same artifacts/no new generation, refreeze conditions, repeated-halt abort. Confirm fixture M13/M41/M42 tests each rule.
+9. Verify the local disposition/stage/error vocabulary is complete and separate from model-feedback grammar. Confirm F18-only codes in M18–M20/M40 cannot leak to model repair messages. Verify no free-form path-redaction rule remains; M15 must test closed-grammar rejection.
+10. Verify clause-ID regex, exact token-boundary search, near-match regex, exact visible set/manifest equality and clause rejection pointer. Check M20/M40.
+11. Confirm sidecar validation states remain REQUIRED until F18 is executed, not pre-marked true.
+12. Verify all fixture inputs are literal and hashed, every fixture has exactly one expected outcome, no ambiguity/contradiction, and fixtures listed in the catalog match index and files.
+13. Confirm A1–A11 are not marked accepted, X14 is owner choice required, owner/TEEP applicant/approver identities are not guessed, and no implementation/LLM authorization is inferred.
+14. Identify all remaining TO FREEZE values and distinguish missing rules from legitimate parameters.
+
+## Required output
+
+Return: (a) overall verdict PASS / PASS WITH CORRECTIONS / FAIL for LLM-call gate; (b) B1–B9 status table; (c) fixture audit counts and exact fixture IDs still ambiguous/contradictory; (d) file/section-specific corrections; (e) whether anything is authorized; (f) confirm that you made no LLM/provider calls and accessed no PDFs.
+
+Do not say F18 passed unless you actually executed the project's parser/assembler/fixture runner. Static Python checks are audit checks, not F18 execution. No LLM calls are authorized by this prompt.

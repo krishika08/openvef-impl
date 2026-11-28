@@ -1,0 +1,26 @@
+{
+  "fixture_id": "R11",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "Checker runtime error on one run and PASS on the other",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "checker_runs": [
+      {
+        "error_code": "CHECKER_RUNTIME_ERROR",
+        "exception_class": "KeyError"
+      },
+      {
+        "verdict": "PASS"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "TERMINAL_INVALID_NO_REPAIR",
+    "stage_id": "TERMINAL",
+    "error_class": "CHECKER_NONDETERMINISM",
+    "diagnostic": "CHECKER_NONDETERMINISM|reason=RUN_DISAGREEMENT"
+  }
+}

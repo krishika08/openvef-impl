@@ -1,0 +1,32 @@
+{
+  "fixture_id": "M27",
+  "fixture_version": "1.3.7-candidate, not audited",
+  "scope": "missing-case",
+  "description": "Driver vector passes the key, type, width and symbol checks and violates the supplied legal-input predicate",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "driver_return": {
+      "wr_en": "1"
+    },
+    "input_port_widths": {
+      "wr_en": 1
+    },
+    "sampled_outputs": {
+      "full": "1"
+    },
+    "legal_input_predicate": {
+      "language": "python3.11",
+      "function": "legal_input",
+      "source": "def legal_input(vector, sampled):\n    return not (sampled[\"full\"] == \"1\" and vector[\"wr_en\"] == \"1\")\n",
+      "source_sha256": "bc3d897f8b118b6a366453a24923f1a75683472f05372907df23286653fe6154"
+    }
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "DRIVER_VECTOR",
+    "error_class": "DRIVER_VECTOR_INVALID",
+    "diagnostic": "DRIVER_VECTOR_INVALID|reason=ILLEGAL_PROTOCOL_STATE"
+  }
+}

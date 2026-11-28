@@ -1,0 +1,23 @@
+{
+  "fixture_id": "M20",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "description": "Visible clause ID absent from manifest clause_ids",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "visible_payload": "FIFO-001 FIFO-002",
+    "manifest_clause_ids": [
+      "FIFO-001"
+    ],
+    "clause_id_regex": "^[A-Z]{2,6}-[0-9]{3}$"
+  },
+  "expected": {
+    "disposition": "F18_REJECT",
+    "stage_id": "F18",
+    "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+    "diagnostic": "F18_REJECT|reason=VISIBLE_CLAUSE_ID_SET_MISMATCH"
+  },
+  "fixture_class": "f18_packet_fixture"
+}

@@ -1,0 +1,19 @@
+{
+  "fixture_id": "P11a",
+  "fixture_version": "1.0",
+  "scope": "parser",
+  "description": "Provider finish reason explicitly reports max-token truncation.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "provider_finish_reason": "length",
+    "raw_response_utf8": "{\"schema_version\":\"1.0\""
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "PARSE_SCHEMA",
+    "error_class": "OUTPUT_TRUNCATED",
+    "diagnostic": "OUTPUT_TRUNCATED"
+  }
+}

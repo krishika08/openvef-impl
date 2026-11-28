@@ -1,0 +1,492 @@
+OpenVEF v0.6 Audit: Charter and Protocol
+Nov 22, 2026 · @Conductors
+1. Verdict: PASS WITH CORRECTIONS (not freezable)
+v0.6 moves in the right direction:
+• intention-to-treat (ITT) validity;
+• full-failure denominators;
+• an evaluator-only mask;
+• a narrowed prompt factor;
+• a common-trace panel;
+• an honest prior-art boundary.
+The direction is sound, but several definitions are still wrong or under-specified in ways that would bias the reported diagnostics or make the treatment unverifiable. v0.6 must not be frozen, implemented, or used to start confirmatory LLM generation until the blockers below are fixed and the owner has decided each proposal.
+Go/no-go blockers
+#
+Blocker
+Where
+Why it blocks
+B1
+E_i is not checker-independent. Its denominator C_i = NP+PND+DET drops both anomaly classes and checker errors. Those pairs have complete traces, so their exposure status is known
+P §13.2; C §13
+Checker behaviour changes the driver-exposure rate, which contradicts the design's central claim that exposure is a driver-only property (Section 2)
+B2
+S_i drops checker crashes on exposed traces
+P §13.2
+A checker that crashes whenever behaviour goes wrong scores like a perfect checker, inflating S_i
+B3
+The RQ, H1 and H2 are not aligned. RQ part (c) asks for detection of exposed behaviour (conditional), but the confirmatory test is joint detection per scheduled call × mutant (unconditional). H1 "compare validity" duplicates H2(a), so it is unclear whether Holm runs over three tests or four
+C §3.1, §3.3; P §2, §14
+The confirmatory family and the question it answers are ambiguous
+B4
+The prompt factor is not yet verifiable. "Byte-identical blocks" contradicts "formatting may differ". Headings can carry attention cues. The Protocol still labels the arms "direct" and "structured". The repair and system prompts are not covered. No concrete template pair exists
+P §3, §15, F18; C §3.4
+The treatment cannot be checked for organisation-only status (Section 3)
+B5
+Mask withholding needs a traceability rule, and the "reference model/API" wording must be resolved
+C §8, §9; P §3, §9
+Authors could be scored on obligations the specification does not state; or, if a reference model is given to authors, the checker task becomes trivial (Section 3)
+B6
+The common-trace panel is under-defined. No compatibility partition (crash versus false alarm versus pass); corpus legality not guaranteed; one null trace per stream gives too little false-alarm resolution; no prompt-arm estimand; no known-answer controls in F17; no blinding rule
+P §13.4, §14, F17
+The panel cannot be validated or interpreted (Section 4)
+B7
+F16's stop rule and the power plan conflict with the design. A "maximum between-arm validity difference" stops the study because of the treatment effect H1 is meant to measure. A mutant-blind pilot cannot supply the exposure and detection rates the power simulation is said to use
+P §13.5, §14, §15, F16
+The instrument gate is mis-targeted, and the sample-size plan has no valid inputs (Section 4)
+B8
+Every v0.6 change is still an owner proposal
+C header, §17; P §19
+Nothing is approved. This audit reviews a draft
+B1–B3 are definitional fixes of a sentence or a formula. B4–B7 need design text, plus one hand-built control each. None requires changing the project's scope.
+Non-blocking but required before v1.0
+• Stale v0.5 text remains:
+    ◦ the Protocol arm labels;
+    ◦ Charter §6.1 "one controlled mutant";
+    ◦ Charter §7, which has no overlap or contamination disclosure;
+    ◦ the literature review, which still says "direct-versus-structured".
+• The addendum misstates the SecTB-RTL funnel.
+• Several source-access statements lack provenance (Section 5).
+• Both documents still name Ayush Kumar Singh as owner. If this is Krishika's TEEP project, correct the authorship before anything goes to faculty.
+2. Denominator and metric audit
+2.1 Does the RQ separate the four layers?
+Only partly.
+• The Protocol body does define the four layers: ITT validity (§13.1), joint exposure and detection (§13.3), conditional E_i/S_i (§13.2), and descriptive M_i.
+• The RQ text does not map onto them. Part (b) "driver exposure" and part (c) "detection of exposed behaviour by each artifact's own checker" read as the conditional quantities E_i and S_i. The confirmatory H2 tests the joint ITT rates J_exposure and J_detection.
+• The joint rates are cumulative products of the stages, approximately J_detection ≈ V × E × S (see the identity in 2.4). A prompt effect on J_detection can therefore come entirely from validity. The separation of stages lives only in the conditional diagnostics, which are deliberately not confirmatory.
+• The design is coherent; the RQ wording is not.
+Proposed RQ wording:
+…how do two prompt-organization formats carrying identical semantic information affect (a) artifact validity per scheduled call, (b) joint masked exposure and (c) joint own-checker detection per scheduled call × primary mutant? Conditional own-driver exposure and own-checker detection among valid artifacts, and miss composition, are reported as labelled diagnostics.
+Also: make H1 estimation-only (rates and CIs per arm). The test of the validity difference is H2(a). Holm then runs over exactly three tests. Currently H1 says "estimate and compare" and H2(a) compares again.
+2.2 Which pair classes enter which quantity (v0.6 as written)
+All counts are for one valid artifact i over its primary mutant pairs.
+Pair class
+Trace complete?
+Exposure status known?
+In C_i (and hence E_i denominator)
+In S_i denominator
+In J_exposure numerator
+In J_detection numerator
+DETECTED
+Yes
+Exposed
+Yes
+Yes
+Yes
+Yes
+PND
+Yes
+Exposed
+Yes
+Yes
+Yes
+No
+NP
+Yes
+Not exposed
+Yes
+—
+No
+No
+ANOMALY_CHECKER_STRICTER_THAN_MASK
+Yes
+Not exposed
+No
+—
+No
+No
+ANOMALY_PIPELINE_OR_NONDETERMINISM
+Yes
+Not exposed
+No
+—
+No
+No
+CHECKER_ERROR_AFTER_MASKED_DIVERGENCE
+Yes
+Exposed
+No
+No
+Yes
+No
+CHECKER_ERROR_NO_MASKED_DIVERGENCE
+Yes
+Not exposed
+No
+—
+No
+No
+DRIVER_SIM_ERROR_AFTER_… / TIMEOUT_AFTER_…
+No (truncated)
+Exposed before termination
+No
+No
+Yes
+No
+DRIVER_SIM_ERROR_NO_… / TIMEOUT_WITHOUT_…
+No
+Unknown (possibly later)
+No
+—
+No
+No
+INVALID_PAIR
+—
+Not interpretable
+No
+No
+No (zero)
+No (zero)
+Three consequences:
+1.  (B1) E_i depends on the checker. Four classes with complete traces and known non-exposure or exposure drop out of E_i purely because of what the checker did. Example: a checker that is stricter than the mask and fails on many raw-only divergences removes those unexposed pairs from E_i's denominator, which raises the measured "driver" exposure.
+2.  (B2) S_i hides checker crashes. A checker that crashes on exposed traces loses those pairs from both numerator and denominator. Its S_i is computed only over traces it survived.
+3.  E_i and J_exposure disagree on what counts as exposure. J_exposure counts exposure recorded before an error, a timeout or a checker crash; E_i counts none of them. So J_exposure ≠ V × the mean of E_i, and readers will try to reconcile them.
+2.3 Corrected definitions (recommended)
+For valid artifact i, let T_i be the complete-trace, valid pairs: all normal outcomes, both anomaly classes, and both checker-error classes. Exposure is a function of the trace alone, so:
+• X_i = pairs in T_i with a masked divergence = DET + PND + CHECKER_ERROR_AFTER.
+• E_i = X_i / |T_i|. This is checker-independent by construction.
+• S_i = DET_i / X_i. Checker crash on an exposed trace counts as non-detection (primary). As a sensitivity, count a crash as detection.
+• M_i = PND_i / (NP_i + PND_i). Keep it descriptive. The identity M = E(1−S)/(1−ES) holds exactly only on the normal-outcome subset C_i. State that, and compute the identity check on C_i-restricted quantities only.
+• Truncated pairs (driver/simulator error, timeout) are excluded from T_i. Report them per artifact. As a one-sided sensitivity, add "exposed before termination" pairs to X_i and all truncated pairs to the denominator. That gives a lower bound on exposure, because non-exposed truncated pairs might have exposed later.
+• Invalid pairs are excluded from T_i and count as zero in ITT rates. This is consistent with v0.6, but the Charter's §12 sentence ("invalid pairs are separately excluded from the eligible-pair denominator") must say excluded from conditional denominators, retained as zero in ITT denominators.
+Then define ITT exposure consistently: J_exposure = Σ_valid X_i / (|G_cd| · |M_d|). Report truncated-before-termination exposure as a separate ITT sensitivity, not inside the primary numerator, so that J_exposure and E_i use the same exposure rule.
+2.4 Identities that should hold, and be unit-tested
+With the corrected definitions, per design and arm:
+• J_exposure = V_cd · (Σ_valid X_i / Σ_valid |M_d|).
+• J_detection = V_cd · (Σ_valid DET_i / Σ_valid |M_d|).
+• Σ over all pair classes = |valid artifacts| · |M_d|.
+Add these as F15 assertions. The current F15 phrase "sums to eligible/scheduled totals as defined" is not testable.
+2.5 Undefined values and aggregation (missing in v0.6)
+Quantity
+Undefined when
+Rule needed
+E_i
+|T_i| = 0 (all pairs invalid or truncated)
+NA; count such artifacts per arm
+S_i
+X_i = 0 (the driver exposed nothing)
+NA. This is common for weak drivers. Averaging S_i over defined artifacts silently drops the weakest drivers, a second post-treatment selection. Report the number of NA artifacts per arm next to S
+M_i
+NP_i + PND_i = 0
+NA (already stated)
+Aggregation must be pre-registered.
+• An equal-weight mean of S_i gives an artifact with 1 exposure the same weight as one with 80.
+• Recommended primary summary for conditional diagnostics: the ratio of sums within arm and design. For S, that is Σ DET / Σ X, with an artifact-cluster bootstrap.
+• Report the equal-weight mean as a sensitivity.
+• The ITT J rates are already ratios of sums over scheduled slots, so this keeps the conditional layer consistent with them.
+2.6 Other metric issues
+• Holm unit. H2 says "within-design artifact-level permutation". For ITT outcomes the exchangeable unit is the scheduled slot, including invalid slots. Write "slot-level".
+• Checker determinism for validity. Validity runs the checker once on the null trace, so a non-deterministic checker can pass once and later produce ANOMALY_PIPELINE. Run the checker on the null trace at least twice as part of validity. This costs almost nothing.
+• Does a checker run on truncated traces? Not stated. State that checkers are run only on complete traces, so that CHECKER_ERROR_* is well defined.
+3. Mask withholding and the prompt factor
+3.1 Is withholding the mask coherent?
+Yes, with two conditions that v0.6 does not yet state.
+The mask is "derived from the frozen specification" (P §9). Every don't-care window must therefore already be stated in the specification authors receive. If it were not, an author could not know, for example, that FIFO data is unconstrained while valid = 0.
+In that case a correct-looking checker that compares data in that window would hit one of two failures:
+• Null rejection: it rejects the null trace if its model disagrees with the RTL's arbitrary value, which makes the artifact invalid.
+• ANOMALY_CHECKER_STRICTER_THAN_MASK: it agrees with the RTL by chance, then fails on mutants that alter don't-care data.
+Either way, the outcome would be decided by information the evaluator holds and the author lacks.
+So withholding the mask is coherent only if:
+1.  Every mask entry is traceable to a specification clause. Add a mask-to-specification traceability table to the evaluator pack, signed by the mask reviewer. Any mask entry with no clause is a defect in the specification, not a mask choice. Make this an F18 check.
+2.  The claimed benefit is stated honestly. Withholding removes an explicit, machine-readable checklist, not information. A diligent author can reconstruct the mask from the specification. P §3 says it "avoids telling generated checkers exactly which outputs/cycles will be scored". That is true of the file, but not of the information. Reword it to say withholding removes the explicit scoring list while the obligations remain in the specification.
+The "reference model" wording contradicts the information boundary.
+• Charter §8: "The reference model/API may supply enough specification semantics for a checker to derive expected values".
+• Charter §9 puts a "reference implementation" in the evaluator pack.
+• The Protocol's authoring list (P §3) contains no reference model.
+If authors received an executable reference model, a checker could call it directly. The checker task would collapse, and the reference model would implicitly encode the comparison boundary. Decide: no reference model or API in the authoring pack. Authors write their own expected-value logic from the specification. Delete the Charter §8 sentence or reword it accordingly.
+The checker contract (P §10) lets expected values depend on "prior public-output/history fields". That is acceptable, since legitimate scoreboards track DUT-reported state. Note the consequence, though: a checker that derives expectations from the DUT's own (possibly faulty) outputs will accept self-consistent corruption. That is a real checker weakness the study should measure, not a contract violation. State it so it is not later treated as an anomaly.
+3.2 Is the prompt factor organisation-only?
+Not yet. These items introduce or permit unequal guidance:
+#
+Text
+Problem
+Fix
+W1
+P §3 table: "exact direct prompt" / "exact structured prompt"
+Stale v0.5 labels that imply a content difference
+Rename the arms to ORG-A and ORG-B, and point to the frozen template files
+W2
+"Substantive blocks are byte-identical; only … formatting differ[s]" (P F18; C §3.4)
+Contradictory. Converting prose to bullets, or adding emphasis, changes the bytes of the block itself
+Define equivalence after canonical normalisation (markup stripped, whitespace collapsed). Allow formatting only in wrappers and delimiters. Blocks are atomic: reorder at block level only, never within a block
+W3
+"Section headings" may differ
+Headings are text. A heading such as "Checks you must implement" is attention guidance; any heading present in one arm and absent in the other adds salience
+Use one fixed list of neutral heading strings (for example the block names) that is identical in both arms. If one arm has no headings, the factor is "headed versus unheaded", so declare that
+W4
+"Ordering" may differ
+Reordering inherently moves attention (primacy and recency). Putting the checker contract first versus last is exactly that
+Allowed, but say so: the factor is presentation (order and format), and it is expected to act through attention. Do not call it "neutral". Pre-specify the exact block order of each arm
+W5
+Task-instruction ordering
+If the instruction block lists "write the driver, then the checker" in one arm and the reverse in the other, that is an instruction difference
+Keep the instruction block identical, including its internal order, in both arms
+W6
+Repair, feedback and system prompts
+Not covered by the equivalence rules. Repair prompts carry the null-run feedback
+Freeze one repair template and one system prompt, identical across arms (or formatted by the same arm rule), and include them in F18
+W7
+Token tolerance ±5%
+No tokeniser named. Five percent of a long specification is room for a sizeable block of extra text
+Name the pinned model's tokeniser. Set the tolerance as a maximum count of non-normalised wrapper tokens, not a percentage
+W8
+Literature review § on SecTB-RTL still says "the direct-versus-structured comparison"
+Stale
+Update to "prompt-organisation comparison"
+W9
+No template pair exists yet
+Equivalence cannot be audited in the abstract
+Draft both templates before freeze, and audit them with the F18 checklist
+What hypothesis? Neither document states why organisation should matter, or in which direction. Without a direction the study is exploratory on its central factor. Either pre-register a two-sided test and call the factor exploratory, or state a directional rationale. One example: placing the checker contract and the specification's observable obligations adjacent increases S. Do not invent results to justify it.
+4. Common-trace panel and instrument validation (F16–F18)
+4.1 The panel is feasible: compute is trivial, but it is not yet well defined
+Every checker is a pure function over trace files. Running about 20 checkers over one or two streams × (null + about 100 mutants) is minutes of CPU. The problems are definitional.
+(a) Compatibility conflates three different outcomes. The Charter says checkers that "cannot process" a shared null trace are incompatible. The decision register (doc 16 §5) says a checker that fails a valid null trace is "incompatible/false-alarm". These are different events. Define a per-stream partition for each valid checker:
+• PANEL_ERROR: crash, schema mismatch or unsupported field. Compatibility failure.
+• PANEL_FALSE_ALARM: returns FAIL on a null trace. This is an error of commission and must be reported as a false-alarm rate, not hidden inside "incompatible".
+• PANEL_COMPATIBLE: returns PASS on every null trace of that stream.
+Score sensitivity only for compatible checkers, per stream. A checker that fails a stream's null trace would otherwise appear to "detect" every mutant on that stream.
+(b) The corpus must be legal and generated through the same harness.
+• Legality. A raw seeded random stream can violate the specification's legal-input assumptions (for example, writing while full where that is undefined). Spec-correct checkers may then reject null traces for legitimate reasons, and that would be counted as false alarms. Generate the random corpus with a reactive, legality-respecting random driver under the same harness, alignment and paired-run rules.
+• Invalid pairs. Classify panel pairs with the same invalid-pair rule.
+• Directed suite. Its authors must write the directed corner-case suite against the specification only, before generation and independently of any LLM output (already required), and must satisfy the same legality constraints.
+(c) A single null trace per stream gives the false-alarm rate almost no resolution. Each checker sees one null trace per stream, so its false-alarm estimate is 0 or 1. Use several benign traces per stream: k seeds of the random driver on the null netlist, plus RTL-versus-null pairs. Freeze k.
+(d) Exposure conditioning is correct but must be fixed explicitly. Sensitivity should be computed over the same set of (stream, mutant) cases with a masked divergence on the shared trace, identical for every checker. That is the point of standardisation. Also report the panel analogue of the stricter-than-mask anomaly: FAIL on cases with raw-only divergence.
+(e) The prompt-arm estimand is missing. P §13.4 lists what is reported but not the comparison. The panel's main value is the arm difference in standardised sensitivity, and in false-alarm and compatibility rates. Pre-register it as secondary. Report it two ways: ITT over all scheduled slots, with an invalid or incompatible checker counting as zero sensitivity, and conditionally over compatible checkers. Compatibility can differ by arm, which would be another post-treatment selection.
+(f) Clustering. The mutant set is a fixed, declared population, not a sample. State that panel inference is conditional on the declared mutant population, so resampling at the artifact (checker) level is sufficient and a two-way bootstrap is unnecessary. P §14 leaves the "hierarchical procedure" as TO FREEZE; this resolves it. Treat streams as fixed strata.
+(g) Limit. Panel sensitivity measures checkers on the panel's exposure profile, not on what LLM drivers typically expose. Say so, and do not present it as "true checker quality" (P §13.4 already partly does).
+4.2 Do F16–F18 validate the instrument?
+Control
+Adequate?
+Gaps and exact fix
+F16 two-arm pilot
+Partly
+(i) The stop rule targets the treatment. "Maximum between-arm validity difference" would stop the study because of the effect H1 and H2(a) are meant to estimate. SecTB-RTL's lesson is instrument failure, low validity in every arm, not arm imbalance. Replace it with a minimum validity floor in each arm (an instrument floor) and report the difference descriptively. (ii) Permitted changes after the pilot must be arm-symmetric: parser, harness or contract fixes applied identically to both arms, with no arm-specific prompt edits (that would tune the treatment). Each change triggers a full re-pilot (already required). (iii) Exercise the repair path (k = 2) in the pilot, not only first responses. (iv) Fix the pilot sample size, and pre-commit that pilot artifacts are discarded
+F17 panel
+No
+It has no known-answer controls. Add hand-built checkers with known outcomes, as F6 does for the main classes: a correct reference-model checker (compatible; detects all exposed cases); an always-PASS checker (sensitivity 0); an always-FAIL checker (PANEL_FALSE_ALARM); a stimulus-literal checker (false alarm on the corpus); a crashing checker (PANEL_ERROR). Blinding: running pilot LLM checkers over mutant traces reveals sensitivity before the freeze. Run F17 with hand-built checkers only, and run pilot checkers on null panel traces only
+F18 prompt equivalence and mask blinding
+Partly
+Add: canonical-normalisation equivalence (W2); identical heading list (W3); repair and system prompt equivalence (W6); named tokeniser (W7); the mask-to-specification traceability table (Section 3.1); and a check that no mask predicate list has been pasted into the specification in a different form. Make the independent reviewer someone who did not write either template
+Power simulation (P §13.5, §14)
+Inconsistent
+The pilot is mutant-blind, so it yields only validity estimates. The exposure and detection inputs must come from assumed ranges, hand-built controls or the human and random baselines, not from pilot artifacts. State that, and simulate across a grid of plausible exposure and detection values
+Missing control: no feasibility check covers the checker's null determinism per artifact (Section 2.6). Fold it into the validity definition, or add it to F1.
+5. Literature, consistency and source claims
+The source checks here rely on my Step 3 audit from earlier today. No primary source was re-fetched for this pass.
+5.1 Literature incorporation (Charter §4)
+Source
+v0.6 treatment
+Assessment
+TechRxiv checker-gap preprint
+Core predicate cited as prior art; unreviewed; injection wording flagged as uncertain
+Correct, no overclaim. One caveat: the Charter says its "full text contains unresolved wording". My audit could access only the abstract; the resolution says the full text was read. Record how and when (URL, version, date, file hash) in the source log, or the statement cannot be checked
+SecTB-RTL
+Closest design precedent; 1,860-call run, nine valid, no estimate
+Correct in the Charter. The addendum (doc 17 §1) is wrong: it says "9 of 1,860 provider-accepted responses". The paper has 1,860 calls, 1,857 provider-accepted and 9 production-semantic valid. Gap assessment doc 12 says "9 of 1,860 outputs", which is acceptable
+DVBench
+Full UVM environments; golden, mutants, coverage, reference model; FIFO example
+Correct. Add its arXiv version and date when citing. The resolution's "13 configurations" matches what I saw
+CovR
+MCY-Yosys mutants; driver-track replacement
+Correct in substance. CovR itself calls them "RTL mutants" generated with MCY-Yosys. Quote the authors' term and add "(MCY operates post-synthesis)" as your own note, rather than paraphrasing it as "netlist mutants"
+AutoBench lineage
+Generation, golden validation, mutation evaluation
+Correct. Optionally add that Eval2 is agreement with a golden testbench, which matters for the contrast with OpenVEF's specification mask
+GateTruth
+Listed in §4
+Incomplete. The FIFO/UART overlap is disclosed in the Protocol freeze table only; Charter §7 does not mention it (see 5.2)
+Verify the Verifier
+Staged attribution on human regressions
+Correct. Charter §16.2 makes a new access claim: full extracted text read from a PDF mirror. Record the mirror and date. If the full text was read, update the Step 1 analysis to mark which previously "consistent / not located" cells (the 50/34/25/48/16 filter counts) are now verified
+Huang 2015; coverage discounting; DATE 2009; TC 2014
+As corrected in Step 2
+Correct
+No novelty overclaim was found in the Charter or Protocol. §4 and §4.3 use "not found in the sources reviewed" with dates and limits.
+5.2 Charter–Protocol contradictions and stale text
+#
+Contradiction or stale text
+Locations
+K1
+Arm labels "direct" and "structured" versus the organisation-only factor
+P §3 table vs C §3.4
+K2
+A reference model may be supplied (Charter) versus no reference model in the authoring list (Protocol)
+C §8 vs P §3; C §9
+K3
+Invalid pairs "excluded from the eligible-pair denominator" versus retained as zero in ITT denominators
+C §12 (last sentence) vs P §13.3
+K4
+H1 "compare" plus H2(a) gives four tests under a Holm family of three
+C §3.3, P §2 vs P §14
+K5
+Feasibility slice has "one controlled mutant" (stale from v0.3), while F4, F5, F6, F10 and F12 need several hand-built mutants
+C §6.1 vs P §17
+K6
+The change log says overlap and contamination cautions were added; Charter §7 and the risk list §16 contain neither
+C §7, §16 vs change log item 9; P §15
+K7
+The literature review still says "direct-versus-structured"
+Doc 10, SecTB-RTL planning implication
+K8
+The decision register says a false-alarming checker is "incompatible/false-alarm"; the Charter says "cannot process"
+Doc 16 §5 vs C §8
+K9
+Joint exposure in the Charter has no exposure-before-error rule; the Protocol has one
+C §13 vs P §13.3 (resolve with Section 2.3)
+K10
+Access statements disagree. The addendum says CovR page images were inspected; the resolution says page-image rendering failed for some PDFs
+Doc 17 vs doc 15 §3 (say which PDFs)
+5.3 Unsupported numbers and access statements
+• ±5% token tolerance: no rationale and no tokeniser named (W7). It is a proposal, so keep it, but justify it or replace it with a wrapper-token cap.
+• 120 min, k = 2, timeout formula: labelled as proposals. Acceptable.
+• SecTB-RTL "9 of 1,860 provider-accepted": wrong (addendum).
+• Full-text claims for TechRxiv, DVBench and Verify the Verifier: plausible, but no source-log entries (URL, version, date, hash). They should be logged because they overturn earlier "abstract-only" access records.
+• "February 2026" for TechRxiv: consistent with what I saw (unreviewed; independent researcher). Fine.
+• No other unsupported quantitative claim was found in the Charter or Protocol. Neither states a result, which is correct for an unexecuted design.
+6. Exact corrections
+"B" marks a go/no-go blocker. "C" is Charter v0.6 and "P" is Protocol v0.6.
+#
+Doc §
+Correction
+Blocker
+1
+C §3.1; P §2 RQ
+Reword parts (b) and (c) as joint exposure and joint own-checker detection per scheduled call × primary mutant, and name the conditional E/S and M as diagnostics (Section 2.1)
+B3
+2
+C §3.3; P §2 H1
+Make H1 estimation-only; the validity test is H2(a). Holm over exactly three outcomes
+B3
+3
+P §13.2; C §13
+Replace C_i as the E_i denominator with T_i (all complete-trace valid pairs). Define X_i = DET + PND + CHECKER_ERROR_AFTER, E_i = X_i/|T_i| and S_i = DET/X_i. Restrict the M identity statement to C_i (Section 2.3)
+B1, B2
+4
+P §13.2
+Add a sensitivity analysis that counts checker crash after exposure as detection, and a one-sided truncated-exposure sensitivity
+B2
+5
+P §13.3; C §13
+Use the same exposure rule in J_exposure and E_i. Report exposure before termination as a separate ITT sensitivity
+B1
+6
+P §13.2, §13.5
+Add NA rules for E_i and S_i. Pre-register ratio-of-sums as the primary summary for conditional diagnostics, with equal-weight means as sensitivity. Report NA-artifact counts per arm
+—
+7
+P §17 F15
+Replace "sums … as defined" with the identities in Section 2.4 as executable assertions
+—
+8
+P §2, §14
+Change "artifact-level permutation" to "slot-level" for ITT outcomes
+—
+9
+P §13.1
+Validity requires the checker to return PASS on at least two runs over the null trace (determinism). State that checkers run only on complete traces
+—
+10
+P §3 table
+Rename the arms to ORG-A and ORG-B, linked to the frozen template files; delete "direct" and "structured"
+B4
+11
+C §3.4; P §3, F18
+Define equivalence after canonical normalisation. Blocks are atomic and reordered only at block level. Use one identical neutral heading list in both arms. Keep the instruction block identical, including its internal order
+B4
+12
+P §3.1, F18
+Freeze identical repair and system prompts across arms and include them in F18
+B4
+13
+P §15
+Name the tokeniser; replace ±5% with a cap on wrapper tokens, or justify it
+B4
+14
+C §3.4
+State that ordering and format act through attention; call the factor "presentation". Pre-register a two-sided exploratory test, or give a directional rationale
+—
+15
+P §9; F18
+Add a mask-to-specification traceability table signed by the mask reviewer; a mask entry with no specification clause blocks freeze
+B5
+16
+P §3
+Reword the mask-withholding benefit: it removes the explicit scoring list, not information, because obligations remain in the specification
+—
+17
+C §8, §9
+Delete "the reference model/API may supply…". State that no reference model or API is in the authoring pack
+B5
+18
+P §10
+Note that history-derived expectations may accept self-consistent corruption; this is a measured checker weakness, not an anomaly
+—
+19
+P §13.4; C §8
+Define the per-stream partition PANEL_ERROR / PANEL_FALSE_ALARM / PANEL_COMPATIBLE; score sensitivity only for compatible checkers per stream; align doc 16 §5
+B6
+20
+P §13.4
+Generate the corpus with a reactive, legality-respecting random driver through the production harness; use k benign null traces per stream (freeze k); report the panel stricter-than-mask rate
+B6
+21
+P §13.4, §14
+Pre-register the arm contrast in standardised sensitivity, false alarms and compatibility, ITT and conditional; make inference conditional on the declared mutant population and resample at checker level
+B6
+22
+P §17 F17
+Add known-answer checkers (reference, always-PASS, always-FAIL, stimulus-literal, crashing). Use hand-built checkers only on mutant traces; pilot checkers on null panel traces only
+B6
+23
+P §15, F16
+Replace "maximum between-arm validity difference" with a per-arm instrument floor; report the difference descriptively. Post-pilot changes must be arm-symmetric. Exercise the repair path; fix the pilot n
+B7
+24
+P §13.5, §14
+State that power-simulation inputs for exposure and detection come from assumed grids and baselines, not from the mutant-blind pilot
+B7
+25
+C §6.1
+Replace "one controlled mutant" with "the hand-built mutant set required by F1–F15"
+—
+26
+C §7, §16
+Add original-semantics specifications, disclosure of the GateTruth, TechRxiv, DVBench and data-integrity overlap, and training-data contamination as an explicit risk
+—
+27
+C §12
+Change to: "invalid pairs are excluded from conditional denominators and retained as zero in ITT denominators"
+—
+28
+Doc 17 §1
+Change "9 of 1,860 provider-accepted responses" to "9 of 1,860 scheduled calls (1,857 provider-accepted)"
+—
+29
+Doc 10 (SecTB-RTL planning note)
+Replace "direct-versus-structured" with "prompt-organisation"
+—
+30
+Docs 11, 15, 17; C §16.2
+Add source-log entries (URL, version, date, hash) for every full-text claim (TechRxiv, DVBench, CovR, Verify the Verifier); reconcile the page-image statements; update Step 1 cells that are now verified
+—
+31
+C §4
+Use CovR's own term ("RTL mutants" via MCY-Yosys) with your post-synthesis note
+—
+32
+C and P headers
+Confirm the owner and authorship line
+—
+Gate: before any freeze, implementation or LLM generation, two things must happen:
+1.  Corrections 1–5, 10–13, 15, 17 and 19–24 are merged.
+2.  The owner decides each v0.6 proposal (B8).
+Charter §17 already allows non-confirmatory feasibility engineering. This audit does not recommend starting it until the blockers above are resolved, because B1, B4 and B6 change what the harness, the prompt templates and F15/F17 must implement.

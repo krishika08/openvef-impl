@@ -1,0 +1,19 @@
+{
+  "fixture_id": "M19",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "description": "Unresolved double-brace placeholder",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "rendered": "[Design specification]\n{{UNKNOWN_PAYLOAD}}"
+  },
+  "expected": {
+    "disposition": "F18_REJECT",
+    "stage_id": "F18",
+    "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+    "diagnostic": "ASSEMBLY_REJECT|reason=UNRESOLVED_PLACEHOLDER"
+  },
+  "fixture_class": "f18_packet_fixture"
+}

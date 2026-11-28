@@ -1,0 +1,22 @@
+{
+  "fixture_id": "M18",
+  "fixture_version": "1.1",
+  "scope": "missing-case",
+  "description": "Payload line equal to reserved block heading",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "payload": "line 1\n[Design specification]\nline 3",
+    "reserved_headings": [
+      "[Design specification]"
+    ]
+  },
+  "expected": {
+    "disposition": "F18_REJECT",
+    "stage_id": "F18",
+    "error_class": "ASSEMBLY_OR_MANIFEST_FAILURE",
+    "diagnostic": "PACKET_FREEZE_REJECT|reason=RESERVED_HEADING_LINE"
+  },
+  "fixture_class": "f18_packet_fixture"
+}

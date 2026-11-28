@@ -1,0 +1,358 @@
+penVEF Step 1 Audit: Verify the Verifier
+Nov 22, 2026 · @Conductors
+Verdict: PASS WITH CORRECTIONS
+The analysis gets the paper's purpose, workflow and headline numbers right. Every headline count I could locate in the paper matches: 564, 241, 68, 41, 36, 55, 167, 71, 86, 10, 11, 168/232 and the 9 findings on the unmodified designs. It needs corrections in three places:
+1.  It misses the closest overlap with OpenVEF. The paper's benchmark funnel already splits mutants that survived a passing human UVM regression into non-activated (no output difference on any cycle) and activated but passed. That is a stimulus-versus-checker decomposition for human tests. OpenVEF's distinction therefore cannot rest on "attribution"; it has to rest on the test population, the specification mask and the prompt comparison (Section 5).
+2.  Several definitions are incomplete. These cover what "other" assertions are, the Generator running even when the Anomaly Cross-Checker (ACC) reports nothing, how the 27 misses split between stages, and the fact that the paper's equivalence filter is an unbounded proof.
+3.  Some items are filed under author-acknowledged limitations without support. The commercial-toolchain point and two of the consequences attached to the single-seed and training-data items could not be found in the paper. They should be relabelled as reviewer observations or given a page reference.
+Source limitation of this audit. The audit pack contains only a link to the paper, not the PDF. arXiv rate-limited every direct fetch of the PDF and HTML versions. I therefore checked each claim against verbatim passages of the arXiv HTML and PDF text recovered through the search index, which is enough to confirm most numbers and definitions. It is not enough to give page numbers, so findings below cite the paper's own section, table and figure labels. Anything I could not locate is marked not located rather than assumed. To complete the page-level citation the brief asks for, upload the PDF and I will add page numbers to every row.
+1. Research objective
+Problem (Abstract; Section I). A passing UVM regression shows only that the design agrees with the scoreboard's reference model on what the scoreboard checks. It does not show that the design meets its specification. Bugs that pass every test while violating the specification are what the paper calls scoreboard escapes. The authors attribute them to two limits: the scoreboard checks only what its monitors capture, and only under conditions the tests exercise (Section I). The worked example is the PATTGEN scoreboard, which compares serialized data bits but not clock-divider timing or idle output levels.
+Two challenges (Section I). The first is observability: the escape must be seen in the trace. The second is trust: a failing LLM-written assertion may reveal a design bug or an error in the assertion, so it must be qualified independently.
+Contributions (Section I). The paper lists four:
+1.  A problem formulation and a qualified-detection criterion (Section III).
+2.  The ACC, which compares a signal digest against the specification without RTL access (Section IV-B).
+3.  Assertion generation, formal qualification and counterexample-to-directed-test reproduction (Section IV).
+4.  A benchmark of 68 candidate escapes, built by inverting BugGen's acceptance rule (Section V).
+The analysis lists five contributions, splitting item 3 into two. That is an acceptable regrouping.
+What the paper claims:
+• It claims, "to our knowledge", to be the first framework whose LLM cross-checks a passing regression's traces against the specification and formally qualifies each escape (Abstract; Section I). It states that none of the cited LLM-verification work inspects the traces of a regression that already passes (Section II).
+• The 41 detections are confirmed escapes, and the true detection rate is at least 41 of 68, because some of the other 27 may violate no stated requirement (Section V-B / Table I discussion).
+• On the unmodified designs, the ACC reported only genuine documentation-versus-RTL contradictions, which the authors present as no false alarm (Section VI-B; Conclusion).
+What the paper does not claim:
+• It does not claim to grade testbench quality. The single run and single seed are justified because the goal was to demonstrate the framework, not grade the testbenches (Threats to validity).
+• It does not claim the reference RTL is available in practice. The reference is an evaluation instrument only; in a real project an engineer reviews each failing assertion with its anomaly and counterexample (Section III; Fig. 1 label "evaluation only").
+• It does not claim every candidate escape is a specification violation (Section V-B).
+• It does not claim a new mutation-analysis method. It positions itself against Certitude, which it describes as grading the testbench and re-running the regression for every fault (Section II).
+Assessment of the analysis: correct on the problem, the definition and the two challenges. Omission: the analysis never records the authors' own priority claim ("first framework") or the explicit statement that the work is not a testbench-grading study. Both matter for how OpenVEF cites the paper.
+2. Methodology
+Workflow (Section IV-A; Fig. 1)
+The framework has five stages. Three use an LLM (the ACC, the Generator and the Adversarial Challenger) and two are deterministic (Section IV-A).
+Stage
+What happens
+Inputs
+Location
+1. Observation
+Tests are selected by coverage: a test is kept if it covers an item no other test covers, or exercises a region that still has coverage holes. Each is re-run at its original seed with waveform dumping, and the trace becomes a signal digest
+Passing regression and coverage data
+IV-A, IV-B
+2. Cross-checking
+The ACC reports every behaviour in the digest that may contradict the specification. The prompt asks what does not match the specification, rather than whether the behaviour is legal, to stop the model explaining an anomaly away
+Specification and digest only; no RTL, no retrieval or tools
+IV-B
+3. Assertion generation
+The Generator writes SVA; deterministic guards catch recurring LLM mistakes before formal verification
+Specification, anomaly report, RTL interface (names, widths, directions, no logic), RTL excerpt driving the flagged signals
+IV-C
+4. Formal verification
+JasperGold returns proven, cex or undetermined for each assertion, under a time limit, and checks a cover on each assertion's antecedent to expose vacuity
+Assertions bound to the DUT
+IV-D
+5. Reproduction
+The Challenger turns each counterexample into a directed test using the testbench's own UVM sequences: a test that passes the scoreboard but fails the assertion. A detection stands even if it cannot be reproduced
+Counterexample, UVM environment
+IV-A, IV-E
+The signal digest keeps every value of every signal of the target module, including internal signals, sampled at every rising clock edge. The encoding is compressed but described as exact. The authors give the scale: PWM's smoke test alone is 51,000 cycles of 389 signals (IV-B).
+Roles of the components
+• LLM: the ACC (anomaly finding), the Generator (SVA writing) and the Challenger (directed UVM test), all Claude Opus 5.5 with adaptive reasoning at high effort (V-C). Separately, GPT-4o-mini inside BugGen writes the mutations (V-B).
+• UVM: the object under study. Its scoreboard is the checker that misses the escapes. The native OpenTitan environments are run unmodified with dvsim and Xcelium (V-A). UVM sequences are also the vocabulary the Challenger must reproduce counterexamples in.
+• SVA: the new checker the framework creates. It is bound to the DUT without modifying the RTL.
+• Formal (JasperGold 2024.09, 900 s limit; V-C): used three ways. (a) Mutant equivalence filtering in benchmark construction. (b) Assertion qualification against the mutant and the reference. (c) Counterexample production for reproduction.
+• Other EDA: Cadence Xcelium via OpenTitan dvsim for simulation and waveforms (V-A).
+How escapes are identified and confirmed
+The paper uses two separate mechanisms, and the analysis should keep them apart.
+A. Building the candidate set (benchmark, Section V-B; Table I).
+1.  BugGen inserts one LLM-written, single-line mutation per run into a functional RTL region.
+2.  BugGen's acceptance rule is inverted: a mutant that compiles and passes the complete regression is kept; one that fails any test is set aside.
+3.  Three filters follow: deduplication; JasperGold equivalence (a counterexample means non-equivalent; a proof that outputs agree under all reachable states means equivalent; undetermined mutants are excluded); and an activation check that simulates both versions under the regression and compares traces.
+4.  A "misc" bucket removes mutants that do not elaborate in JasperGold, leave an output undriven, sit in a submodule the checker cannot bind to, or produce traces larger than the context window.
+The result is the 68 candidate escapes.
+B. Confirming an escape (Section III). A mutant is detected if at least one of its assertions is qualified. Qualified means three things: a cex on the mutant, a proof on the reference RTL, and the antecedent cover reached on the reference. A cex on the reference makes an assertion a false positive. Vacuous and undetermined assertions are not qualified.
+Corrections to the analysis (methodology)
+Analysis claim (section)
+Status
+Correction
+ACC re-invoked up to three times; the first non-empty result is kept (§3, Stage 2)
+Partly correct
+The paper says the ACC is re-invoked up to twice (three attempts). If it still reports nothing, the Generator runs anyway, without an anomaly report; and if the Generator writes nothing, the mutant counts as not detected (V-C). "First non-empty result retained rather than merged" was not located; mark it unverified. The missing branch matters because a detection can arise without an ACC anomaly
+Equivalence check under matched clock, reset and inputs (§4)
+Incomplete
+The paper describes equivalence as a proof over all reachable states, with undetermined excluded (V-B). It is not bounded. State this; it matters when comparing with OpenVEF's bounded labels
+Activation check compares traces (§4)
+Needs a caveat
+Section III defines non-activated as every output matching on every cycle. Section V-B describes the check as comparing traces signal by signal. Whether internal signals count could not be resolved from the excerpts; record it as an open question, not a fact
+One framework run per mutant (§4)
+Minor omission
+The exception is PWM20, which received two Generator runs (V-C)
+Five-stage workflow, ACC without RTL, Generator inputs, qualification rule, deployment caveat (§3)
+Correct
+None
+3. Experimental results: number-by-number check
+The status column uses three values:
+• Verified: the number appears in the paper text or Table I.
+• Consistent: the cell was not located, but arithmetic with verified numbers reproduces it.
+• Not located: no evidence was found.
+The unit column matters. The paper reports at four different levels (mutant, assertion, anomaly report, test), and the analysis's results table mixes them without saying so.
+Analysis figure
+Unit
+Status
+Paper location and detail
+564 bugs inserted ("at least")
+Mutant
+Verified
+Table I: PWM 62, PATTGEN 124, SPI Host 60, CSRNG 318
+241 passed every regression test
+Mutant
+Verified
+Table I: 46, 84, 50, 61. The regression therefore caught 323 of 564; the analysis does not state this
+50 duplicates, 34 equivalent, 25 undetermined, 48 not activated, 16 misc
+Mutant
+Consistent
+Individual cells not located. Their sum (173) equals 241 − 68. Verify against Table I in the PDF before citing them individually
+68 candidate escapes evaluated
+Mutant
+Verified
+Table I: 24, 16, 16, 12
+41 confirmed (60.3%)
+Mutant
+Verified
+Section VI-A: 15/24 PWM, 8/16 PATTGEN, 14/16 SPI Host, 4/12 CSRNG. 60.3% is the analysis's arithmetic; the authors frame 41/68 as a lower bound on the true detection rate (V-B)
+ACC observed the injected effect, 55/68 (80.9%)
+Mutant
+Verified
+VI-B: all 41 detections are among these 55. The authors round to 81% and word it as the framework identifying the erroneous behaviour
+36/41 reproduced
+Mutant
+Verified
+Table I "Reproduced" column (PATTGEN 8, SPI Host 12, total 36). The 5 failures are mainly because the testbench's own sequences cannot produce the counterexample stimulus (VI)
+167 assertions reached formal
+Assertion
+Verified
+VI-C
+71 qualified (42.5%)
+Assertion
+Verified
+VI-C; Table I (PATTGEN 11, SPI Host 25). The percentage is arithmetic
+86 false positives (51.5%)
+Assertion
+Verified
+VI-C; Table I "Wrong" column (PATTGEN 31). Paper wording: "almost all others" were false positives
+10 other
+Assertion
+Verified, misdefined
+Table I. "Other" is undetermined, vacuous, or proven on both mutant and reference (VI-C). The analysis calls it "other/undetermined"
+Specification-only baseline, 11/68 vs 41/68
+Mutant
+Verified, misdescribed
+The same Generator and formal flow given only the specification and RTL declarations. It removes the ACC report and, per the excerpt, the RTL excerpt too, so it is not a pure "trace-informed vs not" ablation
+168/232 anomalies (72%) describe the injected bug
+Anomaly report
+Verified
+VI-B; Fig. on ACC labels. Three labels: injected bug, contradiction also present in the reference, or both. Most of the other 64 are reference contradictions
+9 findings on unmodified designs
+Anomaly report
+Verified
+VI-B: PWM 1, PATTGEN 6, SPI Host 1, CSRNG 1. Same prompt, specification and attempt limit. Each was confirmed in RTL and trace as a documentation/RTL contradiction
+9.6 min median, ~620k input / 18k output tokens per mutant
+Mutant
+Verified
+V-C. Omitted: the paper says the time is mostly simulation
+Claude Opus 5.5, adaptive reasoning, high effort; JasperGold 2024.09, 900 s
+Setup
+Verified
+V-C. An assertion not decided in 900 s is undetermined
+4 / 5 / 12 / 5 functional tests; SPI Host status_stall excluded; tag earlgrey_1.0.0
+Test
+Verified
+V-A
+ACC missed 13
+Mutant
+Verified
+VI-B: attention drawn by documented behaviours the RTL does not follow, or a trace over the context window
+Texas A&M affiliation; seven-page PDF
+Metadata
+Not located
+Not visible in the recovered text. Confirm from the PDF title page
+Metrics the analysis misreads or omits
+1.  The 27 misses split by stage. The paper states that the 27 undetected candidates were lost at two stages, split almost evenly: 13 at the ACC, and by subtraction 14 at the Generator and formal step (55 − 41). The analysis gives 13 but never the 14 or the split. This is the paper's own miss attribution, and it is directly relevant to OpenVEF (Section 5).
+2.  Mixed units in one table. §5 of the analysis puts per-mutant, per-assertion and per-anomaly ratios in a single "Result" table. Add a unit column, as above. 71/167 cannot be compared with 41/68.
+3.  "Wrong" versus false positive. In the paper, false positive means a counterexample on the reference. Assertions proven on both designs are "other", not false positives. The analysis's wording ("rejected by the reference-side qualification check") would also cover vacuous assertions, which the paper puts in "other".
+4.  The benchmark funnel table also lists results. The analysis adds "Confirmed by the framework: 41" to the benchmark-construction table. Keep the funnel (Table I upper part) and the results separate.
+5.  No percentage of the human regression's misses. See Section 5: the funnel implies a split between non-activated and activated survivors that the analysis does not draw out.
+4. Limitations
+A. Limitations the authors state (verified in the text)
+#
+Limitation
+Location
+A1
+One framework run per mutant, and one seed per regression test, justified because the goal was to demonstrate the framework, not to grade the testbenches
+Threats to validity (Discussion f)
+A2
+OpenTitan is public, so the LLM may have seen its documentation and RTL during training
+Threats to validity
+A3
+The ACC missed 13 candidates, mostly because of documented behaviour the RTL does not follow, or traces over the context window. Proposed fix: read traces in parts
+VI-B; Conclusion
+A4
+The Challenger did not reproduce 5 of 41, mainly because the testbench's own sequences cannot produce the counterexample stimulus. Proposed fix: allow new sequences
+VI; Conclusion
+A5
+Fewer than half of the assertions qualified (71/167), and almost all the rest were false positives (86). The authors say most false positives are not hallucinated
+VI-C
+A6
+The 68 are candidates. Some of the 27 undetected may violate no stated requirement, so 41/68 is a lower bound
+V-B
+A7
+In a real project there is no bug-free reference, so every failing assertion goes to an engineer for review
+III
+A8
+Repeated runs have diminishing returns once they yield only already-reviewed anomalies
+Discussion
+A9
+The specification is used as published, with no corrections, even where it contradicts the RTL
+V / VI-D
+B. Items the analysis lists as author-acknowledged that need relabelling
+Analysis item (§7)
+Finding
+1. "Does not estimate run-to-run variability"
+The single run is author-stated (A1). The consequence is a correct inference, but it is the analysis's own. Label it so
+2. "Some candidates might be detected by other seeds"
+Not located. The single seed is author-stated; this consequence is an inference. The more important consequence is missing: the seed also decides which mutants pass the regression, so it shapes the benchmark itself
+3. "Authors argue the injected mutations themselves were new"
+Not located. Keep the exposure risk (A2); remove the counter-argument or cite its page
+4. "Timing assumptions and documentation/RTL mismatches contributed to false positives"
+Not located in this form. The located text only says most false positives were not hallucinated. Cite the page or soften
+8. "Specialised commercial toolchain"
+Not found as an author statement. Move it to reviewer observations
+C. Additional limitations inferred by this reviewer (not stated by the authors)
+1.  No uncertainty estimates. The sample is 68 mutants over 4 IPs, with 12 to 24 per IP and one run each. No intervals or variance are reported, so per-IP differences (for example CSRNG 4/12 against SPI Host 14/16) cannot be separated from noise.
+2.  The benchmark is shaped by the framework's own limits. The misc exclusions include traces that exceed the LLM context window and modules the checker cannot bind to. The 25 undetermined mutants are also excluded. Together these bias the benchmark toward short traces and formally tractable mutants, so the 41/68 holds for that subset only.
+3.  Unequal survival across IPs. CSRNG went from 318 inserted to 12 evaluated, while the other IPs kept 16 to 24. The fault population is not comparable across IPs.
+4.  The mutation model is a single source. All mutants are single-line edits written by GPT-4o-mini through BugGen. Results may not carry over to multi-line or real design bugs.
+5.  "No false alarm" rests on the authors' own adjudication. The 9 reports on clean designs were judged genuine documentation/RTL contradictions by the authors. In deployment they would still go to an engineer, as would the 86 false-positive assertions. The paper gives no estimate of engineer review effort.
+6.  One model for all three LLM roles, with no model or prompt ablation apart from the specification-only baseline. That baseline removes two inputs at once (the ACC report and the RTL excerpt), so it cannot attribute the gain to traces alone.
+7.  Ambiguous activation definition. "Every output matches" (III) versus a signal-by-signal trace comparison (V-B). If internal signals count, some mutants with no output effect could be labelled activated.
+8.  Reproducibility. The study uses commercial Xcelium and JasperGold and a closed model. Whether the prompts and benchmark are released was not located.
+5. Comparison with OpenVEF
+The analysis compares the paper against "OpenVEF Charter v0.4". The latest version I have is v0.3, so I compare against the OpenVEF design described in your brief and in v0.3. Any v0.4-specific claim in the analysis's table is unchecked.
+Overlap
+Element
+Verify the Verifier
+OpenVEF
+Fault taxonomy
+Equivalent; non-activated (no output difference on any cycle); activated but passing (III)
+Equivalence labels; NP; PND or DETECTED
+Paired reference/mutant simulation
+The activation check simulates reference and mutant under the same regression and compares traces (V-B)
+Paired run of the same driver on the null netlist and the mutant
+Formal equivalence filter
+JasperGold; undetermined excluded (V-B)
+Mask-aware miter; undecided excluded from the primary denominator
+Checker false alarm against the reference
+An assertion with a cex on the reference is a false positive (III)
+A checker that rejects the null netlist is a false alarm and makes the artifact invalid
+Non-vacuity
+Antecedent cover must be reached (III)
+No direct counterpart. NP covers "never exercised" at the mutant level, but a checker that never fires is not tested for vacuity
+LLM-written checkers from a specification
+The Generator writes SVA from the spec (IV-C)
+The LLM writes an offline checker from the spec
+Attribution of misses to stages
+27 misses split almost evenly: 13 at the ACC (observation), about 14 at the Generator and formal step (checker) (VI-A/B)
+Misses split into NP (stimulus) and PND (checker)
+Specification ambiguity as the main error source
+Documentation/RTL contradictions drive ACC misses and many false positives (VI-B, VI-D)
+Mask/spec errors are a stated threat; mitigated by writing cycle-exact specs
+Material differences
+1.  Who authors the artifact under study. In the paper, the tests and scoreboards under study are existing, human-written OpenTitan regressions. The LLM is the auditor that adds new checkers. In OpenVEF, the LLM authors the driver and checker being measured.
+2.  Unit of analysis. The paper works per mutant against a whole regression, with one configuration and no repeated samples. OpenVEF works per artifact, with at least 10 independent samples per condition and a statistical comparison.
+3.  Experimental factor. The paper's only comparison changes the information given (with versus without anomaly report and RTL excerpt). OpenVEF holds the information fixed and changes prompt structure.
+4.  Evidence of a specification violation. The paper requires a formally qualified assertion. Raw activation is explicitly not enough, since a mutant that changes only unstated behaviour violates no requirement (III). OpenVEF uses masked divergence as the observable. That is weaker evidence than a proof, and it rests entirely on the mask being right.
+5.  Fault population. The paper uses LLM-written single-line RTL source mutations (BugGen/GPT-4o-mini). OpenVEF uses Yosys/MCY netlist signal mutants. The two populations are not interchangeable, and the analysis does not say so.
+6.  Strength of equivalence. The paper uses an unbounded proof over reachable states. OpenVEF uses bounded equivalence to depth N.
+7.  Scale and tools. The paper uses four OpenTitan IPs of 424 to 2,076 lines, with commercial Xcelium and JasperGold. OpenVEF uses small cycle-exact FIFO/UART designs with Icarus and Yosys/MCY.
+8.  Reactive stimulus. No rule was located for the case where the reference and mutant runs receive different inputs under a reactive UVM sequence. OpenVEF's invalid-pair rule handles this case explicitly.
+Similarities the analysis overlooks
+1.  The benchmark funnel is already a stimulus-versus-checker split for human tests. Table I takes the 241 regression survivors and separates not activated from activated yet passing (68 evaluated). If the not-activated cell is 48, as the analysis reports (I could not locate that cell), the human regressions' decided, deduplicated misses split roughly 48 stimulus-side to 68 checker-side.
+    ◦ This is the same kind of decomposition as OpenVEF's NP/PND, at regression level rather than artifact level.
+    ◦ It must not be used as a numerical comparator. It uses raw output divergence rather than a specification mask; it is computed after deduplication and misc exclusions; and the paper itself says activated does not imply a specification violation.
+    ◦ It must be cited as the closest precedent for OpenVEF's attribution idea.
+2.  The qualification rule is the paper's version of OpenVEF's null control. A cex on the mutant, a proof on the reference and non-vacuity together play the role that OpenVEF's DETECTED-with-null-pass plays. The 86 false positives out of 167 are evidence that LLM-written checkers often reject correct designs, which supports OpenVEF's artifact false-alarm metric.
+3.  The paper has its own stage attribution of misses (13 versus 14). The analysis's §6 notes that stages should be separated, but does not report this split.
+4.  The paper states the rationale for a mask. Unstated behaviour is not a violation (III). The analysis's §9.6 calls OpenVEF's mask "a deliberate scope choice"; it can cite this passage as support, while keeping the caution that the mask must be validated.
+Is the distinction defensible?
+Partly, and only if stated narrowly. "Separating stimulus misses from checker misses" is not a defensible distinction. It is functional-qualification prior art, and this paper's funnel already does it for human regressions.
+The defensible core is the conjunction of three things:
+• (a) the test population is newly LLM-authored driver-and-checker pairs;
+• (b) a controlled prompt-structure manipulation with repeated independent samples and pre-registered statistics;
+• (c) a per-artifact miss composition measured against a pre-frozen specification mask rather than raw divergence.
+Each part has a precedent somewhere; their combination for this population was not found in this paper. That is a statement about this paper only, not a novelty finding. The wider literature check (functional qualification, LLM testbench benchmarks) still decides it.
+A reviewer could also object that OpenVEF's question can be answered by running this paper's funnel on LLM-generated tests. OpenVEF should answer that objection directly, by stating what the mask, the per-artifact unit and the invalid-pair rule add.
+6. Final audit report
+Claims that are correct
+• The definition of the problem and of a scoreboard escape, and the two challenges, observability and trust (analysis §2).
+• The five-stage workflow, including the ACC working without RTL, the Generator's inputs, the deterministic guards, and the qualification rule with its non-vacuity cover (§3).
+• That the reference is used for evaluation only, and that deployment needs engineer review (§3, Stage 4).
+• The setup facts: IPs, tag, test counts, the status_stall exclusion, BugGen with GPT-4o-mini, Claude Opus 5.5 at high effort, JasperGold 2024.09 with a 900 s limit (§4).
+• Every headline number listed as verified in Section 3 of this audit, including the per-IP 15/8/14/4.
+• The warning that 55/68 and 41/68 must not be used interchangeably (§5).
+• The "must not claim" list and the warning against comparing headline rates (§8, §9.7).
+Claims that need correction
+1.  "Full paper text and all seven PDF pages inspected" (header) and "The full seven-page v1 PDF was reviewed" (§10). These contradict the pack's own README, which says direct PDF download was unavailable in that environment. Either state what source was actually read, or re-inspect the PDF before claiming a complete review.
+2.  ACC retry behaviour (§3, Stage 2). Add that after three empty attempts the Generator runs without an anomaly report. Mark "first non-empty result retained" as unverified.
+3.  "Other" assertions (§5 table, §7.4). Define them as undetermined, vacuous, or proven on both mutant and reference.
+4.  False positive wording (§5 table). A false positive is a counterexample on the reference RTL. Replace "rejected by the reference-side qualification check".
+5.  Specification-only baseline (§5 table). Describe it as the same Generator and formal flow given only the specification and RTL declarations, with no ACC report or RTL excerpt. Do not call the comparison "trace-informed versus not".
+6.  Equivalence filter (§4). State that it is an unbounded proof over reachable states, with undetermined mutants excluded.
+7.  Limitations §7, items 1, 2, 3, 4 and 8. Relabel the unverified consequences and the commercial-toolchain point as reviewer observations, or add page citations (Section 4B of this audit).
+8.  Charter version (§8 table header). Confirm that v0.4 exists and is the version compared. The audited OpenVEF documents are v0.3.
+Important omissions
+1.  The benchmark funnel's split of human-regression survivors into non-activated and activated-but-passing. This is the closest precedent for OpenVEF's NP/PND attribution.
+2.  The paper's own miss attribution by stage: 13 at the ACC, about 14 at the Generator and formal step.
+3.  The authors' priority claim ("first framework", Abstract; Section I) and their explicit framing as framework demonstration rather than testbench grading.
+4.  The lower-bound framing of 41/68.
+5.  The paper's statement that a mutant changing only unstated behaviour violates no requirement. It supports OpenVEF's mask rationale.
+6.  Fault-population differences: RTL source mutations versus netlist signal mutants, and unbounded versus bounded equivalence.
+7.  Selection effects in the misc and undetermined exclusions, including the context-window exclusion.
+8.  The regression's own catch count: 323 of 564 failed at least one test.
+9.  The ambiguity in the activation definition: outputs versus every signal.
+10.  Minor items: PWM20's two Generator runs; runtime dominated by simulation; design sizes.
+Unsupported or overstated conclusions
+• §8, "Potentially defensible distinction", bullet 3 lists explicit miss attribution as a distinction. On this paper's own evidence it is not one. Attribution is defensible only as part of the combination of population, prompt factor and per-artifact masked measurement (Section 5 of this audit).
+• §10, "Step 1 status: COMPLETE". This cannot stand while the full-text inspection claim conflicts with the README. Use "complete, pending page verification" until it is resolved.
+Exact recommended changes to the analysis
+Analysis location
+Replace or add
+Header, "Review status"
+State the actual source (PDF, HTML, or search excerpts) and the date. Do not say "all seven pages" unless the PDF was opened
+§3 Stage 2
+Add: "If all three attempts are empty, the Generator runs without an anomaly report; if it writes no assertion, the mutant is not detected (V-C)."
+§4, filter 2
+Add: "Equivalence is a proof over all reachable states; undetermined mutants are excluded (V-B)."
+§4, filter 3
+Add: "Section III defines non-activation on outputs; Section V-B describes a signal-by-signal comparison. Which signals count is unresolved."
+§4, benchmark table
+Remove the "Confirmed by the framework" row; add per-IP columns from Table I; add "Detected by the regression: 323"
+§5 results table
+Add a Unit column (mutant, assertion, anomaly); redefine "Other" and "Wrong"; rewrite the baseline row as in correction 5
+§5, new paragraph
+"The 27 undetected candidates were lost almost evenly between the ACC (13) and the Generator/formal step (14) (VI-A/B)."
+§6
+Add the authors' priority claim and the "demonstrate, not grade" framing
+§7
+Split into "Stated by authors" (with section) and "Reviewer observations". Move items 2, 3, 4 and 8 according to Section 4B of this audit
+§8, overlap list
+Add: survivor funnel as a stimulus/checker split for human regressions; reference-side false positive as the analogue of a null-netlist false alarm; paired reference/mutant activation simulation; the stage attribution
+§8, distinction bullets
+Replace bullet 3 with: "Attribution itself is not distinct (functional qualification; this paper's funnel). What is distinct is measuring it per LLM-authored artifact, under a pre-frozen specification mask, across a controlled prompt factor."
+§8, new bullets
+Add: "Different fault populations (RTL source versus netlist signal mutants) and equivalence strength (unbounded versus bounded); results are not comparable across the two."
+§9.4
+Add: "Cite Table I's non-activated / activated-but-passing split as the nearest precedent, and do not compare its ratio with OpenVEF's miss checker share."
+§10
+Change "COMPLETE" to "COMPLETE pending page-level verification" until correction 1 is resolved
+Overall assessment
+PASS WITH CORRECTIONS. The analysis is accurate on almost every number and on the overall workflow, and its cautions about what OpenVEF must not claim are sound. It must fix three things before it is relied on in Step 2:
+• the unsupported claim that the full PDF was inspected;
+• the incomplete definitions;
+• above all, the overlooked survivor-funnel decomposition, which narrows OpenVEF's defensible contribution further than the analysis states.

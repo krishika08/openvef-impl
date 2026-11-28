@@ -1,0 +1,23 @@
+{
+  "fixture_id": "R12",
+  "fixture_version": "1.1",
+  "scope": "repair",
+  "description": "Harness row-alignment integrity failure",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "events": [
+      {
+        "kind": "trace_integrity",
+        "reason": "ROW_ALIGNMENT"
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "DESIGN_HALT_NO_SLOT_SCORED",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "TRACE_INTEGRITY_FAILURE",
+    "diagnostic": "TRACE_INTEGRITY_FAILURE|reason=ROW_ALIGNMENT"
+  }
+}

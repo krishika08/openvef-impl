@@ -1,0 +1,24 @@
+{
+  "fixture_id": "M58",
+  "fixture_version": "1.3",
+  "scope": "missing-case",
+  "fixture_class": "lifecycle_unit_vector",
+  "description": "A design-specific author-visible change invalidates both arm slots for the affected design, without silently changing the other design or the registered design set.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "change_class": "DESIGN_SPECIFIC_AUTHOR_VISIBLE_ITEM_CHANGED"
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "AUTHORING_REVISION_REQUIRED",
+    "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+    "affected_scope": "affected_design_in_both_arms",
+    "unaffected_design_scope": "not_invalidated_when_membership_estimand_and_weights_are_unchanged",
+    "required_action": "halt_affected_design_invalidate_both_arm_slots_refreeze_design_specific_materials_archive_partial_ledgers_generate_fresh_confirmatory_slots_for_affected_design",
+    "reuse_old_artifacts_for_affected_design": false,
+    "new_study_preregistration_required_if_design_membership_estimand_or_weights_change": true
+  }
+}

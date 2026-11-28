@@ -1,0 +1,24 @@
+{
+  "fixture_id": "M53",
+  "fixture_version": "1.3.1",
+  "scope": "missing-case",
+  "fixture_class": "lifecycle_unit_vector",
+  "description": "A confirmatory design-membership, estimand or weight change requires a new preregistered study and archived/disclosed partial confirmatory ledgers.",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "change_class": "DESIGN_MEMBERSHIP_OR_ESTIMAND_OR_WEIGHT_CHANGED_AFTER_CONFIRMATORY_START"
+  },
+  "expected": {
+    "disposition": "CONTROL_EXPECTATION",
+    "stage_id": "DESIGN_HALT",
+    "error_class": "AUTHORING_REVISION_REQUIRED",
+    "diagnostic": "AUTHORING_REVISION_REQUIRED|reason=AUTHOR_VISIBLE_OR_ESTIMAND_CHANGED",
+    "required_action": "archive_and_disclose_all_partial_confirmatory_ledgers_new_preregistration_refreeze_new_design_set_and_weights_F16_then_generate_fresh_slots",
+    "old_confirmatory_artifacts_reusable": false,
+    "new_preregistration_required": true,
+    "all_partial_ledgers_archived_and_disclosed": true,
+    "fresh_confirmatory_generation_required": true
+  }
+}

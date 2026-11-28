@@ -1,0 +1,24 @@
+{
+  "fixture_id": "R01",
+  "fixture_version": "1.0",
+  "scope": "repair",
+  "description": "driver compile error only",
+  "manifest_clause_ids": [
+    "FIFO-001"
+  ],
+  "input": {
+    "events": [
+      {
+        "kind": "compile_error",
+        "file": "driver.py",
+        "line": 1
+      }
+    ]
+  },
+  "expected": {
+    "disposition": "REPAIR",
+    "stage_id": "COMPILE_DRIVER",
+    "error_class": "COMPILE_ERROR",
+    "diagnostic": "COMPILE_ERROR|file=driver.py|line=1"
+  }
+}
