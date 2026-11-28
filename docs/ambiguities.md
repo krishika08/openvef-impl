@@ -2208,3 +2208,32 @@ Claude added to gap (3) a fourth mismatch that is the same kind: the §1 "baseli
 "read with care" observations to DEV-004 that are not gaps decided by D-034: the exports are 28 Nov copies, and both
 records' own status lines read BLANK or UNSIGNED. The owners may move either observation into the gap table or drop it.
 None of this closes a gap, makes any run F18 evidence, or bears on v1.3.7 adoption.
+
+## D-035 — Adoption of v1.3.7 after document audit #7 (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026, on a Claude (claude.ai) triage of document audit #7 (GPT-6, operator
+Krishika; bundle `7e44902c…ed63`; **CLEARED**, no BLOCKER, MAJOR or MINOR; `docs/reviews/doc-audit7-gpt6-2026-11-28.md`,
+SHA-256 `a948ab97…6a67`). Takes effect under D-008. **Ayush's ratification is pending**; it stays the single entry in
+AUDIT-READINESS.md. The full record is `docs/V137-ADOPTION.md`.
+
+1. **Adoption.** The D-031 stopping rule (recorded before audit #5, unchanged; D-032 and D-033 applied it to #6 and #7)
+   is met. The owners adopt v1.3.7 as the corrected planning pack, effective now (recorded about 11:00 UTC, 28 Nov
+   2026). The record is in this file, in `docs/DEVIATIONS.md` ("Adoption of v1.3.7 (D-035)") and in
+   `docs/V137-ADOPTION.md`. Each says what adoption is not (an implementation audit, F18 acceptance, L555 (5) or L271)
+   and lists every disclosed limitation carried forward.
+   **A1–A11 and X14 for v1.3.7** (v1.3.7 Protocol L555 (3) requires an explicit owner record). Claude asked, because the
+   instruction named only the pack adoption. In this Claude Code session the answer selected was the option worded by
+   Claude, "Add to D-035 now (Recommended)": "Krishika states in D-035: for v1.3.7, A1–A11 are accepted as written
+   (11/11) and X14 Option A is chosen." Register 16, which holds that text, is byte-identical in v1.3.6 and v1.3.7.
+2. **Release.** The candidate is copied unchanged into `baseline-v1.3.7/OpenVEF_Planning_v1_3_7/` (read-only, beside
+   the untouched `baseline/`). It is labelled "v1.3.7 ADOPTED" only in a new label file outside the pack directory; no
+   pack text is edited. A ZIP is built with its SHA-256 and published as GitHub release `pack-v1.3.7`.
+3. **DEV-003 ends at adoption** (end time recorded in `docs/DEVIATIONS.md`), and L4 is closed. From now on the v1.3.7
+   L555 (3) gate is met: the document audit is cleared and the owner record is D-035 with item 1. v1.3.7 fixture runs
+   are authorized development runs, still not formal F18 acceptance.
+4. **Default pack.** `--pack v1.3.7` is the default for F18 runs. v1.3.6 stays selectable, and its records are
+   unchanged. `v1.3.7-candidate` stays selectable so that earlier runs can be reproduced. The controls runner is not
+   pack-selectable (F15 reads the v1.3.6 Protocol by file name) and keeps v1.3.6, unchanged.
+5. **DEV-004 follow-ups from audit #7.** The Sign-off Pack L96 hash-attestation caveat is added, and the §1 mismatch in
+   gap 3 is marked as Claude's addition.
+6. **Runs.** F18 on v1.3.7 (the first authorized run), the controls and the container tests, in the pinned image.

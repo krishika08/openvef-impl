@@ -60,9 +60,16 @@ not audited; v1.3.6 stays the default and baseline/ is never edited. Candidate-p
 numbered amendment in its own commit; candidate-only adapters cite candidate text only; candidate results never count as
 v1.3.6 F18 evidence.
 
+Owner decision D-035 (Krishika, 28 Nov 2026; Ayush's ratification pending; docs/V137-ADOPTION.md): v1.3.7 is ADOPTED
+under the D-031 stopping rule after document audit #7 CLEARED. For v1.3.7, A1–A11 are accepted as written and X14
+Option A is chosen, so v1.3.7's L555 (3) gate is met. The adopted pack is in baseline-v1.3.7/ (read-only, like baseline/;
+label file outside the pack directory; release pack-v1.3.7). `--pack v1.3.7` is the F18 default; v1.3.6 and
+v1.3.7-candidate stay selectable, and v1.3.6 records are unchanged. This supersedes D-024's "v1.3.6 stays the default".
+v1.3.7 runs are authorized development runs; never call them F18 acceptance, an implementation audit, L555 (5) or L271.
+
 Deviation DEV-003 (Krishika, D-033; docs/DEVIATIONS.md): the owners waived Protocol L555 (3) for development-only
-regression runs from the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected. These runs are fixture execution; never call them outside the gate,
-F18 acceptance or F18 evidence. List each new one in DEV-003. DEV-004 (D-034, Krishika): "v1.3.6 gate recorded as
+regression runs from the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected. ENDED at adoption (D-035); L4 closed.
+Its 34 runs stay waived fixture execution; never call them outside the gate, F18 acceptance or F18 evidence. Add no new runs to it. DEV-004 (D-034, Krishika): "v1.3.6 gate recorded as
 met, with evidentiary gaps": the owner records in docs/owner-records/ (claude.ai exports, 28 Nov 2026) show the Part 4
 signature 3 minutes before the first v1.3.6 run, but four gaps stay open (document-audit report absent; Ayush's
 signature unverified; Part 3 ticks vs blank Decision Record items; boxes marked by Claude). Label those runs "v1.3.6
@@ -82,7 +89,8 @@ and approved by the owners. If any Claude model is among the models evaluated, t
 reported as a potential familiarity confound."
 
 ## Hard rules
-1. The v1.3.6 pack under `baseline/` is read-only. Never edit, reformat or regenerate it.
+1. The v1.3.6 pack under `baseline/` is read-only. Never edit, reformat or regenerate it. The same holds for the
+   adopted v1.3.7 pack under `baseline-v1.3.7/OpenVEF_Planning_v1_3_7/` (D-035).
 2. Runtime (owner decision D-002a): the pinned interpreter is CPython 3.11.18 inside
    `python:3.11.18-slim` pinned by digest
    (`python@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84f7a7b535`),
@@ -136,6 +144,7 @@ adopted, modified or rejected.
 
 ## Layout
 - `baseline/` — extracted v1.3.6 pack (read-only, verified against `27_SHA256SUMS.txt`)
+- `baseline-v1.3.7/` — adopted v1.3.7 pack (D-035; read-only, verified against `SHA256SUMS-v1.3.7-candidate.txt`) and its label file
 - `src/openvef/` — implementation
 - `tests/` — unit tests that are not F18 fixtures
 - `runner/` — F18 fixture runner

@@ -217,7 +217,7 @@ Not an accepted deviation: recorded for the auditor, at Krishika's instruction (
 (CLEARED for D-022). A9-2 is closed as a finding (D-023); the forgery residual above stands as a disclosed
 limitation (fifth audit L-10), and nothing here closes it.
 
-## DEV-003 — Development regression runs before the v1.3.7 gate is met (Protocol L555 (3))
+## DEV-003 — Development regression runs before the v1.3.7 gate is met (Protocol L555 (3)) — ENDED at adoption (D-035)
 
 > [02 L555] "(3) Only after that document re-audit passes, the owner must explicitly record acceptance or rejection of A1–A11 and choose the X14 strict-AST branch. Until both the document audit and owner record are complete, no implementation or fixture execution is authorized."
 
@@ -245,6 +245,12 @@ while the waiver lasts are listed here in the commit that adds their evidence.
 **Label on every waived run:** "development run under DEV-003 (L555 (3) waived; not F18 acceptance, not F18 evidence)".
 
 **Ends when** v1.3.7 is adopted or rejected (the owners' act). L4 below stays open until then.
+
+**Ended (D-035, Krishika, 28 Nov 2026):** v1.3.7 was adopted, effective as of D-035, recorded at about 11:00 UTC in the
+commit that adds `docs/V137-ADOPTION.md`. The waiver ends there, and L4 is closed. The 34 runs listed above stay
+waived development runs: fixture execution, not F18 acceptance, not F18 evidence. Runs after adoption are not under
+DEV-003. They are authorized development runs under v1.3.7's met L555 (3) gate (see "Adoption of v1.3.7 (D-035)"
+below), and they are still not F18 acceptance.
 
 ## DEV-004 — v1.3.6 gate recorded as met, with evidentiary gaps (Protocol L555 (3))
 
@@ -280,8 +286,15 @@ met. This is **not a waiver**, and the gaps are not closed by this entry. The ow
 |---|---|---|
 | 1 | **The 23 Nov document-audit report is not in the repository.** The Decision Record states the result (L14), but the report itself is not here. `docs/assistance-log.md` L21 names a "v1.3.6 audit doc" from separate Claude sessions before 23 Nov 2026, and its outcome is not recorded there. If that is the audit relied on, "independent" in L14 means independent of the pack author. It was not independent of the AI that later built the implementation. | The report is found and committed, or the owners record a waiver for it |
 | 2 | **Ayush's signature is unverified.** Sign-off Pack L134: "Written statement posted in the chat from Krishika's session, transcribed by Claude: “I, Ayush Kumar Singh, co-owner of OpenVEF, sign the Owner Decision Record as marked at revision 25 on 23 Nov 2026.” Claude cannot verify who typed it; Ayush should confirm it from his own account or by a message the owners keep with this record." L121 likewise records Ayush's acceptance as "Relayed by Krishika". The exports do not record who typed the "Ayush" entries in the Part 1 and Part 2 signature tables (L42, L74). | Ayush confirms from his own account, or by a message the owners keep with this record (the single "Ayush ratification pending" entry in `docs/AUDIT-READINESS.md`, D-008) |
-| 3 | **The Part 3 checklist and the Decision Record disagree.** Part 3 ticks these items (L82, L85, L86, L88), but in the Decision Record they are blank or unmarked:<br>• L82 "[x] §1 “Owner has reviewed the baseline pack” marked": Decision Record L16 is "☐ Yes ☐ No".<br>• L85 "[x] §4 Owners' full legal names … implementation auditor": Decision Record L76–L81 are empty in every column.<br>• L86 "[x] §5.1 Exact CPython version, interpreter/container hash, OS and architecture": the version is given (L91), but the hash (L92) and the OS and architecture (L93) are empty.<br>• L88 "[x] §5.4 Auditor independence confirmed": Decision Record L130 (auditor) is empty, and L131–L132 are "☐ Confirmed" and "☐ Agreed".<br>The checklist was ticked for items the record does not contain. The Sign-off Pack's own L125 says these were "Not marked, because the recommended set did not cover them". | The owners complete those items in the Decision Record, or record that the Part 3 ticks were wrong |
+| 3 | **The Part 3 checklist and the Decision Record disagree.** Part 3 ticks these items (L82, L85, L86, L88), but in the Decision Record they are blank or unmarked:<br>• L82 "[x] §1 “Owner has reviewed the baseline pack” marked": Decision Record L16 is "☐ Yes ☐ No". *(Claude's addition, not one of the D-034 gap 3 items; `docs/ambiguities.md` D-034; flagged by audit #7.)*<br>• L85 "[x] §4 Owners' full legal names … implementation auditor": Decision Record L76–L81 are empty in every column.<br>• L86 "[x] §5.1 Exact CPython version, interpreter/container hash, OS and architecture": the version is given (L91), but the hash (L92) and the OS and architecture (L93) are empty.<br>• L88 "[x] §5.4 Auditor independence confirmed": Decision Record L130 (auditor) is empty, and L131–L132 are "☐ Confirmed" and "☐ Agreed".<br>The checklist was ticked for items the record does not contain. The Sign-off Pack's own L125 says these were "Not marked, because the recommended set did not cover them". | The owners complete those items in the Decision Record, or record that the Part 3 ticks were wrong |
 | 4 | **The Decision Record boxes were marked by Claude.** Decision Record L5: "Boxes marked ☒ were marked by Claude on the co-owners' written instruction of 23 Nov 2026 (see the OpenVEF Owner Sign-off Pack, Owner instruction log)." Sign-off Pack L125 lists them: "§2 A1–A11 accepted as written (11/11), §3 X14 Option A, §5.1 version 3.11.18, §5.2 F18 scope confirmed, §6.1 freeze valid". The owners' instruction is L120–L121. The owners' own act is the Part 4 signature that adopts the marked record. | The owners record that the marks are theirs (re-marking the Decision Record themselves, or a signed statement kept with it) |
+
+**Caveat (D-035 item 5, from document audit #7): the L96 hash attestation is unsupported.** Sign-off Pack L96 ticks
+"[x] Each signed file saved unchanged; SHA-256 of each exact signed file recorded". No such hashes were in this
+repository before D-034. The hashes in `docs/owner-records/NOTE.md` verify the 28 Nov 2026 exports as received. They do
+not show that the exports are byte-identical to the files signed on 23 Nov 2026. This caveat is in addition to the four
+D-034 gaps. It ends when the hashes of the signed files from 23 Nov are found and committed, or the owners record that
+none were made.
 
 **Read with care** (Claude's observations, not D-034 gaps; see [owner-records/NOTE.md](owner-records/NOTE.md)):
 - **The exports are 28 Nov 2026 copies.** The Sign-off Pack export is revision 95 and contains a 24 Nov amendment.
@@ -342,7 +355,21 @@ under Protocol L555(3)'s gate and are not F18 acceptance".
   container test runs. Every such run is labelled development, never F18 acceptance, and is not F18 evidence (CLAUDE.md
   rule 8, D-024).
 
-## Disclosed limitations of the v1.3.7 candidate (D-032, D-033)
+## Adoption of v1.3.7 (D-035)
+
+Owner decision D-035 (Krishika, 28 Nov 2026; Ayush's ratification pending) adopts v1.3.7 under the D-031 stopping
+rule, after document audit #7 found no BLOCKER, MAJOR or MINOR finding. The full record is
+[V137-ADOPTION.md](V137-ADOPTION.md): the rule, audits #1–#7 with hashes, the owner record of A1–A11 and X14, what
+adoption does and does not mean, and the limitations carried forward.
+- **v1.3.7 Protocol L555 (3): recorded as met.** The document audit is cleared (audit #7), and the owner record is
+  D-035: "for v1.3.7, A1–A11 are accepted as written (11/11) and X14 Option A is chosen".
+- **v1.3.7 fixture runs from adoption on** are authorized development runs. They are not formal F18 acceptance, and F18
+  is not passed. **Label:** "authorized development run (v1.3.7 L555 (3) gate met: audit #7, D-035); not F18
+  acceptance".
+- **DEV-003 ended and L4 closed** (above). The table below is otherwise carried forward unchanged, except the L6
+  status.
+
+## Disclosed limitations of the v1.3.7 candidate (D-032, D-033) — carried forward at adoption (D-035)
 
 Recorded now, at Krishika's instruction (D-032 item 3), so that an adoption under the D-031 stopping rule only has to
 reference this section. Not accepted deviations and not closed: each stays a limitation until the condition named
@@ -355,6 +382,6 @@ audit (GPT-6), not a human independent review; D6-3 and the L4 change from docum
 | L1 | PACK | 61 `archive_*` objects named in baseline `27_SHA256SUMS.txt` are absent from the extraction; all 202 extracted baseline files match, the absent ones are unverified. | The archive objects are supplied and checked |
 | L2 | LIMITATION | The implementation source is not in the document-audit bundle: M27 `check_e` was skipped there, and implementation behaviour, predicate purity and runner internals were not audited by the document audit. | The implementation re-audit (Protocol L555 (5); DEV-002) covers them |
 | L3 | LIMITATION | No formal F18 acceptance: every run is a development run; the document audit does not execute F18, certify fixture acceptance, or satisfy Protocol L555 (5) or L271. | An authorized F18 acceptance run passes (CLAUDE.md rule 8) |
-| L4 | DEPARTURE | Protocol L555 (3) gives no express development-only exception, while D-031, D-032 and D-033 directed development re-runs. Those runs are fixture execution under the bar, waived by the owners (DEV-003); the text is unchanged (audit #6, D6-2). | The waiver ends (DEV-003: v1.3.7 adopted or rejected) |
+| L4 | DEPARTURE | Protocol L555 (3) gives no express development-only exception, while D-031, D-032 and D-033 directed development re-runs. Those runs are fixture execution under the bar, waived by the owners (DEV-003); the text is unchanged (audit #6, D6-2). | **Closed (D-035, 28 Nov 2026):** the waiver ended when v1.3.7 was adopted. The departure stays recorded for the 34 listed runs. |
 | L5 | LIMITATION | The implementation that measures `simulator.l334` is not bundled, so the source-level cause and method of the timing differences are not established by the document audit. | The implementation re-audit covers `l334_timeout` |
-| L6 | LIMITATION | No implementation approval or owner adoption: a document audit cannot qualify the implementation or record owner acceptance of A1–A11 or X14. | The owners record those decisions; Claude records none |
+| L6 | LIMITATION | No implementation approval or owner adoption: a document audit cannot qualify the implementation or record owner acceptance of A1–A11 or X14. | Owner part met by D-035: adoption, plus A1–A11 accepted as written and X14 Option A for v1.3.7 (`docs/V137-ADOPTION.md` section 2). Open for implementation approval, which no owner has recorded; Claude records none |
