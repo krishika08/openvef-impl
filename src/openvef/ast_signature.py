@@ -126,23 +126,34 @@ def _required_function(file: str, symbol: str, body: list[ast.stmt], name: str,
     return check_parameters(file, symbol, found[0], expected)
 
 
-def required_symbols(trees: dict[str, ast.Module]) -> Optional[Failure]:
-    """The fixed-sequence required-symbol pass (Protocol §3.4 file 02 L164)."""
-    driver, checker = trees["driver.py"].body, trees["checker.py"].body
-    failure = _required_function("driver.py", "create_driver", driver, "create_driver", CREATE_DRIVER_PARAMS)
+def required_symbols_in(file: str, tree: ast.Module) -> Optional[Failure]:
+    """The required-symbol pass for one file, in the fixed sequence (Protocol §3.4 file 02 L164):
+    driver.py: create_driver, Driver, Driver.step; checker.py: check_trace."""
+    body = tree.body
+    if file == "checker.py":
+        return _required_function("checker.py", "check_trace", body, "check_trace", CHECK_TRACE_PARAMS)
+    if file != "driver.py":
+        raise ValueError(f"unknown artifact file {file!r}")
+    failure = _required_function("driver.py", "create_driver", body, "create_driver", CREATE_DRIVER_PARAMS)
     if failure:
         return failure
-    found = bindings(driver, "Driver")
+    found = bindings(body, "Driver")
     if not found:
         return _entry_reject("driver.py", "Driver", "MISSING_ENTRY_POINT")
     if len(found) > 1:
         return _entry_reject("driver.py", "Driver", "EXTRA_ENTRY_POINT")
     if not isinstance(found[0], ast.ClassDef):
         return _entry_reject("driver.py", "Driver", "DRIVER_CLASS_FORM")
-    failure = _required_function("driver.py", "Driver.step", found[0].body, "step", STEP_PARAMS)
-    if failure:
-        return failure
-    return _required_function("checker.py", "check_trace", checker, "check_trace", CHECK_TRACE_PARAMS)
+    return _required_function("driver.py", "Driver.step", found[0].body, "step", STEP_PARAMS)
+
+
+def required_symbols(trees: dict[str, ast.Module]) -> Optional[Failure]:
+    """The fixed-sequence required-symbol pass (Protocol §3.4 file 02 L164): driver.py, then checker.py."""
+    for file in FILE_ORDER:
+        failure = required_symbols_in(file, trees[file])
+        if failure:
+            return failure
+    return None
 
 
 # --- Global remaining-structure pass ----------------------------------------------------
@@ -239,6 +250,18 @@ def check_ast_signature(trees: dict[str, ast.Module]) -> Optional[Failure]:
     if not violations:
         return None
     return min(violations, key=lambda v: v.sort_key).failure
+
+
+def check_ast_signature_file(file: str, tree: ast.Module) -> Optional[Failure]:
+    """Static AST_SIGNATURE for one file alone (D-036 item 3, tools/check_control_file.py): its
+    required-symbol pass, then its own category pass. When the pair's first AST_SIGNATURE
+    failure lies in this file, this returns that same failure: the global minimum over both
+    files, when it is in this file, is also the minimum over this file."""
+    failure = required_symbols_in(file, tree)
+    if failure:
+        return failure
+    violations = structure_violations(file, tree)
+    return min(violations, key=lambda v: v.sort_key).failure if violations else None
 
 
 # --- COMPILE_DRIVER / COMPILE_CHECKER (Protocol §3.4 evaluation order (5), (6)) ---------

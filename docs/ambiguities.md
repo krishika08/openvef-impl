@@ -2237,3 +2237,24 @@ AUDIT-READINESS.md. The full record is `docs/V137-ADOPTION.md`.
 5. **DEV-004 follow-ups from audit #7.** The Sign-off Pack L96 hash-attestation caveat is added, and the §1 mismatch in
    gap 3 is marked as Claude's addition.
 6. **Runs.** F18 on v1.3.7 (the first authorized run), the controls and the container tests, in the pinned image.
+
+## D-036 — Commit provenance, static-stage checker, F1 and F3 composed (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026, on a Claude (claude.ai) review. Takes effect under D-008. Ayush's
+ratification is pending; it stays the single entry in AUDIT-READINESS.md.
+
+1. Push `e4e1c28`.
+2. **Provenance.** From D-036 on, every commit Claude creates uses `--author="Claude Code (Anthropic)
+   <noreply@anthropic.com>"`, recorded in CLAUDE.md and the assistance log. Commits before D-036 used Krishika's
+   identity with a Co-Authored-By trailer, and git cannot tell those apart. `tests/test_controls_provenance.py` fails if
+   any file under `design/fifo/controls/` other than README.md and slots.json was last changed by a Claude Code-authored
+   commit. The pinned image has no git, so that test skips there and runs on the host.
+3. **`tools/check_control_file.py <path>`.** Harness code only. It runs File 30's static stages (SOURCE_AST, which
+   includes the parse, then IMPORT_POLICY and AST_SIGNATURE) on one owner file, with the production functions, and
+   prints which stage accepted or rejected it, with the diagnostic. It only reads the file.
+   `ast_signature.required_symbols` was split into per-file helpers (`required_symbols_in`,
+   `check_ast_signature_file`), with unchanged pair behaviour. `tests/test_check_control_file.py` checks agreement with
+   the production pair pipeline on every pack F18 pair.
+4. **F1 (L510) and F3 (L512)** are composed in `runner/run_controls.py`, on `drivers/reference_driver.py` and
+   `checkers/f6_correct_checker.py` (D-007 (4)). They report `BLOCKED_OWNER_ARTIFACTS` until both files exist, and
+   `ARTIFACT_REJECTED` when the production stages reject the files. No placeholder owner file was created.

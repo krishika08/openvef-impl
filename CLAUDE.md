@@ -88,6 +88,12 @@ scenario file). When Krishika says a file is ready, run only the controls that f
 report the results in prose only, quoting pack lines. Never propose code, pseudocode or skeletons for these files
 (Sign-off Pack Part 2 row 5). If a control is still NOT_WIRED, say so; composing its procedure is harness work and
 never touches the owner's files.
+Owner decision D-036 (Krishika, 28 Nov 2026; docs/ambiguities.md): every commit Claude creates uses
+`--author="Claude Code (Anthropic) <noreply@anthropic.com>"`, so git's author field separates Claude's commits from
+Krishika's hand-written ones. Commits before D-036 used Krishika's identity with a Co-Authored-By line, and git cannot
+separate those. tests/test_controls_provenance.py fails if any file under design/fifo/controls/ other than README.md
+and slots.json was last changed by a Claude Code-authored commit. tools/check_control_file.py runs only File 30's
+static stages on one owner file and only reads it.
 
 Disclosure (D-005), carried in docs/assistance-log.md: "The FIFO specification, RTL and
 authoring-packet payloads were drafted by Claude (Anthropic) via Claude Code and reviewed

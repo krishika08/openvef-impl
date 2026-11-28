@@ -17,6 +17,15 @@ controls in the pinned image. For each control it reports:
   exists;
 - `NOT_WIRED`, once the files exist but the control's procedure has not been composed from
   the harness components yet (plan step 8, [F1-F17-plan.md](../../../docs/F1-F17-plan.md)).
+  F1 and F3 are composed (D-036), so they run as soon as `drivers/reference_driver.py` and
+  `checkers/f6_correct_checker.py` both exist;
+- `ARTIFACT_REJECTED`, with the production stage diagnostic, when the production static or
+  runtime stages reject the owner files. That is never a pass.
+
+**Checking one file yourself (D-036).** `.venv/bin/python -I tools/check_control_file.py <path>`
+runs only File 30's static stages (SOURCE_AST, IMPORT_POLICY, AST_SIGNATURE) on one file, judged
+as `driver.py` or `checker.py` by its directory. It prints which stage accepted or rejected it,
+with the diagnostic. It only reads the file. COMPILE and the runtime stages run in the control run.
 
 F14 and F15 need no owner artifact.
 
