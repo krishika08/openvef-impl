@@ -1,16 +1,20 @@
-"""Build dist/openvef-docaudit-bundle.zip for document audit #4 of the v1.3.7 CANDIDATE: correction cycle 4 (C19,
-D3-2: the status parts as explicit labels), run continuity (D3-1) and regression (D-030; docs/DOC-AUDIT4-BRIEF.md).
-Audit #1's bundle was built at 8d8be84 (release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit
-#3's at c24be7f (docaudit3-f82e1334).
+"""Build dist/openvef-docaudit-bundle.zip for document audit #5 of the v1.3.7 CANDIDATE: D4-1 (the C19 status test,
+test only), the owners' stopping rule and regression (D-031; docs/DOC-AUDIT5-BRIEF.md). Audit #1's bundle was built at
+8d8be84 (release docaudit1-c4caff40), audit #2's at b9723b5 (docaudit2-4ee28f46), audit #3's at c24be7f
+(docaudit3-f82e1334), audit #4's at 95fe05d (docaudit4-f01d344d).
 
 Contents: the candidate pack (with its CHANGELOG), the CORRECTIONS rationale, the build script, the PD records, the
-v1.3.6 baseline for diffing, the latest candidate F18 run, the results.jsonl and summary.json of audit #2's and audit
-#3's runs, the two continuity reports and tools/diff_runs.py with its tests, reports #1 to #3 with their notes, brief #3
-(with its erratum), the D-029 sweep list, the candidate-pack test, docs/ambiguities.md (D-030) and the brief. Only
-git-tracked files are bundled. The build refuses a dirty tree (any path) and checks the following. The candidate pack
+v1.3.6 baseline for diffing, the latest candidate F18 run, the results.jsonl and summary.json of audit #2's, #3's and
+#4's runs, the three continuity reports and tools/diff_runs.py with its tests, reports #1 to #4 with their notes, briefs
+#3 and #4, the D-029 sweep list, the candidate-pack test, docs/ambiguities.md (D-031) and the brief. D-031 item 3 adds
+the C18 candidate snapshot (the pack audit #3 audited), read from git at audit #3's build commit and stored under
+prior/c18-candidate-pack/, so E01-E218 and every descriptor can be byte-compared with C19. Apart from that snapshot,
+only git-tracked files of HEAD are bundled. The build refuses a dirty tree (any path) and checks the following. The candidate pack
 matches its SHA256SUMS, and no file is unlisted. Each baseline file matches 27_SHA256SUMS.txt. The run was made in the
 pinned image on a clean commit, from the bundled pack manifest, and its results hash agrees. Each continuity run's
-results.jsonl matches its summary and the hash recorded by the audit that used it. Re-running diff_runs reproduces each
+results.jsonl matches its summary and the hash recorded by the audit that used it. The C18 snapshot matches its own
+SHA256SUMS, with no file unlisted, and that SHA256SUMS is the manifest audit #3's run pinned; its E01-E218 CHANGELOG rows
+and its fixture descriptors equal the current candidate's. Re-running diff_runs reproduces each
 continuity report's verbatim section byte for byte, with no critical difference. Entries are sorted, with fixed
 timestamps and modes, so the same commit gives the same bytes (for the same Python/zlib). Usage:
     python3 tools/build_docaudit_bundle.py
@@ -30,20 +34,34 @@ CAND = "proposals/v1.3.7/pack"
 CAND_SUMS = f"{CAND}/SHA256SUMS-v1.3.7-candidate.txt"
 RUN = max((p.parent for p in (REPO / "evidence").glob("run-v137c-*/summary.json")),
           default=REPO / "missing").relative_to(REPO).as_posix()
-BRIEF = "docs/DOC-AUDIT4-BRIEF.md"
+BRIEF = "docs/DOC-AUDIT5-BRIEF.md"
 REPORT1 = "docs/reviews/doc-audit1-gpt6-2026-11-27.md"
 REPORT1_SHA256 = "ba81408bde5339291d4b2ef25cab70b5eaa3e518412ecd45cdbeb11f54604b95"
 REPORT2 = "docs/reviews/doc-audit2-gpt6-2026-11-27.md"
 REPORT2_SHA256 = "b3534eee86e9af1f937e795223354498d994501be90dcc6e910d3a02297b6f13"
 REPORT3 = "docs/reviews/doc-audit3-gpt6-2026-11-27.md"
 REPORT3_SHA256 = "757ae6e53002b93bc8738cbe07fac36f865b6253dafd1d4d042fa2f3cd94a34f"
+REPORT4 = "docs/reviews/doc-audit4-gpt6-2026-11-28.md"
+REPORT4_SHA256 = "0cc724cd8c0661c216f956bd98628e2d359fe5702c87f5f3887a6046c8174850"
+# D-031 item 3: the C18 candidate (the pack audit #3 audited), from git at audit #3's bundle build commit; its manifest
+# is the one audit #3's run pinned (run-v137c-20261127T153351Z, pack_manifest_sha256).
+C18_COMMIT = "c24be7f"
+C18_MANIFEST_SHA256 = "3294d2a3920e6c06874535fc54dc037e2bc0461473cab33b6558b61f27a84eb1"
+C18_PREFIX = "prior/c18-candidate-pack"
+# D-031 item 1, verbatim: recorded before audit #5 in docs/ambiguities.md and the brief.
+STOPPING_RULE = ("If document audit #5 finds no BLOCKER, MAJOR or MINOR finding, the owners adopt v1.3.7 as the corrected "
+                 "pack; every remaining LIMITATION is disclosed in DEVIATIONS.md. A lexical test cannot prove semantic "
+                 "correctness; that is established by the audited manual review.")
 # D-030 (D3-1): the runs audits #2 and #3 used, with the results hash each audit recorded, and the continuity reports
 # (old run, new run; None = the latest candidate run).
 PRIOR_RUNS = {"evidence/run-v137c-20261127T134318Z": "81c73e32cc7643c8900dd3f83c5824b5f7ae6ae82d90f140f4465b2f4c8acd09",
-              "evidence/run-v137c-20261127T153351Z": "4b9714a43e7dfb4d9833de986302bf5f9d476da200e4e6871e967b608329284b"}
+              "evidence/run-v137c-20261127T153351Z": "4b9714a43e7dfb4d9833de986302bf5f9d476da200e4e6871e967b608329284b",
+              "evidence/run-v137c-20261127T163649Z": "9b07f3c8d390d84bc6096f898188fd9b18cf63192153b5f0a8b77db7f38ce21b"}
 CONTINUITY = {"evidence/RUN-CONTINUITY-D030.md": ("evidence/run-v137c-20261127T134318Z",
                                                   "evidence/run-v137c-20261127T153351Z"),
-              "evidence/RUN-CONTINUITY-D030-regression.md": ("evidence/run-v137c-20261127T153351Z", None)}
+              "evidence/RUN-CONTINUITY-D030-regression.md": ("evidence/run-v137c-20261127T153351Z",
+                                                             "evidence/run-v137c-20261127T163649Z"),
+              "evidence/RUN-CONTINUITY-D031.md": ("evidence/run-v137c-20261127T163649Z", None)}
 VERBATIM = "## Tool report (verbatim)\n\n"
 PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "proposals/v1.3.7/build_candidate.py",
          "docs/pack-defects.md", BRIEF, RUN, REPORT1,
@@ -51,6 +69,8 @@ PATHS = [BASE, CAND, "proposals/v1.3.7/CORRECTIONS-v1.3.7-candidate.md", "propos
          "proposals/v1.3.7/STATUS-SWEEP-D029.md", "tests/test_v137_candidate_pack.py", "docs/ambiguities.md",
          REPORT3, "docs/reviews/doc-audit3-gpt6-2026-11-27-NOTE.md", "docs/DOC-AUDIT3-BRIEF.md",
          "tools/diff_runs.py", "tests/test_diff_runs.py", *CONTINUITY,
+         REPORT4, "docs/reviews/doc-audit4-gpt6-2026-11-28-NOTE.md", "docs/DOC-AUDIT4-BRIEF.md",
+         "evidence/NOTE-D031-contended-runs.md",
          *(f"{r}/{f}" for r in PRIOR_RUNS for f in ("results.jsonl", "summary.json"))]
 OUT = REPO / "dist" / "openvef-docaudit-bundle.zip"
 LIMIT = 20_000_000
@@ -99,6 +119,19 @@ def continuity_problems(files: dict[str, bytes]) -> list[str]:
     return problems
 
 
+def c18_snapshot() -> dict[str, bytes]:
+    """D-031 item 3: every file of the candidate pack at C18_COMMIT, read from git objects (not the working tree)."""
+    names = [n for n in subprocess.run(["git", "-C", str(REPO), "ls-tree", "-r", "-z", "--name-only", C18_COMMIT, "--",
+                                        CAND], check=True, capture_output=True).stdout.decode().split("\0") if n]
+    return {n[len(CAND) + 1:]: subprocess.run(["git", "-C", str(REPO), "show", f"{C18_COMMIT}:{n}"], check=True,
+                                              capture_output=True).stdout for n in names}
+
+
+def changelog_rows(text: bytes) -> dict[str, str]:
+    import re
+    return {m.group(1): m.group(0) for m in re.finditer(r"^\| (E\d+) \|.*$", text.decode("utf-8"), re.M)}
+
+
 def main() -> int:
     if git("status", "--porcelain"):  # clean-tree guard (as D-020 for the code bundle)
         sys.exit("working tree is not clean: refuse to build")
@@ -137,8 +170,31 @@ def main() -> int:
     if "C19 (D3-2)" not in files["proposals/v1.3.7/build_candidate.py"].decode() or \
             "| E237 | C19 |" not in files[f"{CAND}/CHANGELOG-v1.3.7-candidate.md"].decode():
         problems.append("the candidate predates D-030 cycle 4 (no C19 entries)")
+    if sha(files[REPORT4]) != REPORT4_SHA256:
+        problems.append("audit #4 report is not the saved verbatim copy")
+    if "class LabelledStatusRuleTests" not in files["tests/test_v137_candidate_pack.py"].decode():
+        problems.append("the candidate-pack test predates D-031 (D4-1)")
+    for doc in ("docs/ambiguities.md", BRIEF):
+        if STOPPING_RULE not in " ".join(t for t in files[doc].decode().split() if t != ">"):  # blockquote markers
+            problems.append(f"{doc}: the D-031 stopping rule is not there verbatim")
+    c18 = c18_snapshot()
+    c18_sums = c18.get(CAND_SUMS[len(CAND) + 1:], b"")
+    if sha(c18_sums) != C18_MANIFEST_SHA256:
+        problems.append("the C18 snapshot's SHA256SUMS is not the manifest audit #3's run pinned")
+    c18_listed = sums(c18_sums.decode())
+    if [r for r, h in c18_listed.items() if r not in c18 or sha(c18[r]) != h] or \
+            set(c18) - set(c18_listed) - {CAND_SUMS[len(CAND) + 1:]}:
+        problems.append("the C18 snapshot does not match its SHA256SUMS")
+    changelog = "CHANGELOG-v1.3.7-candidate.md"
+    old_rows, new_rows = changelog_rows(c18[changelog]), changelog_rows(cand[changelog])
+    if len(old_rows) != 218 or any(new_rows.get(e) != row for e, row in old_rows.items()):
+        problems.append("E01-E218 in the current CHANGELOG are not the C18 rows")
+    descriptors = [r for r in c18 if r.startswith("41_F18_Fixture_Inputs/") and not r.endswith("fixture-index.json")]
+    if not descriptors or any(cand.get(r) != c18[r] for r in descriptors):
+        problems.append("a fixture descriptor differs between C18 and the current candidate")
+    c18_vs_now = sorted(r for r in set(c18) | set(cand) if c18.get(r) != cand.get(r))
     if RUN in PRIOR_RUNS:
-        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run on the C19 pack")
+        problems.append(f"the latest candidate run {RUN} is a prior audit's run; re-run after D4-1")
     for run, recorded in PRIOR_RUNS.items():  # D-030 (D3-1): the prior runs are the ones the audits recorded
         res, summ = files[f"{run}/results.jsonl"], json.loads(files[f"{run}/summary.json"])
         if sha(res) != recorded or summ["results_sha256"] != recorded:
@@ -149,9 +205,14 @@ def main() -> int:
     if problems:
         sys.exit("; ".join(problems))
 
-    info = {"purpose": "document audit #4 of the v1.3.7 CANDIDATE: correction cycle 4 (C19: D3-2, the status parts as "
-                       "explicit labels), run continuity (D3-1) and regression (D-030); not an implementation audit, "
-                       "not F18",
+    for n, d in c18.items():
+        files[f"{C18_PREFIX}/{n}"] = d
+    info = {"purpose": "document audit #5 of the v1.3.7 CANDIDATE: D4-1 (the C19 status test; test only, no pack text "
+                       "change), the owners' stopping rule and regression (D-031); not an implementation audit, not F18",
+            "stopping_rule": STOPPING_RULE,
+            "c18_snapshot": {"path": C18_PREFIX, "from_commit": C18_COMMIT, "manifest_sha256": C18_MANIFEST_SHA256,
+                             "files": len(c18), "e01_e218_rows_identical": len(old_rows),
+                             "descriptors_identical": len(descriptors), "files_differing_from_current": c18_vs_now},
             "brief": BRIEF, "candidate_pack": CAND, "candidate_pack_manifest_sha256": sha(files[CAND_SUMS]),
             "candidate_pack_files": len(cand), "baseline": BASE, "baseline_files": len(base),
             "candidate_run": RUN, "candidate_run_commit": summary["git_commit"],
@@ -164,7 +225,9 @@ def main() -> int:
                 {"report": REPORT2, "report_sha256": REPORT2_SHA256,
                  "bundle_sha256": "4ee28f4651c8af4dd09c50299f2909b641ddadf55c0c70255bb2e529cb2c5cee", "verdict": "NOT CLEARED"},
                 {"report": REPORT3, "report_sha256": REPORT3_SHA256,
-                 "bundle_sha256": "f82e13342664679e5caa8f56f42c5e6dde0ee1b04bab653fb7cc3c313290b26b", "verdict": "NOT CLEARED"}],
+                 "bundle_sha256": "f82e13342664679e5caa8f56f42c5e6dde0ee1b04bab653fb7cc3c313290b26b", "verdict": "NOT CLEARED"},
+                {"report": REPORT4, "report_sha256": REPORT4_SHA256,
+                 "bundle_sha256": "f01d344d150d89aae0f545890a0e5c97ad2f49a4f6a0e88a9add6731fbfe73cb", "verdict": "NOT CLEARED"}],
             "continuity": {doc: {"old": old, "new": new or RUN} for doc, (old, new) in CONTINUITY.items()},
             "build_commit": git("rev-parse", "HEAD").strip(), "files": len(files),
             "label": "v1.3.7 CANDIDATE, not audited",
