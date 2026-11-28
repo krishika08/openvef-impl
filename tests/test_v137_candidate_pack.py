@@ -70,13 +70,19 @@ APPROVAL_TAIL = r"(?:\s*|\.(?:\s.*)?|\)\s*| \(see the status line at the top of 
 
 
 # D-032 (D5-1): the one definition of a word character in labelled_status, Python's `\w` for str (letters, digits and
-# "_"). Used for the label boundary (labelled_status) and for apostrophes (_inside_quotes); nothing else tests for one.
+# "_"). D-033 (D6-1): used only for apostrophes (_inside_quotes); the label boundary no longer tests for a word
+# character, it uses the allow-list LABEL_PRECEDERS below.
 WORD_CHAR = r"\w"
 
-
-def _is_word_char(ch: str) -> bool:
-    import re
-    return re.fullmatch(WORD_CHAR, ch) is not None
+# D-033 (D6-1): an allow-list, replacing D-032's block-list (word character, quotation mark, hyphen). A label counts only
+# at the start of the line or right after one of exactly these characters: an ASCII space, "(", "|" or "*". Anything
+# else directly before a label (a letter, "_", a combining mark such as U+0301, U+200B, U+200D, U+00A0, a tab, a
+# quotation mark, a hyphen) means it is not a separate label.
+LABEL_PRECEDERS = frozenset(" (|*")
+# D-033 (D6-1): each label is matched exactly as its ASCII text: STATUS_LABELS are ASCII, and labelled_status matches
+# them code point for code point (re.escape, no case folding), so a look-alike letter from another script is no label.
+assert all(label.isascii() for label in STATUS_LABELS)
+assert all(ch.isascii() for ch in LABEL_PRECEDERS)
 
 
 def _inside_quotes(before: str) -> bool:
@@ -113,10 +119,23 @@ def _value_problem(i: int, value: str) -> str | None:
     return f"value {plain[:60]!r} does not state an approval state"
 
 
+def _status_line(label: str, prefix: str, replace_space: bool = False, spelled: str | None = None) -> str:
+    """D-033 (D6-1) negatives: the well-formed line with `prefix` put directly before `label` (after the space that
+    precedes it, or instead of that space), or with `label` spelled differently."""
+    line = "F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; Approval: nothing is approved."
+    at = line.index(label + ":")
+    head, tail = line[:at], line[at:]
+    if replace_space:
+        head = head[:-1]
+    if spelled is not None:
+        tail = spelled + tail[len(label):]
+    return head + prefix + tail
+
+
 def labelled_status(line: str) -> list[str]:
     """Problems with a status line under C19; [] when it is well formed. Each label appears exactly once, as written
-    (case included), not preceded by a quotation mark, a hyphen or a word character (WORD_CHAR, "_" included), not inside quotation marks of any
-    kind in QUOTES (_inside_quotes), and directly followed by exactly ": " and a non-space character; the labels come in
+    (case included) and exactly as ASCII, at the start of the line or right after a character in LABEL_PRECEDERS (an ASCII
+    space, "(", "|" or "*"; D-033), not inside quotation marks of any kind in QUOTES (_inside_quotes), and directly followed by exactly ": " and a non-space character; the labels come in
     STATUS_LABELS order. Each value runs from its label to the next ";" or "|" (the last label's value; for the first
     two, it must end with "; " right before the next label) and must be in its clause's closed vocabulary
     (_value_problem, D-031). This is a lexical check: it rejects placeholders and unknown wordings, it cannot show that
@@ -127,7 +146,9 @@ def labelled_status(line: str) -> list[str]:
         hits = []
         for m in re.finditer(re.escape(label) + ":", line):
             before = line[:m.start()]
-            if before and (_is_word_char(before[-1]) or before[-1] in QUOTES + "-"):
+            if before and before[-1] not in LABEL_PRECEDERS:  # D-033 (D6-1): allow-list, not block-list
+                continue
+            if not m.group().isascii():  # D-033 (D6-1): exactly as ASCII
                 continue
             if _inside_quotes(before):
                 continue
@@ -229,9 +250,25 @@ class LabelledStatusRuleTests(unittest.TestCase):
                               "_Approval: nothing is approved.", "0 unquoted occurrences"),
         "x_ before Approval": ("F18 status: Development-run evidence: none; Formal F18 status: NOT RUN; "
                                "x_Approval: nothing is approved.", "0 unquoted occurrences"),
-        # Claude's own (10): no space between the first value's ";" and the next label.
+        # D-033 (D6-1): audit #6's line, U+0301 COMBINING ACUTE ACCENT joining "x" to the first label; then each other
+        # character D-033 names, before each label, and a Cyrillic look-alike letter inside each label.
+        **{f"{name} before {label}": (_status_line(label, prefix), "0 unquoted occurrences")
+           for name, prefix in (("U+0301", "x\u0301"), ("U+200D ZWJ", "\u200d"), ("U+200B ZWSP", "\u200b"))
+           for label in STATUS_LABELS},
+        **{f"{name} instead of the space before {label}": (_status_line(label, ch, replace_space=True),
+                                                            "0 unquoted occurrences")
+           for name, ch in (("U+00A0 NBSP", "\u00a0"), ("tab", "\t")) for label in STATUS_LABELS},
+        **{f"Cyrillic {cyr!r} in {label}": (_status_line(label, "", spelled=label.replace(lat, cyr, 1)),
+                                           "0 unquoted occurrences")
+           for label, lat, cyr in (("Development-run evidence", "e", "\u0435"), ("Formal F18 status", "o", "\u043e"),
+                                   ("Approval", "A", "\u0410"))},
+        # Claude's own (10): no space between the first value's ";" and the next label. D-033 (D6-1): still rejected,
+        # now earlier and for a different reason: ";" is not in LABEL_PRECEDERS, so "Formal F18 status" is no label.
         "no space after ';'": ("F18 status: Development-run evidence: none;Formal F18 status: NOT RUN; "
-                               "Approval: nothing is approved.", "does not end with '; '"),
+                               "Approval: nothing is approved.", "0 unquoted occurrences"),
+        # Claude's own (11), D-033: keeps the "; " check exercised now that (10) stops before it.
+        "',' instead of ';' before a label": ("F18 status: Development-run evidence: none, Formal F18 status: NOT RUN; "
+                                             "Approval: nothing is approved.", "does not end with '; '"),
     }
 
     GOOD_TOO = {
@@ -246,6 +283,13 @@ class LabelledStatusRuleTests(unittest.TestCase):
                                      "NOT PASSED**, since no authorized F18 acceptance run exists; Approval: no "
                                      "implementation is qualified or approved. A further sentence."),
         "quoted text after the labels": GOOD + ' See "F18 result".',
+        # D-033 (D6-1): each allowed preceding character other than the space and the start of the line.
+        "'(' before the first label": ("F18 status (Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                       "Approval: nothing is approved)"),
+        "'|' before the first label": ("| F18 status |Development-run evidence: none; Formal F18 status: NOT RUN; "
+                                       "Approval: nothing is approved |"),
+        "'*' before the first label": "F18 status: *" + GOOD[12:],
+        "a label at the start of the line": GOOD[12:],
     }
 
     def test_d4_1_negative_cases_fail_for_their_reason(self):

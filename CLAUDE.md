@@ -60,6 +60,11 @@ not audited; v1.3.6 stays the default and baseline/ is never edited. Candidate-p
 numbered amendment in its own commit; candidate-only adapters cite candidate text only; candidate results never count as
 v1.3.6 F18 evidence.
 
+Deviation DEV-003 (Krishika, D-033; docs/DEVIATIONS.md): the owners waived Protocol L555 (3) for development-only
+regression runs from the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected. These runs are fixture execution; never call them outside the gate,
+F18 acceptance or F18 evidence. List each new one in DEV-003. DEV-004 (OPEN): the repository cannot show
+that v1.3.6's own L555 (3) gate was met before the first v1.3.6 run; never claim it was.
+
 Still human-written. Do NOT write: F6/F17 control checkers or drivers, the directed
 suite, control mutants. Owners write those by hand; Claude may comment on them in prose
 only. Owner decision D-007 (Krishika, 24 Nov 2026; Ayush's confirmation pending) adds the

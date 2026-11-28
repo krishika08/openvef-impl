@@ -217,7 +217,93 @@ Not an accepted deviation: recorded for the auditor, at Krishika's instruction (
 (CLEARED for D-022). A9-2 is closed as a finding (D-023); the forgery residual above stands as a disclosed
 limitation (fifth audit L-10), and nothing here closes it.
 
-## Owner interpretation (D-032) — development-only regression runs (Protocol L555 (3))
+## DEV-003 — Development regression runs before the v1.3.7 gate is met (Protocol L555 (3))
+
+> [02 L555] "(3) Only after that document re-audit passes, the owner must explicitly record acceptance or rejection of A1–A11 and choose the X14 strict-AST branch. Until both the document audit and owner record are complete, no implementation or fixture execution is authorized."
+
+**Owner-authorized deviation (Krishika, D-033, 28 Nov 2026; scope reworded by Krishika the same day), verbatim:** "Protocol L555(3) bars implementation or fixture execution until the document audit and owner record are complete. The owners waived this bar for development-only regression runs (run_class: development) from the candidate's creation (b9f3d54) until v1.3.7 is adopted or rejected, to check that corrections did not change outcomes. These runs are fixture execution; they are not F18 acceptance and are not counted as F18 evidence. The waiver ends when v1.3.7 is adopted or rejected."
+
+It replaces the D-032 owner interpretation below, which document audit #6 found unsupported by the text (D6-2, MAJOR;
+`docs/reviews/doc-audit6-gpt6-2026-11-28.md`). The D-032 wording was Claude's error. The Protocol text is unchanged: the
+bar stands, and the runs below are a departure from it, not an exception the text contains.
+
+**Waived runs.** Every implementation or fixture execution made against the v1.3.7 candidate from its creation
+(commit `b9f3d54`, 26 Nov 2026 15:45 UTC) until v1.3.7 is adopted or rejected. Each is a development run (`run_class: development` in its `summary.json`;
+the container test runs are development test logs, D-017), none is F18 acceptance or F18 evidence. Runs added later
+while the waiver lasts are listed here in the commit that adds their evidence.
+- Candidate fixture runs (10): `run-v137c-20261126T155948Z`, `run-v137c-20261126T164050Z`, `run-v137c-20261127T052443Z`, `run-v137c-20261127T114201Z`, `run-v137c-20261127T134318Z`, `run-v137c-20261127T153351Z`, `run-v137c-20261127T163649Z`, `run-v137c-20261128T032116Z`, `run-v137c-20261128T033242Z`, `run-v137c-20261128T042052Z`. `run-v137c-20261127T114201Z` was cut off by a host restart and has no
+  summary; it executed fixtures, so it is listed.
+- Control runs (9): `controls-20261126T160156Z`, `controls-20261126T164304Z`, `controls-20261127T052649Z`, `controls-20261127T134510Z`, `controls-20261127T153602Z`, `controls-20261127T163904Z`, `controls-20261128T032418Z`, `controls-20261128T033441Z`, `controls-20261128T042259Z`.
+- Container test runs (12): `container-tests-20261126T160212Z`, `container-tests-20261126T164316Z`, `container-tests-20261127T052653Z`, `container-tests-20261127T053222Z`, `container-tests-20261127T134545Z`, `container-tests-20261127T135044Z`, `container-tests-20261127T153608Z`, `container-tests-20261127T154913Z`, `container-tests-20261127T163956Z`, `container-tests-20261128T032456Z`, `container-tests-20261128T033514Z`, `container-tests-20261128T042332Z`.
+- Of these, `run-v137c-20261126T155948Z`, `run-v137c-20261126T164050Z`, `run-v137c-20261127T052443Z`,
+  `controls-20261126T160156Z`, `controls-20261126T164304Z`, `controls-20261127T052649Z` and the container test runs up to
+  `container-tests-20261127T053222Z` came before document audit #1's bundle (`docaudit1-c4caff40`, 27 Nov 2026 05:38
+  UTC). Krishika confirmed (D-033) that the waiver covers them: its scope runs from the candidate's creation.
+- Runs of the v1.3.6 pack are not waived here. Whether v1.3.6's own L555 (3) gate was met before them is recorded in
+  DEV-004.
+
+**Label on every waived run:** "development run under DEV-003 (L555 (3) waived; not F18 acceptance, not F18 evidence)".
+
+**Ends when** v1.3.7 is adopted or rejected (the owners' act). L4 below stays open until then.
+
+## DEV-004 — v1.3.6 implementation and fixture execution without a recorded v1.3.6 L555 (3) gate (OPEN: owner decision required)
+
+> [02 L555] "(2) Obtain an independent document-only v1.3.6 re-audit of the actual pack, including the operative F18 checklist, every fixture expectation and all cross-document rules; a pass authorizes nothing by itself. (3) Only after that document re-audit passes, the owner must explicitly record acceptance or rejection of A1–A11 and choose the X14 strict-AST branch. Until both the document audit and owner record are complete, no implementation or fixture execution is authorized."
+
+Recorded at Krishika's instruction (D-033 follow-up, 28 Nov 2026): "do not exclude them on assumption … show, with file
+and commit, whether its conditions … were satisfied before our first v1.3.6 fixture run". This is **not a waiver**:
+no owner has waived v1.3.6's gate, and Claude does not write one. It records what the repository shows.
+
+**What the pack says** (`baseline/OpenVEF_Planning_v1_3_6/`, read-only, verified against `27_SHA256SUMS.txt`):
+- File 23 L4: "**Status:** OWNER ACCEPTANCE NOT RECORDED; v1.3.5 document audit PASS reported; v1.3.6 corrective
+  document re-audit pending".
+- File 23 L97: "No fixture execution, implementation, provider probe or LLM call is authorized by this release. A1–A11
+  remain **NOT ACCEPTED**; X14 remains **OWNER CHOICE REQUIRED**; …".
+- File 32 L40–L41 ("A1–A11: PROPOSED / NOT ACCEPTED; owner acceptance PENDING." / "X14: OWNER CHOICE REQUIRED.") and
+  L49 ("2. Owner records A1–A11 and the X14 choice."); File 16 L93 and L108 say the same.
+The pack's own records therefore show the gate **not met** at release. They cannot show anything later.
+
+**What the repository shows after release:**
+- First implementation: Session 1 workspace commit `8bca94d…` (`8bca94d6235cacc4400430fc174a39505804d140`, not in this
+  repository's history; imported by `af4340d`, 23 Nov 2026). First v1.3.6 fixture run: `run-20261123T082747Z`
+  (started 23 Nov 2026 08:27:47 UTC at that commit; 8 PASS / 136 NOT_IMPLEMENTED).
+- The scope opening rests on the Owner Sign-off Pack and the Owner Decision Record (CLAUDE.md L5–L9 as first committed
+  in `af4340d`: "Only the limited hand-built FIFO scope of Protocol §18(4) is open"; `docs/AUDIT-READINESS.md` L12).
+  Neither document is in this repository (`docs/ambiguities.md`, D-005: "The Sign-off Pack is not in this
+  repository").
+- No passed independent document re-audit of v1.3.6 is in the repository. `docs/assistance-log.md` L21 names a "v1.3.6
+  audit doc" from separate Claude sessions before 23 Nov 2026; it is not in the repository and its outcome is not
+  recorded. If it is the re-audit relied on, it was an audit by Claude, not an audit independent of the AI that later
+  built the implementation.
+- No owner record accepting or rejecting A1–A11, and no X14 choice, is in the repository. The implementation follows
+  the strict-AST policy (Option A) as the pack specifies; that is not an owner record.
+
+**Finding:** from the repository it **cannot be shown** that v1.3.6's L555 (3) conditions (a passed document re-audit
+and the owner record) were met before `run-20261123T082747Z`. They may be met in the Owner Sign-off Pack or Owner
+Decision Record; if so, adding those records (or their exact quoted passages with dates) closes this entry as
+"satisfied". If not, every execution below happened under the bar, and only the owners can waive it.
+
+**Executions covered** (the implementation work from `8bca94d` on, and):
+- v1.3.6 fixture runs (39): `run-20261123T082747Z`, `run-20261123T152509Z`, `run-20261123T153734Z`, `run-20261123T155910Z`, `run-20261123T160656Z`, `run-20261123T162630Z`, `run-20261123T173644Z`, `run-20261123T173956Z`, `run-20261123T174358Z`, `run-20261123T182731Z`, `run-20261123T183649Z`, `run-20261123T195911Z`, `run-20261123T195936Z`, `run-20261124T111335Z`, `run-20261124T112030Z`, `run-20261124T144337Z`, `run-20261124T151744Z`, `run-20261124T163535Z`, `run-20261124T193435Z`, `run-20261124T194216Z`, `run-20261124T195043Z`, `run-20261124T195537Z`, `run-20261124T202333Z`, `run-20261124T203551Z`, `run-20261124T211459Z`, `run-20261125T040905Z`, `run-20261125T075113Z`, `run-20261125T081829Z`, `run-20261125T173501Z`, `run-20261125T183002Z`, `run-20261126T144718Z`, `run-20261126T155713Z`, `run-20261126T155730Z`, `run-20261126T163836Z`, `run-20261127T052200Z`, `run-20261127T052242Z`, `run-20261127T113929Z`, `run-20261127T134052Z`, `run-20261127T134112Z`.
+- Control runs before the candidate existed (12): `controls-20261124T151740Z`, `controls-20261124T163709Z`, `controls-20261124T193604Z`, `controls-20261124T194343Z`, `controls-20261124T195210Z`, `controls-20261124T211644Z`, `controls-20261125T041047Z`, `controls-20261125T075247Z`, `controls-20261125T082020Z`, `controls-20261125T173726Z`, `controls-20261125T183210Z`, `controls-20261126T144918Z`. Later control and container test runs are listed in
+  DEV-003; they also executed the v1.3.6 implementation, so this entry covers them too.
+- Container test runs before the candidate existed (6): `container-tests-20261125T075330Z`, `container-tests-20261125T082050Z`, `container-tests-20261125T173914Z`, `container-tests-20261125T183231Z`, `container-tests-20261126T144933Z`, `container-tests-20261126T145729Z`.
+- Not covered: `probe-file50-20261124T112645Z`, the U+2118 tokenizer probe, which v1.3.6 L555 (4) allows "earlier on
+  the exact pinned Python 3.11 interpreter".
+
+**Label on every covered run until this closes:** "v1.3.6 gate not shown met (DEV-004)". None of these runs is F18
+evidence (CLAUDE.md rule 8; every one is `run_class` development).
+
+**Ends when** the owners either (a) put the re-audit pass and the A1–A11/X14 owner record (or exact quotes with dates)
+in the repository, showing the gate was met before 23 Nov 2026 08:27 UTC, or (b) record an explicit waiver.
+
+## Owner interpretation (D-032) — development-only regression runs (Protocol L555 (3)) — SUPERSEDED by DEV-003
+
+**Superseded (D-033, 28 Nov 2026).** Kept as it was recorded, not deleted. Document audit #6 found its conclusion (that
+these runs "are not implementation or fixture execution under Protocol L555(3)'s gate") not the best-supported
+reading of the unqualified text (D6-2, MAJOR). The owners accepted the finding; the wording was Claude's error. The
+runs are fixture execution, and the owners waived the bar for them: see DEV-003 above. Before D-033, L4's "Ends when"
+read: "Answered by the owner interpretation above (D-032); the pack text itself is unchanged".
 
 An owner reading of a pack rule, with no pack text change. It is recorded here because document audit #5 named it
 (limitation 4) and the owners asked for it to be disclosed with the deviations. It is not numbered as a DEV because
@@ -234,19 +320,19 @@ under Protocol L555(3)'s gate and are not F18 acceptance".
   container test runs. Every such run is labelled development, never F18 acceptance, and is not F18 evidence (CLAUDE.md
   rule 8, D-024).
 
-## Disclosed limitations of the v1.3.7 candidate (D-032)
+## Disclosed limitations of the v1.3.7 candidate (D-032, D-033)
 
 Recorded now, at Krishika's instruction (D-032 item 3), so that an adoption under the D-031 stopping rule only has to
 reference this section. Not accepted deviations and not closed: each stays a limitation until the condition named
 "Ends when" is met. Source: document audit #5 (`docs/reviews/doc-audit5-gpt6-2026-11-28.md`, section 8), an AI document
-audit (GPT-6), not a human independent review.
+audit (GPT-6), not a human independent review; D6-3 and the L4 change from document audit #6 (D-033).
 
 | ID | Kind | Limitation (report #5's wording, shortened) | Ends when |
 |---|---|---|---|
-| D5-2 | LIMITATION | Lexical acceptance does not establish semantic truth: the run-ID form in `labelled_status` accepts any timestamp-shaped ID without binding it to a run record, and `APPROVAL_TAIL` accepts any sentence after a period. Truth of the status values rests on the audited manual review (report #5 section 4: PASS for all 17 lines and both index fields), which must be repeated whenever a status value changes. | Not ended by a test change; owner decision D-032 item 1 keeps it |
+| D5-2 | LIMITATION | Lexical acceptance does not establish semantic truth: the run-ID form in `labelled_status` accepts any timestamp-shaped ID without binding it to a run record, and `APPROVAL_TAIL` accepts any sentence after a period. Truth of the status values rests on the audited manual review (report #5 section 4: PASS for all 17 lines and both index fields), which must be repeated whenever a status value changes. D6-3 (audit #6): the validator is also blind to context and negation: a line that says it is only an example ("This is not a status statement; it is only an example: F18 status: …"), or a prefix that calls the values false ("The following values are false and must not be treated as the current status:"), passes. It does not show a false claim in any of the 17 current lines; it is why the manual review stays mandatory. | Not ended by a test change; owner decision D-032 item 1 keeps it |
 | L1 | PACK | 61 `archive_*` objects named in baseline `27_SHA256SUMS.txt` are absent from the extraction; all 202 extracted baseline files match, the absent ones are unverified. | The archive objects are supplied and checked |
 | L2 | LIMITATION | The implementation source is not in the document-audit bundle: M27 `check_e` was skipped there, and implementation behaviour, predicate purity and runner internals were not audited by the document audit. | The implementation re-audit (Protocol L555 (5); DEV-002) covers them |
 | L3 | LIMITATION | No formal F18 acceptance: every run is a development run; the document audit does not execute F18, certify fixture acceptance, or satisfy Protocol L555 (5) or L271. | An authorized F18 acceptance run passes (CLAUDE.md rule 8) |
-| L4 | LIMITATION | Protocol L555 (3) gives no express development-only exception, while D-031 directed a development re-run. | Answered by the owner interpretation above (D-032); the pack text itself is unchanged |
+| L4 | DEPARTURE | Protocol L555 (3) gives no express development-only exception, while D-031, D-032 and D-033 directed development re-runs. Those runs are fixture execution under the bar, waived by the owners (DEV-003); the text is unchanged (audit #6, D6-2). | The waiver ends (DEV-003: v1.3.7 adopted or rejected) |
 | L5 | LIMITATION | The implementation that measures `simulator.l334` is not bundled, so the source-level cause and method of the timing differences are not established by the document audit. | The implementation re-audit covers `l334_timeout` |
 | L6 | LIMITATION | No implementation approval or owner adoption: a document audit cannot qualify the implementation or record owner acceptance of A1–A11 or X14. | The owners record those decisions; Claude records none |

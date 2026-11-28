@@ -2136,8 +2136,45 @@ with "#5" read as "#6". Adoption stays the owners' act; Claude adopts nothing.
    verbatim: "the owners authorized development-only regression runs (run_class: development) during the v1.3.7
    document audits; they are not implementation or fixture execution under Protocol L555(3)'s gate and are not F18
    acceptance". The pack text (Protocol L555 (3)) names no such exception; this is the owners' reading of it.
+   **Superseded by D-033 item 1 (DEV-003):** kept as recorded. Audit #6 found this reading unsupported (D6-2, MAJOR);
+   the runs are fixture execution, and the owners waived the bar for them instead.
 3. **D5-2 and limitations 1–6** of report #5 are added to `docs/DEVIATIONS.md` now as disclosed limitations, so that an
    adoption, if audit #6 clears, only has to reference them.
 4. Re-run v1.3.7c, the controls and the container tests (guard on; check for leftover containers first), statuses
    unchanged. Rebuild the bundle (brief #6: D5-1, regression and the stopping rule), publish it as release
    `docaudit6-<first 8 of sha>`, and push.
+
+## D-033 — Response to document audit #6 (DECIDED)
+
+**Owner decision by Krishika**, on a Claude (claude.ai) triage of document audit #6 (GPT-6, an AI model, operated by
+Krishika; bundle `e9719fb3…6982`; NOT CLEARED on D6-2 (MAJOR) and D6-1 (MINOR); D6-3 LIMITATION; D5-1 resolved;
+`docs/reviews/doc-audit6-gpt6-2026-11-28.md`). Takes effect under D-008; Ayush's ratification stays the single entry
+in AUDIT-READINESS.md.
+
+The D-031 stopping rule is unchanged. It was not met by audit #6, and it applies again, verbatim, to document audit #7:
+
+> "If document audit #5 finds no BLOCKER, MAJOR or MINOR finding, the owners adopt v1.3.7 as the corrected pack;
+> every remaining LIMITATION is disclosed in DEVIATIONS.md. A lexical test cannot prove semantic correctness; that is
+> established by the audited manual review."
+
+with "#5" read as "#7". Adoption stays the owners' act; Claude adopts nothing.
+
+1. **D6-2 accepted** (the D-032 wording was Claude's error). The D-032 owner interpretation is replaced by an explicit
+   owner-authorized deviation, **DEV-003** in `docs/DEVIATIONS.md`, verbatim: "Protocol L555(3) bars implementation or fixture execution until the document audit and owner record are
+   complete. The owners waived this bar for development-only regression runs (run_class: development) from the candidate's creation
+   (b9f3d54) until v1.3.7 is adopted or rejected, to check that corrections did not change outcomes. These runs are fixture execution; they are not F18
+   acceptance and are not counted as F18 evidence. The waiver ends when v1.3.7 is adopted or rejected."
+   (Scope reworded by Krishika the same day, from "during the v1.3.7 document audits"; it includes the runs before
+   audit #1.) Every waived run ID is listed there. L4 stays open as a disclosed departure ("Ends when: the waiver ends"). The
+   superseded D-032 text stays visible with a note; it is not deleted.
+2. **D6-1** (test only, no pack text): the preceding-character block-list in `labelled_status` is replaced by an
+   allow-list. A label is valid only at the start of the line or right after an ASCII space, "(", "|" or "*" (only
+   those), and each label must match exactly as ASCII. Negatives: U+0301 before a label, U+200D, U+200B, U+00A0, a
+   Cyrillic look-alike letter inside a label, and a tab. All 17 lines and both fixture-index fields must still pass.
+   **v1.3.6 runs** (Krishika, same day): not excluded on assumption. Whether v1.3.6's own L555 (3) gate was met
+   before the first v1.3.6 fixture run is recorded in DEV-004 (OPEN: the repository cannot show it; owner decision
+   required).
+3. **D6-3** (context/negation blindness) is added to the D5-2 disclosure in `docs/DEVIATIONS.md`.
+4. Re-run v1.3.7c, the controls and the container tests (guard on, no leftover containers), statuses unchanged. Rebuild
+   the bundle (brief #7: D6-1, D6-2, regression and the unchanged stopping rule), publish it as release
+   `docaudit7-<first 8 of sha>`, and push.
