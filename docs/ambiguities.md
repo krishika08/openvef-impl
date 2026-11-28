@@ -928,6 +928,14 @@ recommendation by Claude (claude.ai), answering §8 of
 CLAUDE.md's Scope section is updated to match. The owner-artifact slots, their interfaces
 and the controls each feeds are listed in `design/fifo/controls/README.md`.
 
+**Disclosure note (recorded 28 Nov 2026 at Krishika's instruction; independence aim of D-007).** On 28 Nov 2026,
+Claude (claude.ai) gave Krishika prose guidance for `drivers/reference_driver.py`, an owner control file:
+(a) a restatement of the driver contract in File 30 L35 and Protocol L208–L210, and (b) one design suggestion: "a
+fixed list of planned rows, where step returns the row for that cycle_index". It was prose only, with no code,
+pseudocode or file content, which Sign-off Pack Part 2 row 5 allows. It is disclosed here because D-007 aims at
+independence from the harness author, and the guidance came from a Claude model. Krishika decides the design and
+writes all of the file's code. Assistance log, entry of 28 Nov 2026 (session 16, continued).
+
 ## A-036 — Hash randomization inside the sandbox (DECIDED BY CLAUDE — approved under D-009)
 
 File 30 §6 is headed "Import sandbox and deterministic execution". Paired runs compare
