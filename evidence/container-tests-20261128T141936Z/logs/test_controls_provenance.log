@@ -1,0 +1,7 @@
+test_no_owner_control_file_last_changed_by_claude_code (test_controls_provenance.ControlsProvenanceTests.test_no_owner_control_file_last_changed_by_claude_code) ... skipped 'git or the repository history is not available (e.g. the pinned image)'
+test_flags_only_claude_authored_owner_files (test_controls_provenance.DetectorTests.test_flags_only_claude_authored_owner_files) ... skipped 'git is not available (e.g. the pinned image)'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK (skipped=2)

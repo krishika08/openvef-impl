@@ -1,0 +1,16 @@
+test_blocked_until_manifest_and_roles_exist (test_controls_f4_f5.BlockedTests.test_blocked_until_manifest_and_roles_exist) ... ok
+test_needs_follow_slots (test_controls_f4_f5.BlockedTests.test_needs_follow_slots) ... ok
+test_generated_from_the_spec_predicate (test_controls_f4_f5.LegalAssumptionTests.test_generated_from_the_spec_predicate)
+FIFO-041/-043: illegal exactly when wr_en = 1, rd_en = 0 and the sampled full = 1. ... ok
+test_every_mutant_with_the_role_is_checked (test_controls_f4_f5.ProcedureTests.test_every_mutant_with_the_role_is_checked) ... ok
+test_f4_fail_when_replay_row_differs_or_no_counterexample (test_controls_f4_f5.ProcedureTests.test_f4_fail_when_replay_row_differs_or_no_counterexample) ... ok
+test_f4_pass_when_counterexample_replays_at_predicted_row (test_controls_f4_f5.ProcedureTests.test_f4_pass_when_counterexample_replays_at_predicted_row) ... ok
+test_f4_undecided_is_error (test_controls_f4_f5.ProcedureTests.test_f4_undecided_is_error) ... ok
+test_f5_pass_needs_raw_not_masked_and_bounded_equivalence (test_controls_f4_f5.ProcedureTests.test_f5_pass_needs_raw_not_masked_and_bounded_equivalence) ... ok
+test_f5_empty_driver_rejected_by_the_real_static_stages (test_controls_f4_f5.RejectionTests.test_f5_empty_driver_rejected_by_the_real_static_stages) ... ok
+test_mutant_set_form_error_is_artifact_rejected (test_controls_f4_f5.RejectionTests.test_mutant_set_form_error_is_artifact_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.946s
+
+OK

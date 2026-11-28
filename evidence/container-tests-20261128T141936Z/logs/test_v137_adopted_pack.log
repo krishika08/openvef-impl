@@ -1,0 +1,10 @@
+test_byte_identical_to_the_audited_candidate (test_v137_adopted_pack.AdoptedPackTests.test_byte_identical_to_the_audited_candidate) ... ok
+test_every_file_listed_and_matching (test_v137_adopted_pack.AdoptedPackTests.test_every_file_listed_and_matching) ... ok
+test_label_only_outside_the_pack (test_v137_adopted_pack.AdoptedPackTests.test_label_only_outside_the_pack) ... ok
+test_manifest_and_index_are_the_cleared_ones (test_v137_adopted_pack.AdoptedPackTests.test_manifest_and_index_are_the_cleared_ones) ... ok
+test_runner_default_pack_is_the_adopted_one (test_v137_adopted_pack.AdoptedPackTests.test_runner_default_pack_is_the_adopted_one) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.138s
+
+OK

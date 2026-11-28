@@ -1,0 +1,13 @@
+test_null_trace_no_xz_and_rtl_null_agree (test_fifo_mask.MaskOnFifoTests.test_null_trace_no_xz_and_rtl_null_agree) ... ok
+test_columns_equal_template (test_fifo_mask.MaskTableTests.test_columns_equal_template) ... ok
+test_every_row_has_exact_clause_excerpt (test_fifo_mask.MaskTableTests.test_every_row_has_exact_clause_excerpt) ... ok
+test_frozen_under_d010_never_claims_independence (test_fifo_mask.MaskTableTests.test_frozen_under_d010_never_claims_independence) ... ok
+test_json_and_table_agree (test_fifo_mask.MaskTableTests.test_json_and_table_agree) ... ok
+test_validate_rejects_bad_masks (test_fifo_mask.MaskTableTests.test_validate_rejects_bad_masks) ... ok
+test_variants_valid (test_fifo_mask.MaskTableTests.test_variants_valid) ... ok
+test_dont_care_window_and_stricter_variant (test_fifo_mask.MaskedCompareTests.test_dont_care_window_and_stricter_variant) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 4.169s
+
+OK
