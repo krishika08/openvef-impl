@@ -1,6 +1,45 @@
-{"mutants": [
-  {"id": "m_af_threshold", "file": "m_af_threshold.v", "roles": ["M-exposed"],
-   "description": "AI-written (DEV-005). AF_THRESHOLD is 2 instead of 3, so almost_full = 1 at occupancy 2. Breaks FIFO-029 ('almost_full = 1 exactly when c >= 3'). almost_full is always meaningful (FIFO-022), so the change is observed through the mask, and two legal writes after reset reach occupancy 2 (FIFO-024), well within the bound N."},
-  {"id": "m_rddata_idle", "file": "m_rddata_idle.v", "roles": ["M-dontcare"],
-   "description": "AI-written (DEV-005). After a non-reset active edge at which no read occurs, rd_data is set to A5 instead of holding its value. rd_valid is unchanged and is 0 exactly after those edges (FIFO-021), where rd_data is don't-care (FIFO-022); reset edges, rd_valid, full, almost_full and empty are unchanged. So every change is in a don't-care output."}
-]}
+{
+  "mutants": [
+    {
+      "id": "m_af_threshold",
+      "file": "m_af_threshold.v",
+      "roles": [
+        "M-exposed",
+        "M-any"
+      ],
+      "description": "AI-written (DEV-005). AF_THRESHOLD is 2 instead of 3, so almost_full = 1 at occupancy 2. Breaks FIFO-029 ('almost_full = 1 exactly when c >= 3'). almost_full is always meaningful (FIFO-022), so the change is observed through the mask, and two legal writes after reset reach occupancy 2 (FIFO-024), well within the bound N. Also M-any (F9): any distinct control mutant."
+    },
+    {
+      "id": "m_rddata_idle",
+      "file": "m_rddata_idle.v",
+      "roles": [
+        "M-dontcare"
+      ],
+      "description": "AI-written (DEV-005). After a non-reset active edge at which no read occurs, rd_data is set to A5 instead of holding its value. rd_valid is unchanged and is 0 exactly after those edges (FIFO-021), where rd_data is don't-care (FIFO-022); reset edges, rd_valid, full, almost_full and empty are unchanged. So every change is in a don't-care output."
+    },
+    {
+      "id": "m_write_at_full",
+      "file": "m_write_at_full.v",
+      "roles": [
+        "M-silent"
+      ],
+      "description": "AI-written (DEV-005). do_write is wr_en alone, so a write while full without a read is accepted instead of ignored. That input is illegal (FIFO-031, FIFO-041) and its behaviour is unspecified; under every legal input a write at full comes with a read (FIFO-030), so do_write is unchanged. The netlist differs, but no legal run, and so no run of the reference driver, gives a raw output divergence."
+    },
+    {
+      "id": "m_full_at_three",
+      "file": "m_full_at_three.v",
+      "roles": [
+        "M-full"
+      ],
+      "description": "AI-written (DEV-005). full = 1 when the occupancy after the edge is 3 or 4, instead of exactly 4. Breaks FIFO-028 ('full = 1 exactly when c = 4'). It changes the full output, which drivers sample and react to (FIFO-040, FIFO-041)."
+    },
+    {
+      "id": "m_af_undriven",
+      "file": "m_af_undriven.v",
+      "roles": [
+        "M-x"
+      ],
+      "description": "AI-written (DEV-005). Both assignments to almost_full are removed, so the output is never driven to 0 or 1. Breaks FIFO-013 (every output specified after the first reset edge) and FIFO-029. A driver that converts almost_full to an integer meets a non-binary character."
+    }
+  ]
+}
