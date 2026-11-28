@@ -2,10 +2,185 @@
   "status": "DEV-005 inventory (owner decision D-039, Krishika, 28 Nov 2026). Every control file under design/fifo/controls/ other than README.md and slots.json, with the SHA-256 of its current bytes and a commit that holds those bytes. The controls are AI-written: not human-written and not independent of the evaluator. Checked by tests/test_controls_provenance.py.",
   "files": [
     {
+      "path": "design/fifo/controls/checkers/f13_adversarial_checker.py",
+      "sha256": "1e72bd632d4ed340955a7a2fcf35de4ba46d8b91e4914f247084ee1e85e76b14",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_always_fail_checker.py",
+      "sha256": "e262c1e92a9dc19737262647027033bade9dd43197750782f42d777ae0b7f9de",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_always_pass_checker.py",
+      "sha256": "952af39dee3994e83e210b2b1c6572628a7f6fd55f19765c3b973ea94504ca19",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_crashing_checker.py",
+      "sha256": "5349512e0db90b35a45152148e2db1551cdc267df24bdb486f4447a99b8991d2",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_nondeterministic_checker.py",
+      "sha256": "2d7432152a7e3f725b54945afd2755b1ce7cff75e0e380b7e1a1c3c61a29d4aa",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_reference_checker.py",
+      "sha256": "0bd389d0f7214d92fb70fce827f506b0cdde1c1eb46df29aaf53725ed664cd3b",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_stimulus_literal_checker.py",
+      "sha256": "ed9024ba18af88f9e0cc09e53e80f902527010e5d6db3256fbec95de093a3da7",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f17_stricter_than_mask_checker.py",
+      "sha256": "cd4c73115a17ea27871c500b0741bcedd12a10c29d88e830c231b0f111ffeb0b",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f6_always_pass_checker.py",
+      "sha256": "5cbeb8c0ea4410841d4d3026703b33cc8cea5dd406d70e4317fe8aab36189dbf",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
       "path": "design/fifo/controls/checkers/f6_correct_checker.py",
       "sha256": "8e51da0d17916c9896494c06c81c3c94880cd6eff625ae5343720c002317155a",
       "commit": "ddaa507",
       "written_by": "Claude Code (Claude Opus 5.5), D-039 Wave 1",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f7_stricter_checker.py",
+      "sha256": "cd4c73115a17ea27871c500b0741bcedd12a10c29d88e830c231b0f111ffeb0b",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/checkers/f8_nondeterministic_checker.py",
+      "sha256": "dfff24c7fcd0ceace12b26a02ffe4fc1774228e972e9e540426f18d78977c99b",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/directed/bypass_and_boundaries.py",
+      "sha256": "8863b89a34eb17c7740c596982dd97b29112a9e9f9caebc841f112a56075dca2",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/directed/fill_and_drain.py",
+      "sha256": "90da42705f5b951b124ee57dddc3a9b9517d3764b982e9428d25f2e1b54bf973",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/directed/suite.json",
+      "sha256": "16efcc57590e113331cc92d2d6d6a9c254597d41c9aaabf189d889599156e31f",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f10_full_reactive_driver.py",
+      "sha256": "5ef277a50b0bb1ea278e39c0f757f0523019ed6f3111b53ec082e6309b84bdb9",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f11_infinite_loop_driver.py",
+      "sha256": "d1836713491488fef2181e31f9f8d3d11fc6f6c167b249c24ee3304553bed13a",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f11_runs_to_cap_driver.py",
+      "sha256": "f75e67e651670b56f9a4175cea88a92fe423b2fa385772bc5e553e7c3a666671",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f12_x_convert_driver.py",
+      "sha256": "1d88be60fd3825bf259edcdcebcddf8d95ce2adedbe2e14ce233b8eca22babf1",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f17_reactive_random_driver.py",
+      "sha256": "ff10c6c455a5f8befbdaf178d8c2aee3ea7d53e14b00102d880e767a22518806",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f2_echo.json",
+      "sha256": "d4273cc20b784633f1eec32dccb4add4f5511a0ae090a328adcf2249064e897f",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f2_echo_driver.py",
+      "sha256": "9c2d223199c9318a57a20cadb9782a13a324e2882f34aedbfd34cba8cafe8fe5",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f6_exposing_driver.py",
+      "sha256": "d90b7caa95b6bffe630d8756b90d8c312ccf2c5a9542c2a1ed7e488159536a6c",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f6_nonexposing_driver.py",
+      "sha256": "75ed275654263a7394a54bcb6a83414bc082bc7fb344b9c3809bba98d5473738",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f9_seeded_driver.py",
+      "sha256": "a0625755cb6a239fa8cfc0084727c5c39f1c3637c0e4cadb87a6cb1ce97d8dfb",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/drivers/f9_unseeded_driver.py",
+      "sha256": "8d6b9429f8314572cf815641aeeb959a991447286b9cf1bdf8c129ae79b317f5",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
       "label": "AI-written (DEV-005)"
     },
     {
@@ -23,6 +198,20 @@
       "label": "AI-written (DEV-005)"
     },
     {
+      "path": "design/fifo/controls/mutants/m_af_undriven.v",
+      "sha256": "b77a2cb761e607a111af680900c82e7110aadbe5ce1e16b9be447c879a2bb740",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
+      "path": "design/fifo/controls/mutants/m_full_at_three.v",
+      "sha256": "26782bb75f49822e67cc41658864abcd0b00c8d348e9b066fd4f17d20f160aa7",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
       "path": "design/fifo/controls/mutants/m_rddata_idle.v",
       "sha256": "98c0b327d50f87174b3868a80c8d16290cd5a25a3fbc1cd0667ab796f3b3530a",
       "commit": "3a5dea2",
@@ -30,10 +219,17 @@
       "label": "AI-written (DEV-005)"
     },
     {
+      "path": "design/fifo/controls/mutants/m_write_at_full.v",
+      "sha256": "9efd79c3115e5028420d0dad8cf7ed042dde50b2f51bf17c2b5b72a4caecabca",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
+      "label": "AI-written (DEV-005)"
+    },
+    {
       "path": "design/fifo/controls/mutants/manifest.json",
-      "sha256": "d1520726903ce3b8e742f08c7b1190d386cf54c49dfa1c95e0fe35fb39e89d57",
-      "commit": "3a5dea2",
-      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 2",
+      "sha256": "4c0bac63fe7008da7d4535238b4b17ff5d21375a1a80e98776ffb31bcf0d991a",
+      "commit": "37e2640",
+      "written_by": "Claude Code (Claude Opus 5.5), D-040 Wave 3",
       "label": "AI-written (DEV-005)"
     }
   ]
