@@ -21,7 +21,7 @@ import run_controls as RC  # noqa: E402
 from openvef import miter, mutants  # noqa: E402
 
 SLOTS = json.loads((REPO / "design" / "fifo" / "controls" / "slots.json").read_text(encoding="utf-8"))
-CTX = {"null": {"n": 1}, "rtl": {"r": 1}, "mask": [], "metadata": {}, "provisional": ["DRAFT materials"],
+CTX = {"null": {"n": 1, "cycle_cap": 64}, "rtl": {"r": 1}, "mask": [], "metadata": {}, "provisional": ["DRAFT materials"],
        "cleared": [{"label": "cleared under DEV-001 (non-independent review saved)"}], "record": {"file_sha256": {}}}
 L334 = {"t_timeout_s": 2.0}
 
@@ -125,7 +125,9 @@ class ProcedureTests(unittest.TestCase):
         self.assertEqual(rec["status"], "PASS", rec)
         self.assertEqual(rec["details"][0]["replay"]["observed_row"], 5)
         self.assertEqual(rec["cleared"], CTX["cleared"])
-        self.assertIn("TO FREEZE", rec["miter"]["status"])
+        self.assertIn("FROZEN under D-037", rec["miter"]["status"])
+        self.assertEqual((rec["miter"]["N"], rec["miter"]["solver_timeout_s"], rec["miter"]["wall_timeout_s"]),
+                         (64, 300, 900))
 
     def test_f4_fail_when_replay_row_differs_or_no_counterexample(self):
         self.assertEqual(self.run_with("F4", [miter.NON_EQUIVALENT], [comparison(masked=True, first_masked=6)])["status"],

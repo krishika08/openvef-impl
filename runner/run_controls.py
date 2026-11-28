@@ -22,7 +22,7 @@ Statuses:
 
 Composed procedures: F1 (L510) and F3 (L512), on the reference driver and the F6 correct
 checker (D-036 item 4; D-007 (4)); F4 (L513) and F5 (L514), on the M-exposed and M-dontcare
-mutants (D-036 follow-up); F14 and F15.
+mutants (D-036 follow-up), with the miter N, solver and timeouts frozen by D-037 (L299); F14 and F15.
 
 Each record lists what is still provisional and which approvals it rests on. No wired
 procedure (F14, F15) uses the mask; one that does must carry the DEV-001 label.
@@ -260,12 +260,31 @@ def run_f3(baseline: Path) -> dict:
 
 MANIFEST_REL = "mutants/manifest.json"
 F5_DRIVER = "drivers/reference_driver.py"
-# Protocol L299: "N, solver and timeout are **TO FREEZE**." DRAFT proposed values under D-005, not frozen:
-#   N = the design cycle cap, the largest bound L293 allows ("Use bound `N` no greater than the design cycle cap");
-#   solver = Yosys built-in `sat` (D-007 (3)); per-script solver and wall-clock limits are build defaults.
-MITER_DRAFT = {"N": "design cycle_cap (L293 maximum)", "solver": "yosys sat (minisat), D-007 (3)",
-               "solver_timeout_s": 300, "wall_timeout_s": 900,
-               "status": "DRAFT proposed values (D-005); Protocol L299 TO FREEZE"}
+# Protocol L299: "N, solver and timeout are **TO FREEZE**." Frozen by owner decision D-037 (Krishika, 28 Nov 2026),
+# exactly as proposed in docs/fifo-miter-proposal-DRAFT.md; the record and its hashes are
+# design/fifo/freeze/miter-freeze-D-037.json (addendum in docs/FREEZE-RECORD-2026-11-24.md). L293: "Use bound `N` no
+# greater than the design cycle cap" -- N is the cap itself, in the same unit (driver cycles after reset release).
+MITER_FREEZE_RECORD = "design/fifo/freeze/miter-freeze-D-037.json"
+MITER_STATUS = "FROZEN under D-037 (Protocol L299); record design/fifo/freeze/miter-freeze-D-037.json"
+
+
+class MiterFreezeError(RuntimeError):
+    """The D-037 record no longer matches the files it froze, or N disagrees with the frozen cycle cap."""
+
+
+def miter_settings(cycle_cap: int) -> dict:
+    """The D-037 frozen values, after re-checking every hash in the record. A changed hash means the values are not
+    frozen, so F4 and F5 stop with ERROR rather than run on unfrozen settings."""
+    record = freeze.load(REPO, MITER_FREEZE_RECORD)
+    v = freeze.verify(REPO, record)
+    if v["changed"]:
+        raise MiterFreezeError(f"D-037 miter freeze: item(s) {v['changed']} changed since the freeze; not frozen")
+    fv = record["frozen_values"]
+    if fv["N"]["value"] != "cycle_cap" or fv["N"]["cycles"] != cycle_cap:
+        raise MiterFreezeError(f"L293: frozen N {fv['N']['cycles']} is not the design cycle cap {cycle_cap}")
+    return {"N": fv["N"]["cycles"], "solver": fv["solver"], "solver_timeout_s": fv["solver_timeout_s"],
+            "wall_timeout_s": fv["wall_timeout_s"], "status": MITER_STATUS,
+            "record_sha256": hashlib.sha256((REPO / MITER_FREEZE_RECORD).read_bytes()).hexdigest()}
 
 
 def mutant_set() -> dict:
@@ -303,10 +322,11 @@ def legal_expression(design: dict) -> dict:
 def bounded(mutant_id: str) -> dict:
     ms = mutant_set()
     design, mask = ms["design"], sim_context()["mask"]
+    settings = miter_settings(design["cycle_cap"])
     r = miter.bounded_check(ms["null_netlist"], ms["exported"][mutant_id]["netlist"], design, mask,
-                            legal_expression(design)["expression"], design["cycle_cap"], run_yosys=eda.run_yosys,
-                            solver_timeout_s=MITER_DRAFT["solver_timeout_s"],
-                            wall_timeout_s=MITER_DRAFT["wall_timeout_s"])
+                            legal_expression(design)["expression"], settings["N"], run_yosys=eda.run_yosys,
+                            solver_timeout_s=settings["solver_timeout_s"],
+                            wall_timeout_s=settings["wall_timeout_s"])
     miter_text = r.pop("miter_verilog", "")
     return {**r, "miter_verilog_sha256": hashlib.sha256(miter_text.encode("utf-8")).hexdigest()}
 
@@ -319,7 +339,8 @@ def _mutant_summary(exported: dict) -> dict:
 def _mutant_base() -> tuple[dict, dict | None]:
     """(base record, mutant set or None after a rejection)."""
     ctx = sim_context()
-    base: dict = {"seed": SEED, "miter": MITER_DRAFT, "provisional": list(ctx["provisional"]),
+    base: dict = {"seed": SEED, "miter": miter_settings(ctx["null"]["cycle_cap"]),
+                  "provisional": list(ctx["provisional"]),
                   "cleared": list(ctx["cleared"]), "design_materials": ctx["record"]["file_sha256"],
                   "manifest_sha256": hashlib.sha256((CONTROLS_DIR / MANIFEST_REL).read_bytes()).hexdigest()}
     try:
@@ -428,8 +449,32 @@ def run_control(control: str, slots: dict, baseline: Path) -> dict:
     return {**record, **out, "wall_s": round(time.monotonic() - started, 3)}
 
 
+USAGE = """usage: run_controls.py <baseline_root> <evidence_dir> <run_class>
+
+Feasibility controls F1-F15, F17 (Protocol §17). Takes no --pack.
+  <baseline_root>  the extracted pack root (e.g. baseline/)
+  <evidence_dir>   parent directory for the new controls-<UTC> run directory
+                   (in the runner container: the empty run directory itself)
+  <run_class>      the run's label, recorded in run.log and summary.json
+
+Evidence runs only via:  runner/run_f18_container.sh <run_class> controls  (D-002a)
+Any other interpreter is a development run, not evidence."""
+
+
+def parse_args(argv: list[str]) -> tuple[Path, Path, str]:
+    """Exactly three positional arguments; -h/--help prints USAGE and exits 0, anything else wrong exits 2."""
+    args = list(argv[1:])
+    if any(a in ("-h", "--help") for a in args):
+        print(USAGE)
+        raise SystemExit(0)
+    if len(args) != 3 or any(a.startswith("-") for a in args) or not all(args):
+        print(USAGE, file=sys.stderr)
+        raise SystemExit(2)
+    return Path(args[0]), Path(args[1]), args[2]
+
+
 def main() -> int:
-    baseline, evidence_root, run_class = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+    baseline, evidence_root, run_class = parse_args(sys.argv)
     if broker_mode():
         started = os.environ["OPENVEF_RUN_STARTED"]
         out_dir = evidence_root

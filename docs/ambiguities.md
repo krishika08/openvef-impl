@@ -2258,3 +2258,30 @@ ratification is pending; it stays the single entry in AUDIT-READINESS.md.
 4. **F1 (L510) and F3 (L512)** are composed in `runner/run_controls.py`, on `drivers/reference_driver.py` and
    `checkers/f6_correct_checker.py` (D-007 (4)). They report `BLOCKED_OWNER_ARTIFACTS` until both files exist, and
    `ARTIFACT_REJECTED` when the production stages reject the files. No placeholder owner file was created.
+
+## D-037 — Miter N, solver and timeouts frozen as proposed; run_controls.py usage (DECIDED)
+
+**Owner decision by Krishika**, 28 Nov 2026, on a Claude (claude.ai) review. Takes effect under D-008. Ayush's
+ratification is pending; it stays the single entry in AUDIT-READINESS.md.
+
+1. **Freeze.** The DRAFT values in `docs/fifo-miter-proposal-DRAFT.md` (N, Yosys `sat` settings, timeouts) are frozen
+   exactly as proposed, provided each one is consistent with Protocol L299 and the cycle cap. Claude was to quote the
+   pack line for each value and stop if any value conflicted. None did:
+   - N = the cycle cap, 64 driver cycles after reset release. L293: "Use bound `N` no greater than the design cycle
+     cap." B1 counts the cap in the same unit.
+   - Solver = Yosys v0.71 built-in `sat` (minisat), from D-004 and D-007 (3). L299: "N, solver and timeout are **TO
+     FREEZE**."
+   - 300 s per `sat` script and 900 s per Yosys run. L296: "`UNDECIDED`: solver/resource limit prevents a
+     classification."
+   Recorded in [FREEZE-RECORD-2026-11-24.md](FREEZE-RECORD-2026-11-24.md), Amendment D-037, with hashes, before any owner
+   mutant exists. The machine-readable record is `design/fifo/freeze/miter-freeze-D-037.json`. The proposal file is not
+   edited in place.
+2. **Runner.** `runner/run_controls.py` `miter_settings` reads the record and re-checks its hashes before every F4 or F5
+   bounded check. A changed hash, or an N other than the cycle cap, gives `ERROR`, never a run on unfrozen values. Each
+   record carries `FROZEN under D-037 (Protocol L299)` and the record's SHA-256. `MITER_DRAFT` is removed.
+3. **Usage.** `run_controls.py -h`/`--help` prints the usage message and exits 0. Wrong arguments print it to stderr and
+   exit 2, instead of a traceback.
+4. Tests: `tests/test_miter_freeze.py`. It checks the hashes, that the values equal the proposal's table, and that the
+   L293, L296 and L299 quotes appear verbatim in both packs. It checks that the runner stops on a changed hash or another
+   cap, and that the record was committed before any mutant (host only; the pinned image has no git). It also checks the
+   usage message.

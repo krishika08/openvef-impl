@@ -75,6 +75,11 @@ signature 3 minutes before the first v1.3.6 run, but four gaps stay open (docume
 signature unverified; Part 3 ticks vs blank Decision Record items; boxes marked by Claude). Label those runs "v1.3.6
 gate recorded as met; gaps DEV-004"; never call the gate fully evidenced or a gap closed until its "Ends when" is met.
 
+Owner decision D-037 (Krishika, 28 Nov 2026; docs/ambiguities.md): the miter N (= cycle cap 64), Yosys `sat` and the
+300 s/900 s timeouts (Protocol L299) are FROZEN as proposed, by Amendment D-037 in docs/FREEZE-RECORD-2026-11-24.md
+(design/fifo/freeze/miter-freeze-D-037.json, hash-checked before every F4/F5 run). Never re-tune them; a change needs a
+new owner amendment.
+
 Still human-written. Do NOT write: F6/F17 control checkers or drivers, the directed
 suite, control mutants. Owners write those by hand; Claude may comment on them in prose
 only. Owner decision D-007 (Krishika, 24 Nov 2026; Ayush's confirmation pending) adds the

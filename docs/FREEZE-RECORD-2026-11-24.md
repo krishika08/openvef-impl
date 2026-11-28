@@ -80,6 +80,46 @@ the L270 rule.
 File names and `author_packet_location` cells keep "DRAFT": see D-011 in
 [ambiguities.md](ambiguities.md).
 
+## Amendment D-037: miter N, solver and timeouts (Krishika, recorded 28 Nov 2026 UTC)
+
+Owner decision D-037 (Krishika, on a Claude (claude.ai) review; takes effect under D-008, Ayush's ratification pending
+as recorded in AUDIT-READINESS.md): freeze the DRAFT values in `docs/fifo-miter-proposal-DRAFT.md` exactly as proposed,
+provided each is consistent with Protocol L299 and the cycle cap. It is **not** covered by signature `a955245`.
+Transcribed by Claude, who approved nothing. The runner reads `design/fifo/freeze/miter-freeze-D-037.json`
+(`runner/run_controls.py` `miter_settings`). It re-checks these hashes before every F4 or F5 run, and stops with ERROR if
+any hash differs or N is not the cycle cap.
+
+**Recorded before any owner mutant exists.** No file under `design/fifo/controls/mutants/` exists in the tree or in any
+commit of the repository at this amendment (`tests/test_miter_freeze.py` checks the commit order on the host), so the
+values were not chosen with any mutant's result in view.
+
+Pack lines (the same text in v1.3.6 and in the adopted v1.3.7, File 02):
+
+> [02 L293] "Use bound `N` no greater than the design cycle cap. Record the shortest counterexample length where one is found."
+
+> [02 L296] "`UNDECIDED`: solver/resource limit prevents a classification."
+
+> [02 L299] "N, solver and timeout are **TO FREEZE**."
+
+| Value | Frozen as proposed | Consistency with L299 and the cycle cap |
+|---|---|---|
+| N | the design cycle cap: 64 driver cycles after reset release | L293 allows N up to the cap. Item B1 froze the cap at 64 driver cycles after reset release (`cycle_cap` in `design-materials-DRAFT.json`, frozen hash below), and `openvef.miter.bounded_check` counts N in the same unit. So N equals the cap, and L293's limit holds. The shortest counterexample is searched below N and recorded |
+| Solver | Yosys built-in `sat` (minisat), Yosys v0.71 in the pinned image | L299 names the solver as a value to freeze. The Yosys pin is frozen item D1 (D-004), and the solver choice is D-007 (3). No new dependency |
+| Solver timeout | 300 s per `sat` script | L299 names the timeout as a value to freeze. When the limit is reached, the result is `UNDECIDED` (L296), recorded as the control's ERROR and never as a pass |
+| Wall-clock limit | 900 s per Yosys run | A second resource limit under L299's "timeout". Exceeding it during the full-bound check or the shortest-counterexample search also gives `UNDECIDED` (L296). Separate from the driver watchdog (B3, L334), which it does not change |
+
+No conflict was found, so nothing was stopped.
+
+| File | SHA-256 (frozen) |
+|---|---|
+| `docs/fifo-miter-proposal-DRAFT.md` | `ff865bf9d0f824e98e1e161b9a5176f7fc9812e81265ac157a37c294bdb18de1` |
+| `design/fifo/design-materials-DRAFT.json` | `30758c86ad88a5dc34bbe7802c5272935e8cdca810f6eec5f8cd1ff8895ba393` |
+| `design/fifo/freeze/miter-freeze-D-037.json` | `52bb84607250051f913b3cfed48f56fb7d9bdf9b3615bad1cb3a2a0b18f0aba0` |
+
+The proposal file keeps its name and its "DRAFT" wording, and it is not edited in place. Its frozen status is this
+amendment, at this hash. Still **not** frozen: the L544 mutant export script, mutation modes and mutant population;
+`OUT_OF_BUDGET_COUNTEREXAMPLE` (L297) has no search beyond the cap and no frozen bound beyond it.
+
 ## Not frozen by this record
 
 The first row below was written before D-010: the mask is now frozen by the amendments
@@ -89,4 +129,4 @@ above, but the signature it names still does not exist.
 |---|---|
 | Observation mask, stricter variant and File 24 traceability table | needs the independent human mask reviewer's signature (Protocol L271; package section G); no owner signature replaces it |
 | The overlap disclosure note's own owner-signature table | not signed; F1 in the package is approved |
-| Frozen L544 mutant export script, mutation modes, mutant population, bounded-equivalence assumptions | separate owner items; C2 freezes only the null-netlist export script |
+| Frozen L544 mutant export script, mutation modes, mutant population, bounded-equivalence assumptions | separate owner items; C2 freezes only the null-netlist export script. The miter N, solver and timeouts (L299) are frozen by Amendment D-037 above; the rest of this row is unchanged |

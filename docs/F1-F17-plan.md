@@ -175,7 +175,7 @@ next-input divergence rows.
 
 | Artifact | Label |
 |---|---|
-| H5, H6, H8; proposed N, solver and timeout (DRAFT, L299 TO FREEZE) | a |
+| H5, H6, H8; N, solver and timeout (FROZEN by D-037, L299; FREEZE-RECORD Amendment D-037) | a |
 | Mutant **M-exposed**: masked-observable divergence under legal inputs within N | b |
 
 Critical gate.

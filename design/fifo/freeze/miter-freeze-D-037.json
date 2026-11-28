@@ -1,0 +1,30 @@
+{
+  "record_id": "FREEZE-2026-11-28-D-037",
+  "status": "Owner freeze of the miter bound, solver and timeouts (Protocol L299), transcribed by Claude (Claude Opus 5.5, via Claude Code) at Krishika's instruction (D-037). Claude did not approve or sign anything. Addendum to docs/FREEZE-RECORD-2026-11-24.md.",
+  "basis": "D-037, Krishika (owner), 28 Nov 2026, on a Claude (claude.ai) review: freeze the DRAFT values in docs/fifo-miter-proposal-DRAFT.md exactly as proposed, provided each is consistent with Protocol L299 and the cycle cap. Takes effect under D-008; Ayush Kumar Singh's ratification is pending and recorded once, in docs/AUDIT-READINESS.md. Recorded before any owner mutant file exists under design/fifo/controls/.",
+  "pack_lines": {
+    "L293": "Use bound `N` no greater than the design cycle cap. Record the shortest counterexample length where one is found.",
+    "L296": "`UNDECIDED`: solver/resource limit prevents a classification.",
+    "L299": "N, solver and timeout are **TO FREEZE**."
+  },
+  "frozen_values": {
+    "N": {"value": "cycle_cap", "cycles": 64, "unit": "driver cycles after reset release (the unit of frozen item B1)"},
+    "solver": "yosys sat (minisat), D-007 (3)",
+    "solver_timeout_s": 300,
+    "wall_timeout_s": 900
+  },
+  "items": [
+    {
+      "id": "M1",
+      "item": "Miter N, solver, solver timeout and Yosys wall-clock limit (L299), as proposed",
+      "refs": [
+        {"ref": "docs/fifo-miter-proposal-DRAFT.md", "sha256": "ff865bf9d0f824e98e1e161b9a5176f7fc9812e81265ac157a37c294bdb18de1"},
+        {"ref": "design/fifo/design-materials-DRAFT.json", "sha256": "30758c86ad88a5dc34bbe7802c5272935e8cdca810f6eec5f8cd1ff8895ba393"}
+      ]
+    }
+  ],
+  "not_frozen": [
+    {"id": "L544", "item": "Frozen L544 mutant export script, mutation modes, mutant population", "reason": "separate owner items; unchanged by D-037"},
+    {"id": "OOB", "item": "OUT_OF_BUDGET_COUNTEREXAMPLE diagnostic search beyond the cap (L297)", "reason": "not implemented; no bound beyond the cap is frozen"}
+  ]
+}
